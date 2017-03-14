@@ -1,0 +1,17 @@
+V,V
+nmr folder path,C:\Bruker\TopSpin3.2\data\MTBLS242_20170211_113451
+excel data path,Dataset_MTBLS242_15spectra_5groups.csv
+Metadata path (csv format),Metadata_MTBLS242_15spectra_5groups.csv
+1D data index,
+proc_no,
+ROI patterns file,ROI_profiles_MTBLS242_15spectra_5groups.csv
+Export folder path,export_fodler_path
+Normalization (1=Eretic; 2=TSP; 3=Creatinine; 4=Spectra Sum; 5=No;6=PQN),5
+Alignment (1=Glucose; 2=TSP; 3=Formate),1
+Default Suppressions,
+Spectometer Frequency (Hz),600.04
+Signals repository path (csv format),HMDB_Repository.csv
+Bucket resolution,0.0006
+Biofluid,Blood
+2D-Path,
+Specific dataset parameters,
