@@ -32,6 +32,7 @@ Imports:
 	robustbase,
 	D3TableFilter,
 	MassSpecWavelet,
+	SparseM,
 	speaq
 RoxygenNote: 6.0.1
 Suggests: knitr,
