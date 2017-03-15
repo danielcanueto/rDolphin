@@ -232,7 +232,7 @@ import_data = function(parameters_path) {
   imported_data$dataset[is.na(imported_data$dataset)]=min(abs(imported_data$dataset)[abs(imported_data$dataset)>0])
 
 
-  snr=apply(imported_data$dataset,1,function(x)stats::mad(x,na.rm=T))
+  #snr=apply(imported_data$dataset,1,function(x)stats::mad(x,na.rm=T))
 
     if (params$disol_suppression == 'Y') {
       ind=c()
@@ -255,7 +255,7 @@ import_data = function(parameters_path) {
   dfi=which(apply(dfg,2,sum)>0.5*nrow(imported_data$dataset))
   dfj=c()
   for (i in 1:length(dfi)) dfj=unique(c(dfj,round((dfi[i]-0.02/params$buck_step):(dfi[i]+0.02/params$buck_step))))
-  dfj=dfj[dfj>0]
+  dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)] 
   imported_data$dataset=imported_data$dataset[,dfj,drop=F]
   imported_data$ppm=imported_data$ppm[dfj]
   if (pqn=='Y'&&nrow(imported_data$dataset)>1) {
