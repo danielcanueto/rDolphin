@@ -8,6 +8,7 @@
 #' @return Matrix with data required
 #' @export validation
 #' @import robust
+#' @import robustbase
 #'
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
