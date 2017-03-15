@@ -49,7 +49,7 @@ Run these commands to set as directory the `extdata` folder and to import the da
 
 ```
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
-imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.CSV file")
+imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 ```
 
 An `imported_data` list is generated with several variables. Especially important ones are:
@@ -90,7 +90,7 @@ To output in your computer CSV files with `finaloutput` data, run this command:
 ```
 write_info('output_info',quantification_variables$finaloutput,imported_data$ROI_data)
 ```
-Go to the `output_info` folder stored inside the `extdata` folder mentioned in `Import of necessary data`. You can see some CSV file files with that contain the information of `finaloutput`.
+Go to the `output_info` folder stored inside the `extdata` folder mentioned in `Import of necessary data`. You can see some CSV files with that contain the information of `finaloutput`.
 
 To output in your computer PDFs with plots of every quantification, run this command:
 
