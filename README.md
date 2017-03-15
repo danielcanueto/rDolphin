@@ -1,8 +1,5 @@
-[![Build Status](https://travis-ci.org/ManonMartin/SOAP-NMR.svg?branch=master)](https://travis-ci.org/ManonMartin/SOAP-NMR)
-
-# SOAP-NMR
-An R package for 1H-NMR data pre-treatment
+# Dolphin
 
 ## R code to install the package:
-1. `install.packages("path-to-Dolphin", repos = NULL, type="source")`
-2. `require(Dolphin)`
+1. `devtools::install_github("danielcanueto/Dolphin")` (install devtools before, if necessary)
+2. `library(Dolphin)`
