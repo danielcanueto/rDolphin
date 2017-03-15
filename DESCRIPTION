@@ -29,7 +29,7 @@ Imports:
 	gridExtra,
 	shinyFiles,
 	stringr,
-	mQTL.NMR,
+	robustbase,
 	D3TableFilter,
 	MassSpecWavelet,
 	speaq
