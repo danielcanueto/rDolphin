@@ -38,7 +38,7 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
     fitting_type = as.character(ROI_profile[1, 3])
 
 	signals_to_quantify = which(ROI_profile[, 5] >= 1)
-	signals_codes = ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2][signals_to_quantify]
+	signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])[signals_to_quantify]
 
 
     print(paste(ROI_profile[1,1], ROI_profile[1,2], sep = '-'))
