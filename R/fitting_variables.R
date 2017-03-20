@@ -15,6 +15,9 @@ fitting_variables = function(parameter_change =list()) {
 
   program_parameters=list()
 
+  program_parameters$spectrum_borders=c(10,-1)
+
+  
   program_parameters$BGdensity=70 #Density of signals to prepare abaseline below the signals to fit
 program_parameters$widthtolerance=0.2 #Allowed Variability of halfwidth
 program_parameters$gaussian=0 #Allowed Variability of gaussian percentage
