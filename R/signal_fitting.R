@@ -8,7 +8,7 @@ signal_fitting = function(parS, Xdata,multiplicities,roof_effect,Ydata,freq) {
   g = as.numeric(parS[seq(4, length(parS) - 1, 5)])
   j = as.numeric(parS[seq(5, length(parS) - 0, 5)])/freq
   signals_parameters=rbind(i,p,w,g,j)
-  fitted_signals = matrix(NaN, dim(signals_parameters)[2], length(Xdata))
+  fitted_signals = matrix(0, dim(signals_parameters)[2], length(Xdata))
 
   # multiplicities = as.numeric(parS[seq(6, length(parS) - 1, 7)])
   # roof_effect = as.numeric(parS[seq(7, length(parS) - 0, 7)])
