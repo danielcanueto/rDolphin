@@ -40,14 +40,14 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
       CURRENT$ppm = seq(CURRENT$maxppm, CURRENT$minppm,-CURRENT$step)
 
      tmp = (storedpars$real * ((2 ^ storedpars$NC_proc) / storedpars$RG))
-      CURRENT$left_spectral_border = 1 + round(-(left_spectral_border -
-                                                   CURRENT$maxppm) / CURRENT$step)
-      CURRENT$norm_PEAK_left = 1 + round(-(RAW$norm_PEAK_left_ppm -
-                                             CURRENT$maxppm) / CURRENT$step)
+      CURRENT$left_spectral_border = 1 + max(0,round(-(left_spectral_border -
+                                                   CURRENT$maxppm) / CURRENT$step))
+      CURRENT$norm_PEAK_left = 1 + max(0,round(-(RAW$norm_PEAK_left_ppm -
+                                             CURRENT$maxppm) / CURRENT$step))
       CURRENT$norm_PEAK_right = 1 + round(-(RAW$norm_PEAK_right_ppm -
                                               CURRENT$maxppm) / CURRENT$step)
-      CURRENT$norm_AREA_left = 1 + round(-(RAW$norm_AREA_left_ppm -
-                                             CURRENT$maxppm) / CURRENT$step)
+      CURRENT$norm_AREA_left = 1 + max(round(-(RAW$norm_AREA_left_ppm -
+                                             CURRENT$maxppm) / CURRENT$step))
       CURRENT$norm_AREA_right = 1 + round(-(RAW$norm_AREA_right_ppm -
                                               CURRENT$maxppm) / CURRENT$step)
       norm_PEAK_max = max(tmp[CURRENT$norm_PEAK_left:CURRENT$norm_PEAK_right])
