@@ -22,7 +22,7 @@ not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful
 
   resulting_data=list(finaloutput=finaloutput,useful_data=useful_data)
 
-  if (ind==seq(nrow(imported_data$dataset))| interface == 'F') pb <- txtProgressBar(1, length(ind), style=3)
+  if (identical(ind,seq(nrow(imported_data$dataset)))| interface == 'F') pb <- txtProgressBar(1, length(ind), style=3)
 
   ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
   Xdata= as.numeric(imported_data$ppm[ROI_buckets])
