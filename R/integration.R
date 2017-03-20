@@ -3,11 +3,12 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,interface='F') {
   
   #preallocation of results_to_save
   results_to_save = list(
+    shift = NA,
+    Area = NA,
     signal_area_ratio = NA,
     fitting_error = NA,
-    Area = NA,
-    shift = NA,
-    intensity = NA
+    intensity = NA,
+    half_band_width = NA
   )
 
   #preparation of baseline, if specified by the user
