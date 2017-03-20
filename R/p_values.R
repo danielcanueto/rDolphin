@@ -16,7 +16,11 @@ p_values=function(dataset,metadata) {
 
 
 types=unique(unlist(metadata[,-1]))[which(unique(unlist(metadata[,-1]))>=0)]
-if (length(types)==1)    return(rep(1,ncol(dataset)))
+if (length(types)==1) {
+p_value_final  =rep(1,ncol(dataset))
+names(p_value_final)=colnames(dataset)
+  return(p_value_final)
+  }
 
 types2=abs(unique(unlist(metadata[,-1]))[which(unique(unlist(metadata[,-1]))<0)])
 datasetlist=list()
