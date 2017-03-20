@@ -225,7 +225,7 @@ import_data = function(parameters_path) {
     params$expno = expno
     params$processingno = processingno
     params$buck_step = as.numeric(as.character(import_profile[13, 2]))
-    imported_data = Metadata2Buckets(Experiments, params,c(13,-2))
+    imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
 
   }
 
