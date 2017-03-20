@@ -34,7 +34,6 @@ server = function(input, output,session) {
     #plot of quantification in model spectrum with current roi profiles
     dummy=autorun_model_spectrum(reactiveprogramdata$imported_data)
       reactiveprogramdata$autorun_plot=dummy$p
-      autorun_model_spectrum(reactiveprogramdata$imported_data)$total_signals_parameters
     reactiveprogramdata$finaloutput=reactiveprogramdata$imported_data$finaloutput
     reactiveprogramdata$useful_data=reactiveprogramdata$imported_data$useful_data
     reactiveprogramdata$ROI_separator=reactiveprogramdata$imported_data$ROI_separator
