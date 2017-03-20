@@ -32,7 +32,9 @@ server = function(input, output,session) {
     reactiveprogramdata$beginning =T
 
     #plot of quantification in model spectrum with current roi profiles
-    reactiveprogramdata$autorun_plot=autorun_model_spectrum(reactiveprogramdata$imported_data)
+    dummy=autorun_model_spectrum(reactiveprogramdata$imported_data)$p
+      reactiveprogramdata$autorun_plot=dummy$p
+      autorun_model_spectrum(reactiveprogramdata$imported_data)$total_signals_parameters
     reactiveprogramdata$finaloutput=reactiveprogramdata$imported_data$finaloutput
     reactiveprogramdata$useful_data=reactiveprogramdata$imported_data$useful_data
     reactiveprogramdata$ROI_separator=reactiveprogramdata$imported_data$ROI_separator
@@ -42,6 +44,10 @@ server = function(input, output,session) {
     #plots of representative spectra and median spectra per group to help setting the right ROI parameters
     reactiveprogramdata$clusterplot=clustspectraplot(reactiveprogramdata$imported_data)
     reactiveprogramdata$medianplot=medianplot(reactiveprogramdata$imported_data)
+  output$sp = DT::renderDataTable(
+      dummy$total_signals_parameters , selection = list(selected = NULL),server = T)
+      output$indicators = DT::renderDataTable(
+      dummy$indicators , selection = list(selected = NULL),server = T)
 
 
     #Subsetting of ROIs is prepared
