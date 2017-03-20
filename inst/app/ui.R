@@ -45,7 +45,10 @@ shinyUI(fluidPage(
           div(style="display:inline-block",uiOutput('align_button')),
           # div(style="display:inline-block",uiOutput('peak_analysis')),
           fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in the spectrum model and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given by the user.The idea is that you can analyze other parts of the spectrum with significant differences and add a ROI profile through the 'Profiles' tab."))),
-          plotlyOutput("autorun_plot")
+          plotlyOutput("autorun_plot"),
+          div(dataTableOutput("sp"), style = "font-size:80%"),
+          div(dataTableOutput("indicators"), style = "font-size:80%")
+
 
         ))),
 
