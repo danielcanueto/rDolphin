@@ -16,7 +16,7 @@ topspin_read_spectrum2 <- function(partname, filename, minppm, maxppm){
     storedpars$real   = NaN
     storedpars$NC_proc = 0
 	storedpars$XDIM = 0
-    return()
+    return(storedpars)
   }
   
   storedpars$RG = as.numeric(storedpars$RG)
@@ -44,6 +44,7 @@ topspin_read_spectrum2 <- function(partname, filename, minppm, maxppm){
     storedpars$real   = NaN
     storedpars$NC_proc = 0
 	    storedpars$XDIM = 0
+    return(storedpars)
 
   }
   
