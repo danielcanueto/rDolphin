@@ -256,8 +256,8 @@ import_data = function(parameters_path) {
   dfj=c()
   for (i in 1:length(dfi)) dfj=unique(c(dfj,round((dfi[i]-0.02/params$buck_step):(dfi[i]+0.02/params$buck_step))))
   dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)] 
-  imported_data$dataset=imported_data$dataset[,dfj,drop=F]
-  imported_data$ppm=imported_data$ppm[dfj]
+  #imported_data$dataset=imported_data$dataset[,dfj,drop=F]
+  #imported_data$ppm=imported_data$ppm[dfj]
   if (pqn=='Y'&&nrow(imported_data$dataset)>1) {
     treated=t(imported_data$dataset[,which(apply(imported_data$dataset,2,median)>median(apply(imported_data$dataset,2,median))),drop=F])
     reference <- apply(treated,1,function(x)median(x,na.rm=T))
