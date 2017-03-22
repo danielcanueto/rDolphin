@@ -63,7 +63,7 @@ import_data = function(parameters_path) {
 
 
   #Preparing the structure of experiments and signals where to store the output
-  export_path = as.character(import_profile[7, 2])
+  export_path = dirname(parameters_path)
 #Other necessary variables
   freq = as.numeric(as.character(import_profile[11, 2]))
 
