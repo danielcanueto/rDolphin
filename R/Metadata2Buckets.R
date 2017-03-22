@@ -92,17 +92,20 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
       # referenciem
       LeftEreticBefore = ifelse(CURRENT$ppm[1] > 11.8, min(CURRENT$ppm[which(CURRENT$ppm > 11.7)]), NaN)
 
-      if (params$glucose_alignment == "Y")
+      if (params$glucose_alignment == "Y") {
         JTP = JTPcalibrateToGlucose(tmp, CURRENT$ppm)
-      if (params$tsp_alignment == "Y")
+      } else if (params$tsp_alignment == "Y") {
         JTP = JTPcalibrateToTSP(tmp, CURRENT$ppm)
-      if (params$peak_alignment == "Y") {
+      } else if (params$peak_alignment == "Y") {
         if (nrow(as.matrix(ref_peak_pos)) == maxspec) {
           JTP = JTPcalibrateToPeak2(tmp, CURRENT$ppm, 5.3, 0.4)
           JTP = JTPcalibrateToPeak(tmp, CURRENT$ppm, ref_peak_pos[k])
-        } else
+        } else {
           JTP = JTPcalibrateToPeak(tmp, CURRENT$ppm, ref_peak_pos)
-      }
+	}
+      } else {
+	JTP=list(ppm=CURRENT$ppm)
+	}
       CURRENT$ppm = JTP$ppm
       # si hi llegim zona d'eretic llavors tornem a posar Eretic a 11 ppm
       if (!is.nan(LeftEreticBefore)) {
