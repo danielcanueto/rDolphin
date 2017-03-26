@@ -95,7 +95,7 @@ server = function(input, output,session) {
     reactiveprogramdata$useful_data=savedreactivedata$useful_data
     # reactiveprogramdata$originaldataset=savedreactivedata$originaldataset
     reactiveprogramdata$p_value_final=savedreactivedata$p_value_final
-    # reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=savedreactivedata$ROI_data
+    reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=savedreactivedata$ROI_data
     reactiveprogramdata$ROI_separator=savedreactivedata$ROI_separator
     reactiveprogramdata$autorun_plot=savedreactivedata$autorun_plot
     reactiveprogramdata$clusterplot=savedreactivedata$clusterplot
