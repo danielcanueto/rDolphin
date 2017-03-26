@@ -448,8 +448,9 @@ server = function(input, output,session) {
   })
 
   output$qualitypar <- renderD3tf({
+    tableProps = list(btn_reset = TRUE,sort_config = list(sort_types = c("String", rep("Number", ncol(reactiveROItestingdata$qualitypar)))))
     d3tf(reactiveROItestingdata$qualitypar,
-      tableProps = list(btn_reset = TRUE,sort_config = list(sort_types = c("String", rep("Number", ncol(reactiveROItestingdata$qualitypar))))),
+      tableProps = tableProps,
       enableTf = F,
       edit=F,
       showRowNames = TRUE,
