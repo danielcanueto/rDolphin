@@ -1,4 +1,14 @@
 
+#' Saving of results in interface in individual quantification
+#'
+#' @param provisional_data List with elements to save.
+#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param imported_data Imported_data.
+#'
+#' @return List with updated finaloutput and useful_data variables.
+#' @export save_roi_testing
+
 save_roi_testing=function(provisional_data,imported_data,finaloutput,useful_data) {
 
 
