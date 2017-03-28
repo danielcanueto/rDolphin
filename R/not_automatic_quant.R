@@ -31,7 +31,7 @@ not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful
   program_parameters$ROI_buckets = ROI_buckets
   program_parameters$buck_step = imported_data$buck_step
   baselinedataset=baseline.rollingBall(imported_data$dataset[,(ROI_buckets-5):(ROI_buckets+5)],5,5)$baseline
-  baselinedataset=baselinedataset[,6:(6+length(ROI_buckets)]
+  baselinedataset=baselinedataset[,6:(6+length(ROI_buckets))]
   fitting_type = as.character(ROI_profile[1, 3])
   signals_to_quantify = which(ROI_profile[, 5] >0)
   signals_codes = signals_names = rep(NA,length(signals_to_quantify))
