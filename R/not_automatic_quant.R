@@ -256,8 +256,8 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }
-    if (ind==seq(nrow(imported_data$dataset)) | interface == F) {
-      # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>error1) {
+if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
+	# if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>error1) {
       for (i in seq_along(signals_codes)) {
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
