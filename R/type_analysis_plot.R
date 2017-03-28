@@ -19,7 +19,7 @@
 #' type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
 
 
-type_analysis_plot = function(data,finaloutput,imported_data,type=c('boxplot','pca','dendrogramp_heatmap')) {
+type_analysis_plot = function(data,finaloutput,imported_data,type=c('boxplot','pca','dendrogram_heatmap')) {
 
   m <- list(l = 150, r = 0, b = 150, t = 0,pad = 4)
 
