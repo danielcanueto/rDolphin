@@ -31,7 +31,7 @@ program_parameters$errorprov=3 #Percentage limit of fitting error on the ROI. If
 program_parameters$fitting_maxiter=NA #The number of maximum iterations of optimization can be specified
 
 #Parameters related to the nls algorithm. Read documentation of nls.lm package for details.
-program_parameters$nls_lm_maxiter=200
+program_parameters$nls_lm_maxiter=500
 program_parameters$ftol=1e-6
 program_parameters$ptol=1e-6
 program_parameters$factor=0.01
