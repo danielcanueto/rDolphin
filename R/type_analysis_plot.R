@@ -19,14 +19,14 @@
 #' type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
 
 
-type_analysis_plot = function(data,finaloutput,imported_data,type=c('boxplot','pca','dendrogram_heatmap')) {
+type_analysis_plot = function(data,finaloutput,imported_data,ROI_data,type=c('boxplot','pca','dendrogram_heatmap')) {
 
   m <- list(l = 150, r = 0, b = 150, t = 0,pad = 4)
 
-data=data[,which(imported_data$ROI_data[,5]>0)]
+data=data[,which(ROI_data[,5]>0)]
 if (imported_data$program_parameters$automatic_removal=='Y') {
-  data[finaloutput$fitting_error[,which(imported_data$ROI_data[,5]>0)]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
-  data[finaloutput$signal_area_ratio[,which(imported_data$ROI_data[,5]>0)]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
+  data[finaloutput$fitting_error[,which(ROI_data[,5]>0)]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
+  data[finaloutput$signal_area_ratio[,which(ROI_data[,5]>0)]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
   data=data[,!apply(data,2,function(x)length(which(is.na(x)))>0.5*length(x))]
 }
 
