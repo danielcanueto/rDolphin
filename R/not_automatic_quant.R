@@ -94,7 +94,7 @@ not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful
       FeaturesMatrix = fitting_prep(Xdata,
                                     Ydata,
                                     ROI_profile[, 5:11,drop=F],
-                                    program_parameters,baselinedataset[spectrum_index,ROI_buckets])
+                                    program_parameters,baselinedataset[spectrum_index,])
       #Calculation of the parameters that will achieve the best fitting
       dummy = fittingloop(FeaturesMatrix,
                                        Xdata,
