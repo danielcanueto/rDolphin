@@ -687,21 +687,21 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
   #Boxplot plot
   output$plot_p_value_2 <- renderPlotly({
-    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,type='boxplot')
+    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
   })
   #PCA plot
   output$pcascores <- renderPlotly({
-    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,type='pca')
+    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
   })
 
   ## SIXTH TAB REACTIVE OUTPUTS
   #Dengrogran heatmaps for quantification and chemical shift
   output$dendheatmapareadata <- renderPlotly({
-    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,type='dendrogram_heatmap')
+    type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   })
 
   output$dendheatmapshiftdata <- renderPlotly({
-    type_analysis_plot(reactiveprogramdata$finaloutput$shift,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,type='dendrogram_heatmap')
+    type_analysis_plot(reactiveprogramdata$finaloutput$shift,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   })
 
 
