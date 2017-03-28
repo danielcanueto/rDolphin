@@ -22,7 +22,7 @@ not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful
 
   resulting_data=list(finaloutput=finaloutput,useful_data=useful_data)
 
-  if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F) pb <- txtProgressBar(1, length(ind), style=3)
+  if (identical(ind,seq(nrow(imported_data$dataset)))) pb <- txtProgressBar(1, length(ind), style=3)
 
   ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
   Xdata= as.numeric(imported_data$ppm[ROI_buckets])
@@ -268,7 +268,7 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
-        setTxtProgressBar(pb, spectrum_index)
+       
 
       }
         resulting_data$finaloutput = save_output(
@@ -290,6 +290,9 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
 	}
 
     }
+	  
+	    if (identical(ind,seq(nrow(imported_data$dataset))))  setTxtProgressBar(pb, spectrum_index)
+
 	if (interface == T) {
 		resulting_data$p=p
 		resulting_data$results_to_save=results_to_save
