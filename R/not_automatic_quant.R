@@ -18,11 +18,11 @@
 #' resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
 
 
-not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful_data,interface='F') {
+not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful_data,interface=F) {
 
   resulting_data=list(finaloutput=finaloutput,useful_data=useful_data)
 
-  if (identical(ind,seq(nrow(imported_data$dataset)))| interface == 'F') pb <- txtProgressBar(1, length(ind), style=3)
+  if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F) pb <- txtProgressBar(1, length(ind), style=3)
 
   ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
   Xdata= as.numeric(imported_data$ppm[ROI_buckets])
@@ -256,7 +256,7 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }
-    if (ind==seq(nrow(imported_data$dataset)) | interface == 'F') {
+    if (ind==seq(nrow(imported_data$dataset)) | interface == F) {
       # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>error1) {
       for (i in seq_along(signals_codes)) {
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
@@ -290,7 +290,7 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
 	}
 
     }
-	if (interface == 'T') {
+	if (interface == T) {
 		resulting_data$p=p
 		resulting_data$results_to_save=results_to_save
 		resulting_data$spectrum_index=spectrum_index
