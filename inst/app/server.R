@@ -408,7 +408,7 @@ server = function(input, output,session) {
   #Qunatification of all spectra in the ROI:
   observeEvent(input$autorun_signal, {
     is_autorun='Y'
-    reactivequantdata$chor <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, seq(nrow(reactiveprogramdata$imported_data)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
+    reactivequantdata$chor <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
     reactiveprogramdata$finaloutput=reactivequantdata$chor$finaloutput
     reactiveprogramdata$useful_data=reactivequantdata$chor$useful_data
   })
