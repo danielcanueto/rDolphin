@@ -384,14 +384,14 @@ server = function(input, output,session) {
     print(dim(reactiveprogramdata$finaloutput$fitting_error))
 
 
-    reactivequantdata$method1 <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data)
+    reactivequantdata$method1 <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
     # if ( is.null(reactivequantdata$method1$Ydata)) {
     #   print('Quantification probably worse than current one. Quantification not changed')
     #   return()
     # }
     reactiveprogramdata$plot=reactivequantdata$method1$p
     reactivequantdata$stop3=1
-    reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$Area,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio,interface=='T')
+    reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$Area,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
 
