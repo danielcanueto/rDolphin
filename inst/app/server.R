@@ -374,7 +374,7 @@ server = function(input, output,session) {
     print(reactiveROItestingdata$ROIpar)
     is_autorun='N'
     if(length(reactiveprogramdata$info)==0) reactiveprogramdata$ind=input$x1_rows_selected-2
-    if (length(reactiveprogramdata$ind)!=1) {
+    if (length(reactiveprogramdata$ind)!=1|reactiveprogramdata$ind<1) {
       print('Select one valid spectrum')
       return(NULL)
     }
