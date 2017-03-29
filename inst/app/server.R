@@ -576,7 +576,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
   observeEvent(input$remove_signal, {
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[-input$roi_profiles_select,]
-    reactiveprogramdata$imported_data$signals_names=reactiveprogramdata$imported_data$signals_names[-input$roi_profiles_select]
+    #reactiveprogramdata$imported_data$signals_names=reactiveprogramdata$imported_data$signals_names[-input$roi_profiles_select]
     resetInput(session, "roi_profiles_edit")
   })
   observeEvent(input$save_changes, {
