@@ -72,9 +72,7 @@ autorun_model_spectrum = function(imported_data) {
 
       total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
-      #integration ad chechk that there are no negative values
-      # integrated_signal = Ydata - baseline
-      # integrated_signal[integrated_signal<0]=0
+     
       #preparation of output
       fitted_data[ROI_buckets]= integration_variables$plot_data[3,]
 
@@ -102,30 +100,7 @@ autorun_model_spectrum = function(imported_data) {
       #Fitting of the signals
       multiplicities=FeaturesMatrix[,11]
       roof_effect=FeaturesMatrix[,12]
-      # dummy = ROI_data[which(is.na(ROI_data[, 1])),]
-      # dummy2= list()
-      # for (i in 1:dim(ROI_profile)[1]) {
-      #
-      #   if (length(which(dummy[,4] == ROI_profile[i,4]))>0 & ROI_profile[i,5] == 1) {
-      #     dummy2[[length(dummy2)+1]]=which(dummy[,4] == ROI_profile[i,4])
-      #     for (j in 1:length(dummy2[[i]])) {
-      #
-      #       cc= signals_parameters[(5*i-4):(5*i)]
-      #       cc[5]=dummy[dummy2[[i]][j],][9]
-      #       cc[1]=dummy[dummy2[[i]][j],][12]*cc[1]
-      #       cc[2]=as.numeric(dummy[dummy2[[i]][j],][5])+(as.numeric(cc[2])-as.numeric(ROI_profile[i,6]))
-      #       # cc[5]=dummy[dummy2[[i]][j],][9]
-      #       # cc[1]=dummy[dummy2[[i]][j],][12]*cc[1]
-      #       # cc[2]=dummy[dummy2[[i]][j],][5]-(cc[2]-ROI_profile[i,5])
-      #       signals_parameters=c(signals_parameters,cc)
-      #       multiplicities=c(multiplicities,dummy[dummy2[[i]][j],][8])
-      #       roof_effect=c(roof_effect,dummy[dummy2[[i]][j],][10])
-      #     }
-      #   }
-      # }
-      # Xdata=imported_data$ppm
-      # multiplicities=unlist(multiplicities)
-      # roof_effect=unlist(roof_effect)
+      
 
       fitted_signals = signal_fitting(signals_parameters,
         Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
@@ -138,9 +113,7 @@ autorun_model_spectrum = function(imported_data) {
         'J_coupling'
       )
 
-      # Ydata = as.numeric(imported_data$dataset[spectrum_index, ])
       signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
-
 
 
       dummy = output_generator(
@@ -151,24 +124,13 @@ autorun_model_spectrum = function(imported_data) {
         signals_parameters,multiplicities
       )
       output_data=dummy$output_data
-      # results_to_save = data.frame(
-      #   shift = output_data$shift,
-      #   Area = output_data$Area,
-      #   signal_area_ratio = output_data$signal_area_ratio,
-      #   fitting_error = output_data$fitting_error,
-      #   intensity = output_data$intensity,
-      #   half_band_width = output_data$half_band_width
-      # )
-
-      # plotdata2$Ydata[ROI_buckets]=output_data$signals_sum[ROI_buckets]
-      # plotdata3$Ydata[ROI_buckets]=output_data$fitted_sum[ROI_buckets]
+     
       fitted_data[ROI_buckets]=output_data$fitted_sum
+    total_signals_parameters[signals_codes,]=cbind(t(signals_parameters[,signals_to_quantify]),output_data$fitting_error[signals_to_quantify],output_data$signal_area_ratio[signals_to_quantify])
 
 
     }
     setTxtProgressBar(pb, ROI_index)
-    # indicators[signals_codes,]=unlist(results_to_save)
-    total_signals_parameters[signals_codes,]=cbind(t(signals_parameters[,signals_to_quantify]),output_data$fitting_error[signals_to_quantify],output_data$signal_area_ratio[signals_to_quantify])
 
   }
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
