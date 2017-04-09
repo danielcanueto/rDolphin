@@ -3,7 +3,8 @@
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param data Data to be used to get the analysis plot
-#' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap') 
+#' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')
+#' @param ROI_data ROI data.
 #'
 #' @return Analysis plot
 #' @export type_analysis_plot

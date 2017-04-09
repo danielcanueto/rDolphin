@@ -67,10 +67,18 @@ Looking to a figure of results of profiling in a model spectrum can help to impr
 
 
 ```
-autorun_model_spectrum(imported_data)
+autorun_model=autorun_model_spectrum(imported_data)
 ```
 
-You can see two juxtaposed figures: the above one shows the fitting applied to every ROI, the second one shows the p value associated to every bin of the spectrum. With this information, you can look for example if there are zones of the spectrum with significant differences that are not profiled yet. You can change the ROI Profiles in the `ROI_data` field of `imported_data`, but be very careful: many variables are dependent of the original number and names of the initial signals to profile. The `renew_imported_data` function helps to arrange the imported data to fit the changes inside `ROI_data`.
+`useful_data` has three elements:
+
+* `p`, a plotly figure showing the fitting applied to every ROI in the model spectrum as well as chemometric data of every bin (with this information, you can look for example if there are zones of the spectrum with significant differences that are not profiled yet). 
+
+* `total_signals_parameters`, a matrix with parameters of fitting and of quality of fitting for every quantified signal. This matrix can be useful to optimize some ROI parameters.
+
+* `ROI_data`, a data frame of the ROI data used during the process.
+
+You can now change the ROI Profiles in the `ROI_data` field of `imported_data`, but be very careful: many variables are dependent of the original number and names of the initial signals to profile. The `renew_imported_data` function helps to arrange the imported data to fit the changes inside `ROI_data`.
 
 ## Automatic profiling of spectra
 
@@ -108,6 +116,7 @@ The `validation` function allows to analyse possible wrong identifications or qu
 
 ```
 validation_data=validation(quantification_variables$finaloutput,5,imported_data$ROI_data,imported_data$Metadata)
+library(DT)
 DT::datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
 ```
 
@@ -129,7 +138,7 @@ pval=p_values(quantification_variables$finaloutput$Area,imported_data$Metadata)
 A fancier way to look to these results is with the next command:
 
 ```
-type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
+type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,imported_data$ROI_data,'boxplot')
 ```
 
 With a plotly figure that shows boxplots for every kind of sample in each signal and associated calculated p values.
@@ -137,14 +146,14 @@ With a plotly figure that shows boxplots for every kind of sample in each signal
 A basic PCA can also be observed to have an idea of the possible results found during multivariate analyses:
 
 ```
-type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'pca')
+type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,imported_data$ROI_data,'pca')
 ```
 
 Finally, dendrogram heatmaps can show us interesting subsets of samples or signals with the quantification or chemical shift information provided. For example, a not identified signal can be highly correlated in quantification with another signal because they are signals from the same metabolite. Or a not identified signal can have a chemical shift highly correlated to a identified signal, meaning that they possibly belong to metabolites with similar chemical traits.
 
 ```
-type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'dendrogram_heatmap')
-type_analysis_plot(quantification_variables$finaloutput$shift,quantification_variables$finaloutput,imported_data,'dendrogram_heatmap')
+type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
+type_analysis_plot(quantification_variables$finaloutput$shift,quantification_variables$finaloutput,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
 ```
 
 

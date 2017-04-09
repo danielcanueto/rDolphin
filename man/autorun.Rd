@@ -14,6 +14,8 @@ autorun(imported_data, finaloutput, useful_data, ROI_data, ROI_separator)
 \item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
 
 \item{ROI_data}{ROIs data.}
+
+\item{ROI_separator}{ROI separator.}
 }
 \value{
 List with updated finaloutput and useful_data variables.

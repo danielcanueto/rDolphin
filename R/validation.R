@@ -21,7 +21,7 @@
 
 validation = function(finaloutput,validation_type,ROI_data,metadata) {
 
-
+if (is.null(finaloutput)) return(NULL)
     alarmmatrix=matrix(NA,dim(finaloutput$shift)[1],dim(finaloutput$shift)[2],dimnames=list(rownames(finaloutput$shift),colnames(finaloutput$shift)))
 
    #Analysis of fitting error of quantifications

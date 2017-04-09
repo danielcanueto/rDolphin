@@ -4,8 +4,8 @@
 \alias{type_analysis_plot}
 \title{Type of analysis plot}
 \usage{
-type_analysis_plot(data, finaloutput, imported_data, type = c("boxplot",
-  "pca", "dendrogramp_heatmap"))
+type_analysis_plot(data, finaloutput, imported_data, ROI_data,
+  type = c("boxplot", "pca", "dendrogram_heatmap"))
 }
 \arguments{
 \item{data}{Data to be used to get the analysis plot}
@@ -13,6 +13,8 @@ type_analysis_plot(data, finaloutput, imported_data, type = c("boxplot",
 \item{finaloutput}{List with quantifications and indicators of quality of quantification.}
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
+
+\item{ROI_data}{ROI data.}
 
 \item{type}{Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')}
 }

@@ -43,11 +43,7 @@ import_data = function(parameters_path) {
   Experiments=dummy[,1]
   Experiments = as.vector(Experiments[Experiments != ''])
   Metadata=dummy[,-1,drop=F]
-  # signals_names = read.delim(as.character(import_profile[6, 2]),
-  #                            header = F,
-  #                            stringsAsFactors = F)[, 1]
-  # signals_names = as.list(signals_names[signals_names != ''])
-  biofluid=import_profile[14, 2]
+  biofluid=import_profile[12, 2]
   profile_folder_path = as.character(import_profile[6, 2])
 
   ROI_data=try(read.csv(profile_folder_path, stringsAsFactors = F),silent=T)
@@ -65,15 +61,15 @@ import_data = function(parameters_path) {
   #Preparing the structure of experiments and signals where to store the output
   export_path = dirname(parameters_path)
 #Other necessary variables
-  freq = as.numeric(as.character(import_profile[11, 2]))
+  freq = as.numeric(as.character(import_profile[10, 2]))
 
-  jres_path=as.character(import_profile[15, 2])
-  try(source(as.character(import_profile[16, 2])),silent=T)
+  jres_path=as.character(import_profile[13, 2])
+  try(source(as.character(import_profile[14, 2])),silent=T)
 
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
 
-  repository=as.data.frame(rio::import(as.character(import_profile[12, 2])))
+  repository=as.data.frame(rio::import(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))
   der=which(colnames(repository)==biofluid)
   fa=repository[,der]
   # repository=repository[repository[,der]>0&!is.na(repository[,der])&!is.nan(repository[,der]),]
@@ -90,13 +86,13 @@ import_data = function(parameters_path) {
 
   #Kind of normalization
   #TO DO: add PQN (but before standardize a way to find the regions to have into account)
-  normalization = import_profile[8, 2]
+  normalization = import_profile[7, 2]
   pqn='N'
 
   params$norm_AREA = 'N'
   params$norm_PEAK = 'N'
-  params$norm_left_ppm = 12
-  params$norm_right_ppm = -1
+  params$norm_left_ppm = program_parameters$spectrum_borders[1]
+  params$norm_right_ppm = program_parameters$spectrum_borders[2]
   if (normalization == 1) {
     #Eretic
     params$norm_AREA = 'Y'
@@ -125,7 +121,7 @@ import_data = function(parameters_path) {
   }
 
   #Alignment
-  alignment = import_profile[9, 2]
+  alignment = import_profile[8, 2]
   params$glucose_alignment = 'N'
   params$tsp_alignment = 'N'
   params$peak_alignment = 'N'
@@ -142,7 +138,7 @@ import_data = function(parameters_path) {
   }
 
   #Suppresion regions
-  suppression = as.character(import_profile[10, 2])
+  suppression = as.character(import_profile[9, 2])
   if (suppression == '') {
     params$disol_suppression = 'N'
   } else {
@@ -186,9 +182,9 @@ import_data = function(parameters_path) {
         #Formate
         limi=c(8.48,8.42)
       }
-      alignment_ind=which.min(abs(imported_data$ppm-limi[1])):which.min(abs(imported_data$ppm-limi[2]))
-      if (alignment!=4&&length(alignment_ind)>1) {
-      spectra_lag=rep(NA,dim(imported_data$dataset)[1])
+      if (alignment!=4&&nrow(imported_data$dataset)>1) {
+        # alignment_ind=which.min(abs(imported_data$ppm-limi[1])):which.min(abs(imported_data$ppm-limi[2]))
+      spectra_lag=rep(NA,nrow(imported_data$dataset))
       for (i in 1:dim(imported_data$dataset)[1]) {
         d <-
           ccf(imported_data$dataset[i, ],
@@ -210,10 +206,10 @@ import_data = function(parameters_path) {
 
 
       params$buck_step = ifelse(
-        as.character(import_profile[13, 2]) == '',
+        as.character(import_profile[11, 2]) == '',
         abs(imported_data$ppm[1] - imported_data$ppm[length(imported_data$ppm)]) /
           length(imported_data$ppm),
-        as.numeric(as.character(import_profile[13, 2]))
+        as.numeric(as.character(import_profile[11, 2]))
       )
     } else {
       print('Problem when creating the dataset. Please revise the parameters.')
@@ -224,9 +220,9 @@ import_data = function(parameters_path) {
     params$dir = bruker_path
     params$expno = expno
     params$processingno = processingno
-    params$buck_step = as.numeric(as.character(import_profile[13, 2]))
+    params$buck_step = as.numeric(as.character(import_profile[11,2]))
     imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
-
+    if (dim(imported_data$dataset)==2) dummy=NA
   }
 
   imported_data$dataset[is.na(imported_data$dataset)]=min(abs(imported_data$dataset)[abs(imported_data$dataset)>0])
@@ -241,21 +237,21 @@ import_data = function(parameters_path) {
       imported_data$ppm=imported_data$ppm[-ind]
     }
 
-  ind=seq(1,ncol(imported_data$dataset),round(ncol(imported_data$dataset)/(0.1/params$buck_step)))
-  flan=rep(NA,length(ind))
-  for (i in 1:length(ind)) flan[i]=tryCatch(colMeans(imported_data$dataset[,ind[i]:(ind[i]+1)]), error=function(e) NA)
-
-  snr=apply(imported_data$dataset[,ind[which.min(flan)]:ind[which.min(flan)+1]],1,function(x)stats::mad(x,na.rm=T))
-
-  dfg=matrix(0,nrow(imported_data$dataset),ncol(imported_data$dataset))
-  for (i in 1:nrow(imported_data$dataset)) {
-    dfg[i,which(imported_data$dataset[i,]>snr[i])]=1
-  }
-
-  dfi=which(apply(dfg,2,sum)>0.5*nrow(imported_data$dataset))
-  dfj=c()
-  for (i in 1:length(dfi)) dfj=unique(c(dfj,round((dfi[i]-0.02/params$buck_step):(dfi[i]+0.02/params$buck_step))))
-  dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)] 
+  # ind=seq(1,ncol(imported_data$dataset),round(ncol(imported_data$dataset)/(0.1/params$buck_step)))
+  # flan=rep(NA,length(ind))
+  # for (i in 1:length(ind)) flan[i]=tryCatch(colMeans(imported_data$dataset[,ind[i]:(ind[i]+1)]), error=function(e) NA)
+  # 
+  # snr=apply(imported_data$dataset[,ind[which.min(flan)]:ind[which.min(flan)+1]],1,function(x)stats::mad(x,na.rm=T))
+  # 
+  # dfg=matrix(0,nrow(imported_data$dataset),ncol(imported_data$dataset))
+  # for (i in 1:nrow(imported_data$dataset)) {
+  #   dfg[i,which(imported_data$dataset[i,]>snr[i])]=1
+  # }
+  # 
+  # dfi=which(apply(dfg,2,sum)>0.5*nrow(imported_data$dataset))
+  # dfj=c()
+  # for (i in 1:length(dfi)) dfj=unique(c(dfj,round((dfi[i]-0.02/params$buck_step):(dfi[i]+0.02/params$buck_step))))
+  # dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)]
   #imported_data$dataset=imported_data$dataset[,dfj,drop=F]
   #imported_data$ppm=imported_data$ppm[dfj]
   if (pqn=='Y'&&nrow(imported_data$dataset)>1) {

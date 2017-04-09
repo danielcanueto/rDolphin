@@ -6,6 +6,9 @@
 \usage{
 fitting_variables(parameter_change = list())
 }
+\arguments{
+\item{parameter_change}{List of parameters ot change, if desired.}
+}
 \value{
 Preparation of parameters involved with the program
 }

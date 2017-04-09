@@ -5,7 +5,7 @@
 \title{Quantification of individual ROIs with selected spectra.}
 \usage{
 not_automatic_quant(imported_data, finaloutput, ind, ROI_profile, useful_data,
-  interface = "F")
+  interface = F)
 }
 \arguments{
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}

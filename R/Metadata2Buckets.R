@@ -40,9 +40,14 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
       CURRENT$ppm = seq(CURRENT$maxppm, CURRENT$minppm,-CURRENT$step)
 
      tmp = (storedpars$real * ((2 ^ storedpars$NC_proc) / storedpars$RG))
-	left_spectral_border =  min(CURRENT$maxppm,left_spectral_border)
-	    	right_spectral_border =  max(CURRENT$minppm,right_spectral_border)
+	# left_spectral_border =  floor(min(CURRENT$maxppm,left_spectral_border)*10)/10
+	#     	right_spectral_border =  ceiling(max(CURRENT$minppm,right_spectral_border)*10)/10
 
+     if (left_spectral_border>CURRENT$maxppm | right_spectral_border<CURRENT$minppm) {
+       print('Current incorrect spectrum borders. Please prepare a modified version of fitting_variables with appropiate spectrum borders and introduce its path on the Parameters CSV file.')
+       finaldata=NA
+       return(finaldata)
+     }
       CURRENT$left_spectral_border = 1 + round(-(left_spectral_border -
                                                    CURRENT$maxppm) / CURRENT$step)
       CURRENT$norm_PEAK_left = 1 + round(-(RAW$norm_PEAK_left_ppm -
@@ -119,7 +124,7 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
 
       fill2end = 0
       tmp_count = CURRENT$left_spectral_border
-      tmp_buck = matrix(0, RAW$len_bucks, 1)
+      tmp_buck = rep(0, RAW$len_bucks)
       jumped_bucket = 0
       for (tmp_buck_count in 2:RAW$len_bucks) {
         items = suma = 0
@@ -157,11 +162,9 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
 
 
 
-  # calculem el valor d'rea total desprs de suprimir l'aigua
-      total_AREA_mean2 = mean(tmp_buck[1:length(tmp_buck)])
 
       if (k2 == 1) dataset = matrix(NA, maxspec, RAW$len_bucks)
-      dataset[k2,] = t(tmp_buck[1:RAW$len_bucks])
+      dataset[k2,] = tmp_buck[1:RAW$len_bucks]
       k2 = k2 + 1
       read_spectra = append(read_spectra, as.character(Experiments[k]))
 
@@ -171,15 +174,13 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
       not_loaded_experiments = append(not_loaded_experiments, Experiments[k])
     }
   }
-  finaldata = list()
-  finaldata$params = params
-  finaldata$RAW = RAW
-  dataset = dataset[complete.cases(dataset),,drop=F]
+  # finaldata$params = params
+  # finaldata$RAW = RAW
+  # dataset = dataset[complete.cases(dataset),,drop=F]
   rownames(dataset) = read_spectra
-  finaldata$dataset = dataset
-  finaldata$not_loaded_experiments = not_loaded_experiments
-  colnames(finaldata$dataset) = as.character(RAW$ppm_bucks)
-  finaldata$ppm = RAW$ppm_bucks
+  colnames(dataset) = as.character(RAW$ppm_bucks)
+  finaldata = list(dataset=dataset,ppm=RAW$ppm_bucks,not_loaded_experiments = not_loaded_experiments)
+
 
   return(finaldata)
 }

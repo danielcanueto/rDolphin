@@ -80,10 +80,10 @@ parseAcqus <- function(inDir, params){
                ' in:\n"', inDir, '".', sep='')
     return()
   }
-  #acqu2s <- list.files(inDir, full.names=TRUE, pattern='^acqu2s')[1]
-  #if (is.na(acqu2s))
-  #  acqu2s <- list.files(inDir, full.names=TRUE, pattern='^acqu2$')[1]
-  #if (is.na(acqu2s)) files <- acqus else files <- c(acqus, acqu2s)
+  acqu2s <- list.files(inDir, full.names=TRUE, pattern='^acqu2s')[1]
+  if (is.na(acqu2s))
+   acqu2s <- list.files(inDir, full.names=TRUE, pattern='^acqu2$')[1]
+  if (is.na(acqu2s)) files <- acqus else files <- c(acqus, acqu2s)
   files <- acqus
 	  
   ## Search acquisition files for designated parameters
@@ -119,8 +119,8 @@ parseAcqus <- function(inDir, params){
                                                          '<'))[2], '>'))
     }
   }
-  #if (!is.na(acqu2s))
-  #  rownames(acquPar) <- c('w2', 'w1')
+  if (!is.na(acqu2s))
+   rownames(acquPar) <- c('w2', 'w1')
   return(acquPar)
 }
 
@@ -147,13 +147,13 @@ parseProcs <- function(inDir, params){
                ' in:\n"', inDir, '".', sep='')
   return()
 }
-  #proc2s <- list.files(inDir, full.names=TRUE, pattern='^proc2s$')[1]
-  #if (is.na(proc2s))
-  #  proc2s <- list.files(inDir, full.names=TRUE, pattern='^proc2$')[1]
-  #if (is.na(proc2s))
+  proc2s <- list.files(inDir, full.names=TRUE, pattern='^proc2s$')[1]
+  if (is.na(proc2s))
+   proc2s <- list.files(inDir, full.names=TRUE, pattern='^proc2$')[1]
+  if (is.na(proc2s))
     files <- procs
-  #else
-  #  files <- c(procs, proc2s)
+  else
+   files <- c(procs, proc2s)
   
   ## Search processing files for designated parameters
   pars <- NULL
@@ -184,8 +184,8 @@ parseProcs <- function(inDir, params){
   pars <- data.frame(pars, stringsAsFactors=FALSE)
   if (!is.null(pars$BYTORDP))
     pars$BYTORDP <- ifelse(as.numeric(pars$BYTORDP), 'big', 'little')
-  #if (!is.na(proc2s))
-  #  rownames(pars) <- c('w2', 'w1')
+  if (!is.na(proc2s))
+   rownames(pars) <- c('w2', 'w1')
   pars$SW=as.numeric(pars$SW_p)/as.numeric(pars$SF)
   pars=pars[3:8]
   return(pars)

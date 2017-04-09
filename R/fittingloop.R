@@ -189,13 +189,14 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       } else if (errorprov > worsterror) {
         worsterror = errorprov
       }
+      if (error1 < error2) {
+        error2 = error1
+        signals_parameters = paramprov
+      }
     }
 
     #If half_band_width and j-coup change improves fitting
-    if (error1 < error2) {
-      error2 = error1
-      signals_parameters = paramprov
-    }
+
 
     iterrep = iterrep + 1
 
