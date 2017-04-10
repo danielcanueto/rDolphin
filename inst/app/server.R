@@ -697,7 +697,6 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch(output$plot_p_value_2 <- renderPlotly({
     if(all(is.na(reactiveprogramdata$finaloutput$Area))) return()
     tryCatch({type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
-      p
     }, error = function(e) {
       print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
       return(NULL)
