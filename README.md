@@ -2,7 +2,7 @@
 
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages(c("devtools","htmltools,"shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","csvy","data.table","haven","openxlsx","readODS","readxl","urltools","fit.models","rrcov","RJSONIO","DEoptimR"))`               (these are dependencies from packages called by Dolphin not correctly installed by install_github) 
+1. `install.packages(c("devtools","htmltools","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","csvy","data.table","haven","openxlsx","readODS","readxl","urltools","fit.models","rrcov","RJSONIO","DEoptimR"))`               (these are dependencies from packages called by Dolphin not correctly installed by install_github) 
 2. `library(devtools)`           (loads package devtools to use the install_github function)
 3. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             (installs D3TableFilter) 
 4. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            (installs MassSpecWavelet) 
