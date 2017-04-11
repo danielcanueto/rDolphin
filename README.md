@@ -9,7 +9,7 @@
 5. `devtools::install_github("danielcanueto/Dolphin")`           (installs Dolphin)
 6. `library(Dolphin)`          (loads Dolphin)
 
-## If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/Dolphin")` again.
+If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/Dolphin")` again.
 
 
 A vignette is available for the use of functions outside the GUI. `Dolphin_GUI()` opens the GUI on the browser.
