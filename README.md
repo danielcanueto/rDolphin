@@ -1,5 +1,9 @@
 # Dolphin
 
 ## R code to install the package:
-1. `devtools::install_github("danielcanueto/Dolphin")` (install devtools before, if necessary)
-2. `library(Dolphin)`
+
+devtools::install_github("ThomasSiegmund/D3TableFilter")
+1. `install.packages("devtools")
+2. `devtools::install_github("ThomasSiegmund/D3TableFilter")
+3. `devtools::install_github("danielcanueto/Dolphin")`
+4. `library(Dolphin)`
