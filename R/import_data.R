@@ -58,7 +58,8 @@ import_data = function(parameters_path) {
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
 #Creation of repository adapted to biofluid
-  repository=data.frame(fread(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))    biofluid_column=which(colnames(repository)==biofluid)
+  repository=data.frame(fread(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))
+  biofluid_column=which(colnames(repository)==biofluid)
   repository=repository[!is.na(repository[,biofluid_column]),]
   repository=repository[repository[,biofluid_column]>0,]
   repository=repository[sort(repository[,biofluid_column],decreasing = T,index.return=T)$ix,c(1:3,5:7,biofluid_column)]
