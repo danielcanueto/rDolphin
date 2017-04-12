@@ -26,13 +26,13 @@ shinyUI(fluidPage(
     tabPanel("Data Upload and Processing",
       sidebarLayout(
         sidebarPanel(
-          fileInput("file1", "Load the parameters file",
+          fileInput("file1", "Load a file of parameters of the dataset to profile.",
             accept = c("text/csv")
           ),
-          fileInput("file2", "Reanudate a saved session",
+          fileInput("file2", "Reanudate a saved profiling session.",
             accept = c("text/RData")),
-          shinySaveButton("save", "Save session", "Save session as...", filetype=list(RData="RData")),
-          shinyDirButton('folder', 'Save quantification plots', 'Please select a folder', FALSE)
+          shinySaveButton("save", "Save a profiling session.", "Save session as...", filetype=list(RData="RData")),
+          shinyDirButton('folder', 'Save quantification plots.', 'Please select a folder', FALSE)
           # ,
           # fileInput("file3", "Combine data of other sessions",
           #   accept = c("text/RData"))
@@ -44,7 +44,7 @@ shinyUI(fluidPage(
           div(style="display:inline-block",uiOutput('varselect')),
           div(style="display:inline-block",uiOutput('align_button')),
           # div(style="display:inline-block",uiOutput('peak_analysis')),
-          fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in the spectrum model and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given by the user. If you find other signals interesting to fit you can add them in the 'Profiles' tab."))),
+          fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in the spectrum model and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given. If you find other signals interesting to fit you can add them in the 'Profiles' tab."))),
           plotlyOutput("autorun_plot"),
           div(dataTableOutput("sp"), style = "font-size:80%")
           # div(dataTableOutput("indicators"), style = "font-size:80%")
@@ -54,16 +54,15 @@ shinyUI(fluidPage(
 
     #Second tab
     tabPanel("Individual Quantification",
-      fluidRow(column(width = 12, h4("Here you can change the quantifications and save them or remove them if they can't be well quantified. You can also save the edited profile of the ROI"))),
+      fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary.))),
       sidebarLayout(
 
         sidebarPanel(
 
           actionButton("save_results", label = "Save quantification"),
-          actionButton("save_profile", label = "Save profile"),
+          actionButton("save_profile", label = "Save ROI profile"),
           actionButton("autorun_signal", label = "ROI autorun"),
           actionButton("remove_q", label = "Remove quantification"),
-
           actionButton("action", label = "Check quantification"),
           fluidRow(column(width = 12, h4("Select ROI"))),
           selectInput("select",label=NULL,choices=""),
@@ -75,22 +74,16 @@ shinyUI(fluidPage(
 
         mainPanel(
           plotlyOutput("plot",height = "250px"),
+		  fluidRow(column(width = 12, h4("Here you have some indicators of the quantification."))),
           div(d3tfOutput('qualitypar',width = "100%", height = "auto"), style = "font-size:80%"),
-
           fluidRow(column(width = 12, h4("You can edit the ROI Profile and quantify it"))),
-
           div(d3tfOutput('ROIdata',width = "100%", height = "auto"), style = "font-size:80%"),
-          fluidRow(column(width = 12, h4("Here you can see the signals in the HMDB Repository located at the same zone of the spectrum, selected by biofluid"))),
-
+          fluidRow(column(width = 12, h4("Here you can see the signals in the HMDB Repository located at the same zone of the spectrum, selected by biofluid."))),
           div(dataTableOutput("repository"), style = "font-size:80%"),
-
           fluidRow(column(width = 12, h4("You can directly edit the signals parameters if you are not satisfied with the calculated parameters."))),
           actionButton("direct_edition", label = "Direct edition"),
-
           div(d3tfOutput('directedition',width = "100%", height = "auto"), style = "font-size:80%"),
-
-
-          fluidRow(column(width = 12, h4("If you have selected to upload a 2D file, you can watch it here"))),
+          fluidRow(column(width = 12, h4("If you have selected to upload a 2D file, you can watch it here."))),
           div(style="display:inline-block",uiOutput('jres_plot'))
 
         )
@@ -99,7 +92,7 @@ shinyUI(fluidPage(
 
     #Third tab
     tabPanel("Quantification Validation",
-      fluidRow(column(width = 12, h4("Here you some indicators of quality for every quantification. Press one cell to analyze the quantification."))),
+      fluidRow(column(width = 12, h4("Here you have some indicators of quality for every quantification. Press one cell to analyze the quantification."))),
       selectInput("select_validation",label=NULL,choices=c('Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Outliers'=5,'Relative Intensity'=6),selected=NULL),
       div(dataTableOutput("fit_selection"), style = "font-size:80%")
     ),
@@ -107,28 +100,28 @@ shinyUI(fluidPage(
     #Fourth tab
     tabPanel("ROI Profiles",
       actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
-      fluidRow(column(width = 12, h4("Here you have the ROI profiles")),
+      fluidRow(column(width = 12, h4("Here you have the current ROI profiles to add and edit ROIs to optimize the profiling.")),
         div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
       )),
 
     #Fifth tab
     tabPanel("Uni and multivariate analysis",
-      fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis"))),
+      fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
       plotlyOutput(outputId = "plot_p_value_2"),
       fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
       plotlyOutput(outputId = "pcascores"))
 
     #Sixth tab
     ,tabPanel("STOCSY and dendrogram heatmaps",
-      fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals "))),
+      fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals."))),
       numericInput("left_ppm", "Left edge of region", NA),  numericInput("right_ppm", "Right edge of region", NA),
       selectInput("correlation_method",label=NULL,choices=c('Pearson'='pearson','Spearman'='spearman'),selected='pearson'),
       selectInput("stocsy",label="Select a possibility",choices=c('Exemplars'=1,'Run STOCSY'=2),selected=1),
       plotlyOutput(outputId = "stocsy_plot"),
 
-      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals "))),
+      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapareadata"),
-      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical shift, so you can analyze relationships between spectra and between signals"))),
+      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical shift, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapshiftdata"))
   )))
 

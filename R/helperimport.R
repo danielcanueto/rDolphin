@@ -1,7 +1,7 @@
-#' Helper function to import data
+#' Helper function to import data in GUI. Not to be used in console.
 #'
-#' @param datapath Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)
-#' @param dummy ROIs data
+#' @param datapath
+#' @param dummy 
 #'
 #' @return dummy
 #' @export helperimport
@@ -40,7 +40,7 @@
 
     #Subsetting of ROIs is prepared
     #Names of ROIS and cluster and median spectra are prepared
-	roi_variables=tryCatch({roifunc(dummy$imported_data$ROI_data,dummy$imported_data$ROI_separator,dummy$imported_data$Metadata,dummy$imported_data$Experiments)
+	roi_variables=tryCatch({roifunc(dummy$imported_data$ROI_data,dummy$imported_data$Metadata,dummy$imported_data$Experiments)
       }, error = function(e) {
 	print('Generation of ROI data not possible.')
 	return(dummy)

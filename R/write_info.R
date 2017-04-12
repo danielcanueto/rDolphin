@@ -4,7 +4,7 @@
 #'
 #' @param export_path Export path where the RData and the associated data is stored.
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
-#' @param ROI_data ROI data.
+#' @param ROI_data ROIs data.
 #'
 #' @return RData with session and 'associated_data' folder with CSVs with quantification and quality information of fitting of signals.
 #' @export write_info
@@ -12,7 +12,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
+#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
 #' write_info('output_info',quantification_variables$finaloutput,imported_data$ROI_data)
 
 write_info = function(export_path, finaloutput,ROI_data) {

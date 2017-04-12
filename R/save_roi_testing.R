@@ -4,7 +4,7 @@
 #' @param provisional_data List with elements to save.
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
-#' @param imported_data Imported_data.
+#' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
 #' @return List with updated finaloutput and useful_data variables.
 #' @export save_roi_testing

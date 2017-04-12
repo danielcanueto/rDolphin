@@ -4,7 +4,7 @@
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param data Data to be used to get the analysis plot
 #' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')
-#' @param ROI_data ROI data.
+#' @param ROI_data ROIs data.
 #'
 #' @return Analysis plot
 #' @export type_analysis_plot
@@ -16,7 +16,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
+#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
 #' type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
 
 

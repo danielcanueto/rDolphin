@@ -5,8 +5,6 @@
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
-#' @param ROI_separator ROI separator.
-
 #'
 #' @return List with updated finaloutput and useful_data variables.
 #' @export autorun
@@ -15,14 +13,18 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data,imported_data$ROI_separator)
+#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
 
 
-autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator) {
+autorun = function(imported_data, finaloutput,useful_data,ROI_data) {
 
   print('Be patient. Gonna take a while. You should be writing, meanwhile.')
 
   #Splitting of ROI data into individual ROIs to be quantified
+	dummy = which(is.na(ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(ROI_data)[1]+1
+    lal=which(duplicated(ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
 
   baselinedataset=baseline.rollingBall(imported_data$dataset,5,5)$baseline
 
@@ -36,7 +38,6 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
     if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
     Xdata = imported_data$ppm[ROI_buckets]
     fitting_type = as.character(ROI_profile[1, 3])
-
 	signals_to_quantify = which(ROI_profile[, 5] >= 1)
 	signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])[signals_to_quantify]
 
@@ -82,7 +83,6 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
         program_parameters$clean_fit = ifelse(fitting_type == "Clean Fitting", "Y",
           "N")
 
-
         #Adaptation of the info of the parameters into a single matrix and preparation (if necessary) of the background signals that will conform the baseline
         FeaturesMatrix = fitting_prep(Xdata,
           Ydata,
@@ -94,66 +94,38 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
           Xdata,
           Ydata,
           program_parameters)
-
         signals_parameters=dummy$signals_parameters
 
-                #Fitting of the signals
-        multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
-        roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
-        fitted_signals = signal_fitting(signals_parameters,
-          Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
-               dim(signals_parameters) = c(5, length(signals_parameters)/5)
-        rownames(signals_parameters) = c(
-          'intensity',
-          'shift',
-          'half_band_width',
-          'gaussian',
-          'J_coupling'
-        )
-        signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
-
-        #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
-        dummy = output_generator(
-          signals_to_quantify,
-          fitted_signals,
-          Ydata,
-          Xdata,
-          signals_parameters,multiplicities
-        )
-        output_data=dummy$output_data
-        error1=ifelse(is.nan(dummy$error1),3000,dummy$error1)
-
-        #If any of the qunatificaitons has more than 5% fitting error, try again the deconvolution
-        if (any(output_data$fitting_error>0.05)==T) {
-        dummy = fittingloop(FeaturesMatrix,
-          Xdata,
-          Ydata,
-          program_parameters)
-
-        signals_parameters=dummy$signals_parameters
         #Fitting of the signals
         multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         fitted_signals = signal_fitting(signals_parameters,
           Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
-        dim(signals_parameters) = c(5, length(signals_parameters)/5)
-        rownames(signals_parameters) = c(
-          'intensity',
-          'shift',
-          'half_band_width',
-          'gaussian',
-          'J_coupling'
-        )
+               dim(signals_parameters) = c(5, length(signals_parameters)/5)
+        rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling')
         signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
 
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
-        dummy = output_generator(
-          signals_to_quantify,
-          fitted_signals,
-          Ydata,
-          Xdata,
-          signals_parameters,multiplicities
-        )
+        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
+        output_data=dummy$output_data
+        error1=ifelse(is.nan(dummy$error1),3000,dummy$error1)
+
+        #If any of the qunatificaitons has more than 5% fitting error, try again the deconvolution
+        if (any(output_data$fitting_error>0.05)==T) {
+        dummy = fittingloop(FeaturesMatrix,Xdata,Ydata,program_parameters)
+        signals_parameters=dummy$signals_parameters
+        
+		#Fitting of the signals
+        multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
+        roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
+        fitted_signals = signal_fitting(signals_parameters,
+          Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
+        dim(signals_parameters) = c(5, length(signals_parameters)/5)
+		signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
+        rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling','multiplicities','roof effect')
+
+        #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
+        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
 
         #If new deconvolution has improved previous one
         if (dummy$error1<error1) {
@@ -172,21 +144,12 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
         )
 
         #Generation of the figure data
-        plot_data = rbind(
-          output_data$signals_sum,
-          output_data$baseline_sum,
-          output_data$fitted_sum,
-          output_data$signals
+        plot_data = rbind(output_data$signals_sum,output_data$baseline_sum,output_data$fitted_sum,output_data$signals
         )
-        rownames(plot_data) = c("signals_sum",
-          "baseline_sum",
-          "fitted_sum",
-          as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
+        rownames(plot_data) = c("signals_sum","baseline_sum","fitted_sum",as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
         #Generation of useful variables specific of every quantification
-        # program_parameters$signals_to_quantify=signals_to_quantify
-        #   program_parameters$signals_to_quantify=NULL
-          for (i in seq_along(signals_codes)) {
+        for (i in seq_along(signals_codes)) {
           useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
           useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
           useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
@@ -197,19 +160,10 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data,ROI_separator
           useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
           useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
           }
-
-
-      }
+     }
 
       #Generation of output variables specific of every quantification
-
-      finaloutput = save_output(
-        spectrum_index,
-        signals_codes,
-        results_to_save,
-        imported_data$buck_step,
-        finaloutput
-      )
+      finaloutput = save_output(spectrum_index,signals_codes,results_to_save,imported_data$buck_step,finaloutput)
 
       setTxtProgressBar(pb, spectrum_index)
       }

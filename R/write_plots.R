@@ -3,7 +3,7 @@
 #' @param path Path where plots are stored inside a created 'plots' folder
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.#'
+#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @return Plots in pdf files
 #' @export write_plots
 #' @import gridExtra
@@ -13,7 +13,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
+#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
 #' write_plots('quantification_plots',quantification_variables$finaloutput,imported_data,quantification_variables$useful_data)
 
 

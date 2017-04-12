@@ -48,7 +48,7 @@ return(JTP)
 
 JTPcalibrateToTSP <- function(realSpectra, ppm){
 JTP=list()
-# Locate the target region (n ppm either side of 5.233)
+# Locate the target region 
 regionMask = (ppm < 0.1) & (ppm > -0.1)
 # nosaltres tenim la part positiva de l'espectre a l'esquerra
 maskOffset = which(ppm > 0.1)

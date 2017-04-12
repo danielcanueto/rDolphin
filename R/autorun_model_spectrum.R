@@ -18,7 +18,12 @@ autorun_model_spectrum = function(imported_data) {
 
   print('Preparing quantifications in a model spectrum with the current ROI Profiles. A figure with the performed quantifications will be shown, as well as a chemometric model with the metadata given. Then you can go to change the parameters of the ROI Profiles')
 
-
+#Splitting of ROI data into individual ROIs to be quantified
+	dummy = which(is.na(imported_data$ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
+    lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
+  
   baselinedataset=baseline.rollingBall(imported_data$dataset,5,5)$baseline
   # indicators=matrix(NA,nrow(imported_data$ROI_data),2,dimnames=list(imported_data$signals_names)))
   total_signals_parameters=matrix(NA,nrow(imported_data$ROI_data),9,dimnames=list(imported_data$signals_names))
@@ -31,14 +36,14 @@ autorun_model_spectrum = function(imported_data) {
       ,na.rm=T))))
   plotdata = data.frame(Xdata=as.numeric(imported_data$ppm),Ydata = as.numeric(imported_data$dataset[spectrum_index,]))
   fitted_data=rep(0,length(imported_data$ppm))
-  pb   <- txtProgressBar(1, nrow(imported_data$ROI_separator), style=3)
+  pb   <- txtProgressBar(1, nrow(ROI_separator), style=3)
 
-  for (ROI_index in seq_along(imported_data$ROI_separator[, 1])) {
+  for (ROI_index in seq_along(ROI_separator[, 1])) {
     #Loading of every ROI parameters
-    ROI_profile = imported_data$ROI_data[imported_data$ROI_separator[ROI_index, 1]:imported_data$ROI_separator[ROI_index, 2],]
+    ROI_profile = imported_data$ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
     signals_to_quantify = which(ROI_profile[, 5] >= 1)
-    signals_codes = (imported_data$ROI_separator[ROI_index, 1]:imported_data$ROI_separator[ROI_index, 2])[signals_to_quantify]
+    signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])[signals_to_quantify]
 
     #Preparation of necessary parameters
     program_parameters=imported_data$program_parameters

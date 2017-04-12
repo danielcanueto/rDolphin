@@ -2,14 +2,17 @@
 #'
 #' @param dataset Dataset
 #' @param ppm ppm
-#' @param limits Limits
-#' @param method Correlation method.
-#' @param ROI_separator ROI separator.
-
+#' @param limits Left and right edges of the region to correalte with the rest of spectrum.
+#' @param method Correlation method ('pearson','spearman').
 #'
-#' @return STOCSY plot
+#' @return STOCSY interactive plot
 #' @export STOCSY
 #' @import plotly
+#' @examples
+#' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+#' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
+#' STOCSY(imported_data$dataset,imported_data$ppm,c(1,0.995),'spearman')
+
 
 
 STOCSY= function(dataset,ppm,limits,method) {

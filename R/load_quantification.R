@@ -4,7 +4,7 @@
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param info List with 'row' and 'column' indicating spectrum and signal to load.  
-#' @param ROI_separator Delimiter of ROIs in ROIdata
+#' @param ROI_data ROIs data
 #'
 #' @return Loaded plot, signals parameters and quality of fitting parameters of quantifications
 #' @export load_quantification
@@ -15,11 +15,11 @@
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
-#' loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$finaloutput,list(row=1,col=1),imported_data$ROI_separator)
+#' loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$finaloutput,list(row=1,col=1),imported_data$ROI_data)
 
 
 
-load_quantification=function(useful_data,imported_data,finaloutput,info,ROI_separator) {
+load_quantification=function(useful_data,imported_data,finaloutput,info,ROI_data) {
   loaded_quantification=list()
 row=info$row
 col=info$col
@@ -47,6 +47,10 @@ loaded_quantification$signpar=matrix(NA,2,7)
 colnames(loaded_quantification$signpar)=c("intensity",	"shift",	"half bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
 
 if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantification$signpar=t(useful_data[[row]][[col]]$signals_parameters)
+	dummy = which(is.na(ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(ROI_data)[1]+1
+    lal=which(duplicated(ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
 
 	ind=which(ROI_separator[,2]-col>=0)[1]
 	ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])

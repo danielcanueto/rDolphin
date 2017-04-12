@@ -1,9 +1,6 @@
-
-
-
 #' Adaptation of variables of imported data to changes applied to the ROI profiles
 #'
-#' @param imported_data Imported data
+#' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
 #' @return Changed imported data
 #' @export renew_imported_data
@@ -19,11 +16,6 @@ renew_imported_data= function(imported_data) {
 imported_data$signals_names=paste(imported_data$ROI_data[which(!is.na(imported_data$ROI_data[, 1])),4],imported_data$ROI_data[which(!is.na(imported_data$ROI_data[, 1])),5],sep='_')
   imported_data$signals_codes = seq_along(signals_names)
 
-	dummy = which(is.na(imported_data$ROI_data[, 1]))
-    if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
-    lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
-    imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
-  
   dummy=matrix(NaN,nrow(imported_data$dataset),length(imported_data$signals_names),dimnames=list(imported_data$Experiments,imported_data$signals_names))
   imported_data$finaloutput = list(Area= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
 

@@ -20,8 +20,7 @@ import_data = function(parameters_path) {
   #List of parameters to use to create the dataset
   params = list()
 
-  #Import fo parameters from the csv file
-  # TO DO: stringsasfactors=F
+  #Import of parameters from the csv file
   import_profile = read.delim(
     parameters_path,
     sep = ',',
@@ -43,49 +42,31 @@ import_data = function(parameters_path) {
   Experiments=dummy[,1]
   Experiments = as.vector(Experiments[Experiments != ''])
   Metadata=dummy[,-1,drop=F]
-  biofluid=import_profile[12, 2]
-  profile_folder_path = as.character(import_profile[6, 2])
 
-  ROI_data=try(read.csv(profile_folder_path, stringsAsFactors = F),silent=T)
-  # if (class(ROI_data)=='try-error') {
-# if  (biofluid=='Urine'){ ROI_data=read.csv('C:/Users/user/Documents/Dolphin/R/Urine_library.csv', stringsAsFactors = F) } else if (biofluid=='Blood') { ROI_data=read.csv('C:/Users/user/Documents/Dolphin/R/Blood_library.csv', stringsAsFactors = F) } else {
-  # ROI_data=read.csv('C:/Users/user/Documents/Dolphin/R/Urine_library.csv', stringsAsFactors = F)
-  # print('Loading urine library. Please prepare a library adapted to your dataset.')
-# }}
+  #Import of ROI profiles and generation of names and codes of signals 
+  ROI_data=try(read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F),silent=T) 
   signals_names=paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_')
-
   signals_codes = 1:length(signals_names)
 
-
-
-  #Preparing the structure of experiments and signals where to store the output
-  export_path = dirname(parameters_path)
+  
 #Other necessary variables
+  export_path = dirname(parameters_path)
   freq = as.numeric(as.character(import_profile[10, 2]))
-
+  biofluid=import_profile[12, 2]
   jres_path=as.character(import_profile[13, 2])
   try(source(as.character(import_profile[14, 2])),silent=T)
-
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
-
+#Creation of repository adapted to biofluid
   repository=as.data.frame(rio::import(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))
-  der=which(colnames(repository)==biofluid)
-  fa=repository[,der]
-  # repository=repository[repository[,der]>0&!is.na(repository[,der])&!is.nan(repository[,der]),]
-  repository=repository[!is.na(fa),]
-  fa=repository[,der]
-
-  repository=repository[fa>0,]
-
-  fa=repository[,der]
-
-  repository=repository[sort(fa,decreasing = T,index.return=T)$ix,c(1:3,5:7,der)]
+  biofluid_column=which(colnames(repository)==biofluid)
+  repository=repository[!is.na(repository[,biofluid_column]),]
+  repository=repository[repository[,biofluid_column]>0,]
+  repository=repository[sort(repository[,biofluid_column],decreasing = T,index.return=T)$ix,c(1:3,5:7,der)]
 
 
 
   #Kind of normalization
-  #TO DO: add PQN (but before standardize a way to find the regions to have into account)
   normalization = import_profile[7, 2]
   pqn='N'
 
@@ -115,7 +96,7 @@ import_data = function(parameters_path) {
     #No normailzation
 
   } else if (normalization == 6) {
-    #No normailzation
+    #PQN normailzation
     params$norm_AREA = 'Y'
     pqn='Y'
   }
@@ -155,23 +136,22 @@ import_data = function(parameters_path) {
   #Variables only necessary for reading dataset in csv format
   dataset_path = as.character(import_profile[2, 2])
 
+  #If data comes from csv dataset
   if (bruker_path == '' || expno == '' || processingno == '') {
     if (dataset_path != '') {
-      #Reading of dataset file (ideally with fread of data.table package, bu seems that the package is not compatible with R 3.3.1)
+      #Reading of dataset file (ideally with fread of data.table package, but seems that the package is not compatible with R 3.3.1). Maybe now it is possible.
       imported_data = list()
       dummy = rio::import(dataset_path, sep = ',',header=F,colClasses='numeric')
-      pa=dim(dummy[-1,])
-
       imported_data$dataset=as.numeric(as.matrix(dummy[-1,]))
       imported_data$dataset[is.na(imported_data$dataset)]=0
-      dim(imported_data$dataset)=pa
-      colnames(imported_data$dataset) = dummy[1,]
-      imported_data$ppm = round(as.numeric(dummy[1,]),4)
-      rownames(imported_data$dataset) = Experiments
+      dim(imported_data$dataset)=dim(dummy[-1,])
+	  imported_data$ppm = round(as.numeric(dummy[1,]),4)
       if (imported_data$ppm[1]<imported_data$ppm[2]) {
         imported_data$dataset=t(apply(imported_data$dataset,1,rev))
         imported_data$ppm=rev(imported_data$ppm)
       }
+	  
+	#TODO: revise alignment and normalization when coming data from csv.
       if (alignment == 1) {
         #Glucose
         limi=c(5.5,5.1)
@@ -183,7 +163,6 @@ import_data = function(parameters_path) {
         limi=c(8.48,8.42)
       }
       if (alignment!=4&&nrow(imported_data$dataset)>1) {
-        # alignment_ind=which.min(abs(imported_data$ppm-limi[1])):which.min(abs(imported_data$ppm-limi[2]))
       spectra_lag=rep(NA,nrow(imported_data$dataset))
       for (i in 1:dim(imported_data$dataset)[1]) {
         d <-
@@ -204,7 +183,7 @@ import_data = function(parameters_path) {
           imported_data$dataset[i,]=imported_data$dataset[i,]*mean(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))],1,max))/sum(imported_data$dataset[i,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))])
       }
 
-
+	#Calculation of buck_step, if not given by user.
       params$buck_step = ifelse(
         as.character(import_profile[11, 2]) == '',
         abs(imported_data$ppm[1] - imported_data$ppm[length(imported_data$ppm)]) /
@@ -216,6 +195,7 @@ import_data = function(parameters_path) {
       return()
     }
   } else {
+  
     #Reading of Bruker files
     params$dir = bruker_path
     params$expno = expno
@@ -227,15 +207,16 @@ import_data = function(parameters_path) {
 
   imported_data$dataset[is.na(imported_data$dataset)]=min(abs(imported_data$dataset)[abs(imported_data$dataset)>0])
 
-
-  #snr=apply(imported_data$dataset,1,function(x)stats::mad(x,na.rm=T))
-
+  #Region suppression
     if (params$disol_suppression == 'Y') {
       ind=c()
       for (i in seq(nrow(params$disol_suppression_ppm))) ind=c(ind,which.min(abs(imported_data$ppm-params$disol_suppression_ppm[i,1])):which.min(abs(imported_data$ppm-params$disol_suppression_ppm[i,2])))
       imported_data$dataset=imported_data$dataset[,-ind,drop=F]
       imported_data$ppm=imported_data$ppm[-ind]
     }
+ 
+# Possibility of removing zones without interesting information. Added in the future.
+ #snr=apply(imported_data$dataset,1,function(x)stats::mad(x,na.rm=T))
 
   # ind=seq(1,ncol(imported_data$dataset),round(ncol(imported_data$dataset)/(0.1/params$buck_step)))
   # flan=rep(NA,length(ind))
@@ -254,6 +235,9 @@ import_data = function(parameters_path) {
   # dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)]
   #imported_data$dataset=imported_data$dataset[,dfj,drop=F]
   #imported_data$ppm=imported_data$ppm[dfj]
+  
+  #If pqn is desired
+  #TODO: specify which are the control samples or if there are no control samples.
   if (pqn=='Y'&&nrow(imported_data$dataset)>1) {
     treated=t(imported_data$dataset[,which(apply(imported_data$dataset,2,median)>median(apply(imported_data$dataset,2,median))),drop=F])
     reference <- apply(treated,1,function(x)median(x,na.rm=T))
@@ -262,20 +246,19 @@ import_data = function(parameters_path) {
     imported_data$dataset <- imported_data$dataset/quotient.median
   }
 
+  #Adaptation of data to magnitudes similar to 1. To be removed in the future.
   imported_data$dataset=imported_data$dataset/quantile(imported_data$dataset,0.9,na.rm=T)
-
-  imported_data$dataset=  imported_data$dataset[,which(apply(imported_data$dataset,2,function(x) all(is.na(x)))==F),drop=F]
+  imported_data$dataset=imported_data$dataset[,which(apply(imported_data$dataset,2,function(x) all(is.na(x)))==F),drop=F]
+  imported_data$dataset[is.na(imported_data$dataset)]=0
 
   imported_data$ppm=imported_data$ppm[which(!is.na(imported_data$ppm))]
-  if (imported_data$ppm[1]<imported_data$ppm[2]) {
-    imported_data$ppm=rev(imported_data$ppm)
-    imported_data$dataset=t(apply(imported_data$dataset,1,rev))
-  }
-  imported_data$dataset[is.na(imported_data$dataset)]=0
+  # if (imported_data$ppm[1]<imported_data$ppm[2]) {
+    # imported_data$ppm=rev(imported_data$ppm)
+    # imported_data$dataset=t(apply(imported_data$dataset,1,rev))
+  # }
   #Storage of parameters needed to perform the fit in a single variable to return.
 
   imported_data$buck_step = params$buck_step
-  imported_data$profile_folder_path = profile_folder_path
   imported_data$metadata_path = metadata_path
   imported_data$parameters_path = parameters_path
   imported_data$signals_names = signals_names

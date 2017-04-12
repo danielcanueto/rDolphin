@@ -4,7 +4,7 @@
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param finaloutput List with quantifications and indicators of quality of quantification.
 #' @param ind Experiment to quantify.
-#' @param ROI_profile Data frame with ROI profiles
+#' @param ROI_profile Information of signals to fit in ROI
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param interface Is the function being used with the Shiny GUI or not? By default F.
 #'
