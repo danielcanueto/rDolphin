@@ -6,7 +6,7 @@
 #'
 #' @return Imported data of experiment
 #' @export import_data
-#' @import fread
+#' @import data.table
 #'
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
