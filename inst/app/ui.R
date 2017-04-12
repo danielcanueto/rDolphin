@@ -31,8 +31,8 @@ shinyUI(fluidPage(
           ),
           fileInput("file2", "Reanudate a saved profiling session.",
             accept = c("text/RData")),
-          shinySaveButton("save", "Save a profiling session.", "Save session as...", filetype=list(RData="RData")),
-          shinyDirButton('folder', 'Save quantification plots.', 'Please select a folder', FALSE)
+          shinySaveButton("save", "Save a profiling session", "Save session as...", filetype=list(RData="RData")),
+          shinyDirButton('folder', 'Save quantification plots', 'Please select a folder', FALSE)
           # ,
           # fileInput("file3", "Combine data of other sessions",
           #   accept = c("text/RData"))
@@ -54,7 +54,7 @@ shinyUI(fluidPage(
 
     #Second tab
     tabPanel("Individual Quantification",
-      fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary.))),
+      fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary."))),
       sidebarLayout(
 
         sidebarPanel(
@@ -67,8 +67,7 @@ shinyUI(fluidPage(
           fluidRow(column(width = 12, h4("Select ROI"))),
           selectInput("select",label=NULL,choices=""),
           fluidRow(column(width = 12, h4("Select spectrum"))),
-          div(dataTableOutput('x1'), style = "font-size:80%"),
-          width=3
+          div(dataTableOutput('x1'), style = "font-size:80%")
         ),
 
 
