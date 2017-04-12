@@ -4,13 +4,13 @@
 \alias{not_automatic_quant}
 \title{Quantification of individual ROIs with selected spectra.}
 \usage{
-not_automatic_quant(imported_data, finaloutput, ind, ROI_profile, useful_data,
+not_automatic_quant(imported_data, final_output, ind, ROI_profile, useful_data,
   interface = F)
 }
 \arguments{
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{ind}{Experiment to quantify.}
 
@@ -21,7 +21,7 @@ not_automatic_quant(imported_data, finaloutput, ind, ROI_profile, useful_data,
 \item{interface}{Is the function being used with the Shiny GUI or not? By default F.}
 }
 \value{
-Output depends on if the function is being used or not in the interface. If not in the interface, list with updated finaloutput and useful_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
+Output depends on if the function is being used or not in the interface. If not in the interface, list with updated final_output and useful_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
 }
 \description{
 Quantification of individual ROIs with selected spectra.
@@ -29,5 +29,5 @@ Quantification of individual ROIs with selected spectra.
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
+resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
 }

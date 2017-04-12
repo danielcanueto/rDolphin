@@ -4,12 +4,12 @@
 \alias{write_info}
 \title{Writing of quantification and quality information of fitting of signals}
 \usage{
-write_info(export_path, finaloutput, ROI_data)
+write_info(export_path, final_output, ROI_data)
 }
 \arguments{
 \item{export_path}{Export path where the RData and the associated data is stored.}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{ROI_data}{ROI data.}
 }
@@ -22,6 +22,6 @@ Writing of quantification and quality information of fitting of signals
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
-write_info('output_info',quantification_variables$finaloutput,imported_data$ROI_data)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+write_info('output_info',quantification_variables$final_output,imported_data$ROI_data)
 }

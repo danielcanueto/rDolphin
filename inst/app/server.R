@@ -10,7 +10,7 @@ server = function(input, output,session) {
   reactivequantdata <- reactiveValues(method1=NA, method2 = NA)
   #reactivequantdata <- reactiveValues(method2=NA, method1 = NA,stop3=0)
 
-  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=F,dataset=NA,finaloutput=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),ROI_separator=NA,select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
+  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=F,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),ROI_separator=NA,select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
   
   ## FIRST TAB REACTIVE OUTPUTS
 
@@ -35,11 +35,11 @@ server = function(input, output,session) {
 	  for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=dummy[[plo[i]]]
 
 	 #Variables that can change during the use of the GUI are separated from 'imported_data'.  
-    reactiveprogramdata$finaloutput=dummy$imported_data$finaloutput
+    reactiveprogramdata$final_output=dummy$imported_data$final_output
     reactiveprogramdata$useful_data=dummy$imported_data$useful_data
     reactiveprogramdata$ROI_separator=dummy$imported_data$ROI_separator
     reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=dummy$imported_data$ROI_data
-    reactiveprogramdata$imported_data$finaloutput=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_separator=reactiveprogramdata$imported_data$ROI_data=NULL
+    reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_separator=reactiveprogramdata$imported_data$ROI_data=NULL
     
 	#When the session is prepared, the tabs and some inputs become active
 	output$sp = DT::renderDataTable(
@@ -112,7 +112,7 @@ server = function(input, output,session) {
     if (nrow(fileinfo) > 0) {
       save(savedreactivedata, file=as.character(fileinfo$datapath))
       export_path=paste(substr(as.character(fileinfo$datapath),1,(nchar(as.character(fileinfo$datapath))-6)),'_associated_data',sep='')
-      tryCatch(write_info(export_path, reactiveprogramdata$finaloutput, reactiveprogramdata$ROI_data),error= function(e) print('Not possible to overwrite open files'))
+      tryCatch(write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data),error= function(e) print('Not possible to overwrite open files'))
     }
   })
 
@@ -127,7 +127,7 @@ server = function(input, output,session) {
     return(parseDirPath(volumes, input$folder))
   })
   observe({
-    if (length(folderInput1()) > 0) tryCatch(write_plots(folderInput1(),reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$useful_data),error= function(e) print('Not possible to overwrite open files'))
+    if (length(folderInput1()) > 0) tryCatch(write_plots(folderInput1(),reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$useful_data),error= function(e) print('Not possible to overwrite open files'))
   })
 
   #Load of quantifications of previous session to combine with current session, to avoid repeating already performed quantifications. UNSTABLE!!!!
@@ -145,11 +145,11 @@ server = function(input, output,session) {
   #   ind3=which(added_data$imported_data$Experiments %in% reactiveprogramdata$imported_data$Experiments==T)
   #   ind4=which(added_data$imported_data$signals_names %in% reactiveprogramdata$imported_data$signals_names==T)
   #
-  #   for (i in 1:length(reactiveprogramdata$finaloutput)) {
-  #     reactiveprogramdata$finaloutput[[i]][ind,ind2]=added_data$finaloutput[[i]][ind3,ind4]
+  #   for (i in 1:length(reactiveprogramdata$final_output)) {
+  #     reactiveprogramdata$final_output[[i]][ind,ind2]=added_data$final_output[[i]][ind3,ind4]
   #   }
   #   for (i in 1:length(reactiveprogramdata$useful_data)) {
-  #     for (j in 1:length(reactiveprogramdata$finaloutput[[j]])) {
+  #     for (j in 1:length(reactiveprogramdata$final_output[[j]])) {
   #
   #       reactiveprogramdata$useful_data[[ind[i]]][[ind2[j]]]=added_data$useful_data[[ind3[i]]][[ind4[j]]]
   #     }}
@@ -176,8 +176,8 @@ server = function(input, output,session) {
 
    #Automatic quantification of all ROIs in all spectra
   tryCatch({observeEvent(input$autorun, {
-    quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data,reactiveprogramdata$ROI_separator)
-    reactiveprogramdata$finaloutput=quantification_variables$finaloutput
+    quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data,reactiveprogramdata$ROI_separator)
+    reactiveprogramdata$final_output=quantification_variables$final_output
     reactiveprogramdata$useful_data=quantification_variables$useful_data
     })},
     error = function(e) {
@@ -354,7 +354,7 @@ server = function(input, output,session) {
     }
 
 	#The automatic quantification
-    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)},error=function(e) {
+    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)},error=function(e) {
       print("There was a problem.")
       return(NULL)
       })
@@ -379,8 +379,8 @@ server = function(input, output,session) {
   #Quantification of all spectra in the ROI:
   tryCatch(observeEvent(input$autorun_signal, {
     is_autorun='Y'
-    dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
-    reactiveprogramdata$finaloutput=dummy$finaloutput
+    dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
+    reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
   }))
 
@@ -393,14 +393,14 @@ server = function(input, output,session) {
     } else {
       ind=as.numeric(input$select)
     }
-    reactiveprogramdata$finaloutput <- remove_quant(reactiveprogramdata$info,reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput)
+    reactiveprogramdata$final_output <- remove_quant(reactiveprogramdata$info,reactiveprogramdata$imported_data, reactiveprogramdata$final_output)
   }))
   
   tryCatch(observeEvent(input$save_results, {
     if (is.null(reactivequantdata$method1$Ydata)) {return(NULL)
 	}
-    dummy=save_roi_testing(reactivequantdata$method1,reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput,reactiveprogramdata$useful_data)
-    reactiveprogramdata$finaloutput=dummy$finaloutput
+    dummy=save_roi_testing(reactivequantdata$method1,reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data)
+    reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
   }))
   
@@ -494,7 +494,7 @@ server = function(input, output,session) {
 
   #Quantification after direct edition of paramters
   tryCatch(observeEvent(input$direct_edition, {
-    reactivequantdata$method1=reactivequantdata$method2=signals_int(reactiveprogramdata$imported_data, reactiveprogramdata$finaloutput,reactiveprogramdata$ind,reactiveROItestingdata$signpar,reactiveROItestingdata$ROIpar)
+    reactivequantdata$method1=reactivequantdata$method2=signals_int(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$ind,reactiveROItestingdata$signpar,reactiveROItestingdata$ROIpar)
     reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method2$results_to_save$Area,reactivequantdata$method2$results_to_save$fitting_error,reactivequantdata$method2$results_to_save$signal_area_ratio)
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method2$plot_data)[-c(1, 2, 3)]
@@ -519,7 +519,7 @@ server = function(input, output,session) {
   #Creation of table to check quantifications with the parameter chosen by the user
   tryCatch(observe({
     if (reactiveprogramdata$beginning==F) return()
-    validation_data=validation(reactiveprogramdata$finaloutput,input$select_validation,reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata)
+    validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata)
     output$fit_selection = DT::renderDataTable({ datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
     })
   }))
@@ -541,7 +541,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
     # if (length(reactiveprogramdata$info$row)!=1) return(NULL)
 
-    dummy=load_quantification(reactiveprogramdata$useful_data,reactiveprogramdata$imported_data,reactiveprogramdata$finaloutput,reactiveprogramdata$info,reactiveprogramdata$ROI_data)
+    dummy=load_quantification(reactiveprogramdata$useful_data,reactiveprogramdata$imported_data,reactiveprogramdata$final_output,reactiveprogramdata$info,reactiveprogramdata$ROI_data)
 
       reactiveprogramdata$plot=dummy$plot
       reactiveROItestingdata$signpar=dummy$signpar
@@ -565,28 +565,28 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
   tryCatch(observeEvent(input$save_changes, {
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=T)$ix,]
-    new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$finaloutput$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
+    new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
     new_signals_codes=new_signals_names=rep(NA,nrow(reactiveprogramdata$ROI_data_check))
     new_useful_data=reactiveprogramdata$useful_data
     for (i in 1:length(new_useful_data)) new_useful_data[[i]]=vector("list", nrow(reactiveprogramdata$ROI_data_check))
     for (i in 1:nrow(reactiveprogramdata$ROI_data_check)) {
       ind=which(reactiveprogramdata$ROI_data[,4]==reactiveprogramdata$ROI_data_check[i,4]&reactiveprogramdata$ROI_data[,5]==reactiveprogramdata$ROI_data_check[i,5])
       if (length(ind)>0) {
-        new_fitting_error[,i]=reactiveprogramdata$finaloutput$fitting_error[,ind]
-        new_intensity[,i]=reactiveprogramdata$finaloutput$intensity[,ind]
-        new_signal_area_ratio[,i]=reactiveprogramdata$finaloutput$signal_area_ratio[,ind]
-        new_shift[,i]=reactiveprogramdata$finaloutput$shift[,ind]
-        new_width[,i]=reactiveprogramdata$finaloutput$half_band_width[,ind]
-        new_Area[,i]=reactiveprogramdata$finaloutput$Area[,ind]
+        new_fitting_error[,i]=reactiveprogramdata$final_output$fitting_error[,ind]
+        new_intensity[,i]=reactiveprogramdata$final_output$intensity[,ind]
+        new_signal_area_ratio[,i]=reactiveprogramdata$final_output$signal_area_ratio[,ind]
+        new_shift[,i]=reactiveprogramdata$final_output$shift[,ind]
+        new_width[,i]=reactiveprogramdata$final_output$half_band_width[,ind]
+        new_Area[,i]=reactiveprogramdata$final_output$Area[,ind]
         for (j in 1:length(new_useful_data)) new_useful_data[[j]][[i]]=reactiveprogramdata$useful_data[[j]][[ind]]
       }
     }
-    reactiveprogramdata$finaloutput$fitting_error=new_fitting_error
-    reactiveprogramdata$finaloutput$intensity=new_intensity
-    reactiveprogramdata$finaloutput$signal_area_ratio=new_signal_area_ratio
-    reactiveprogramdata$finaloutput$shift=new_shift
-    reactiveprogramdata$finaloutput$half_band_width=new_width
-    reactiveprogramdata$finaloutput$Area=new_Area
+    reactiveprogramdata$final_output$fitting_error=new_fitting_error
+    reactiveprogramdata$final_output$intensity=new_intensity
+    reactiveprogramdata$final_output$signal_area_ratio=new_signal_area_ratio
+    reactiveprogramdata$final_output$shift=new_shift
+    reactiveprogramdata$final_output$half_band_width=new_width
+    reactiveprogramdata$final_output$Area=new_Area
     reactiveprogramdata$useful_data=new_useful_data
     reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check
     reactiveprogramdata$imported_data$signals_codes=seq(nrow(reactiveprogramdata$ROI_data))
@@ -665,8 +665,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
   #Boxplot plot
   tryCatch(output$plot_p_value_2 <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$finaloutput$Area))) return()
-    tryCatch({type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
+    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
     }, error = function(e) {
       print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
       return(NULL)
@@ -674,9 +674,9 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
   #PCA plot
   tryCatch(output$pcascores <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$finaloutput$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)
@@ -705,9 +705,9 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
   #Dengrogran heatmaps for quantification and chemical shift
   tryCatch(output$dendheatmapareadata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$finaloutput$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$finaloutput$Area,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)
@@ -715,9 +715,9 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
 
   tryCatch(output$dendheatmapshiftdata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$finaloutput$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$finaloutput$shift,reactiveprogramdata$finaloutput,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)

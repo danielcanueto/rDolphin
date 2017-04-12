@@ -4,12 +4,12 @@
 \alias{autorun}
 \title{Automatic quantification of signals for all experiments using the information located in the ROI patterns file.}
 \usage{
-autorun(imported_data, finaloutput, useful_data, ROI_data, ROI_separator)
+autorun(imported_data, final_output, useful_data, ROI_data, ROI_separator)
 }
 \arguments{
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
 
@@ -18,7 +18,7 @@ autorun(imported_data, finaloutput, useful_data, ROI_data, ROI_separator)
 \item{ROI_separator}{ROI separator.}
 }
 \value{
-List with updated finaloutput and useful_data variables.
+List with updated final_output and useful_data variables.
 }
 \description{
 Automatic quantification of signals for all experiments using the information located in the ROI patterns file.
@@ -26,5 +26,5 @@ Automatic quantification of signals for all experiments using the information lo
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data,imported_data$ROI_separator)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data,imported_data$ROI_separator)
 }

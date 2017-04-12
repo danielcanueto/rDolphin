@@ -4,13 +4,13 @@
 \alias{type_analysis_plot}
 \title{Type of analysis plot}
 \usage{
-type_analysis_plot(data, finaloutput, imported_data, ROI_data,
+type_analysis_plot(data, final_output, imported_data, ROI_data,
   type = c("boxplot", "pca", "dendrogram_heatmap"))
 }
 \arguments{
 \item{data}{Data to be used to get the analysis plot}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
@@ -27,6 +27,6 @@ Type of analysis plot
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
-type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,'boxplot')
 }

@@ -276,7 +276,7 @@ import_data = function(parameters_path) {
 
   #creation of list with the different final outputs
   dummy=matrix(NaN,nrow(imported_data$dataset),length(imported_data$signals_names),dimnames=list(imported_data$Experiments,imported_data$signals_names))
-  imported_data$finaloutput = list(Area= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
+  imported_data$final_output = list(Area= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
 
   #creation of list of necessary parameters to load quantifications and evaluate quality of them
   imported_data$useful_data=vector('list',length(imported_data$Experiments))

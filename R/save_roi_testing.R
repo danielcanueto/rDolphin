@@ -2,14 +2,14 @@
 #' Saving of results in interface in individual quantification
 #'
 #' @param provisional_data List with elements to save.
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
-#' @return List with updated finaloutput and useful_data variables.
+#' @return List with updated final_output and useful_data variables.
 #' @export save_roi_testing
 
-save_roi_testing=function(provisional_data,imported_data,finaloutput,useful_data) {
+save_roi_testing=function(provisional_data,imported_data,final_output,useful_data) {
 
 
 if (provisional_data$fitting_type == "Clean Sum" ||
@@ -45,22 +45,22 @@ if (provisional_data$fitting_type == "Clean Sum" ||
 
 
   }
-  finaloutput = save_output(
+  final_output = save_output(
     provisional_data$spectrum_index,
     provisional_data$signals_codes,
     provisional_data$results_to_save,
     imported_data$buck_step,
-    finaloutput)
+    final_output)
 
 }
 
 
 
-  # tryCatch({write_info(imported_data$export_path, finaloutput)}, error = function(err) {
+  # tryCatch({write_info(imported_data$export_path, final_output)}, error = function(err) {
   #   print('Not possible to overwrite a csv file open with Microsoft Excel')
   # })
 
-    dummy=list(finaloutput=finaloutput,useful_data=useful_data)
+    dummy=list(final_output=final_output,useful_data=useful_data)
     return(dummy)
 
   }

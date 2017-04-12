@@ -1,4 +1,4 @@
-signals_int = function(imported_data, finaloutput,spectrum_index,signals_introduce,ROI_profile) {
+signals_int = function(imported_data, final_output,spectrum_index,signals_introduce,ROI_profile) {
   
   c=NULL
     #Preparation of necessary variables and folders to store figures and information of the fitting
@@ -115,12 +115,12 @@ fitting_type=ROI_profile[1,3]
       }
       
       
-    # finaloutput = save_output(
+    # final_output = save_output(
     #   spectrum_index,
     #   signals_codes,
     #   results_to_save,
     #   imported_data$buck_step,
-    #   finaloutput)
+    #   final_output)
     
     provisional_data=list()
     provisional_data$signals_parameters=signals_parameters
@@ -129,7 +129,7 @@ fitting_type=ROI_profile[1,3]
     # provisional_data$p2=p2
     provisional_data$Xdata=Xdata
     provisional_data$Ydata=Ydata
-    # provisional_data$finaloutput=finaloutput
+    # provisional_data$final_output=final_output
     provisional_data$results_to_save=results_to_save
     provisional_data$error1=error1
     # provisional_data$FeaturesMatrix=FeaturesMatrix
@@ -141,7 +141,7 @@ fitting_type=ROI_profile[1,3]
     
     provisional_data$fitting_type=fitting_type
     provisional_data$ROI_profile=ROI_profile
-    provisional_data$finaloutput=finaloutput
+    provisional_data$final_output=final_output
     provisional_data$plot_data=plot_data[,ROI_buckets]
     
 

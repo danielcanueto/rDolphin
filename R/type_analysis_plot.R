@@ -1,6 +1,6 @@
 #' Type of analysis plot
 #'
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param data Data to be used to get the analysis plot
 #' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')
@@ -16,18 +16,18 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
-#' type_analysis_plot(quantification_variables$finaloutput$Area,quantification_variables$finaloutput,imported_data,'boxplot')
+#' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,'boxplot')
 
 
-type_analysis_plot = function(data,finaloutput,imported_data,ROI_data,type=c('boxplot','pca','dendrogram_heatmap')) {
+type_analysis_plot = function(data,final_output,imported_data,ROI_data,type=c('boxplot','pca','dendrogram_heatmap')) {
 
   m <- list(l = 150, r = 0, b = 150, t = 0,pad = 4)
 
 data=data[,which(ROI_data[,5]>0)]
 if (imported_data$program_parameters$automatic_removal=='Y') {
-  data[finaloutput$fitting_error[,which(ROI_data[,5]>0)]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
-  data[finaloutput$signal_area_ratio[,which(ROI_data[,5]>0)]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
+  data[final_output$fitting_error[,which(ROI_data[,5]>0)]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
+  data[final_output$signal_area_ratio[,which(ROI_data[,5]>0)]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
   data=data[,!apply(data,2,function(x)length(which(is.na(x)))>0.5*length(x))]
 }
 

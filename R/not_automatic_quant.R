@@ -2,25 +2,25 @@
 #' Quantification of individual ROIs with selected spectra.
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param ind Experiment to quantify.
 #' @param ROI_profile Information of signals to fit in ROI
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param interface Is the function being used with the Shiny GUI or not? By default F.
 #'
-#' @return Output depends on if the function is being used or not in the interface. If not in the interface, list with updated finaloutput and useful_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
+#' @return Output depends on if the function is being used or not in the interface. If not in the interface, list with updated final_output and useful_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
 #' @export not_automatic_quant
 #' @import baseline
 #'
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
+#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
 
 
-not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful_data,interface=F) {
+not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,useful_data,interface=F) {
 
-  resulting_data=list(finaloutput=finaloutput,useful_data=useful_data)
+  resulting_data=list(final_output=final_output,useful_data=useful_data)
 
   if (identical(ind,seq(nrow(imported_data$dataset)))) pb <- txtProgressBar(1, length(ind), style=3)
 
@@ -74,12 +74,12 @@ not_automatic_quant = function(imported_data, finaloutput,ind,ROI_profile,useful
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
-        finaloutput = save_output(
+        final_output = save_output(
           spectrum_index,
           signals_codes,
           results_to_save,
           imported_data$buck_step,
-          finaloutput
+          final_output
         )
 
       }
@@ -271,12 +271,12 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
 
 
       }
-        resulting_data$finaloutput = save_output(
+        resulting_data$final_output = save_output(
           spectrum_index,
           signals_codes,
           results_to_save,
           imported_data$buck_step,
-          resulting_data$finaloutput)
+          resulting_data$final_output)
       } else {
 	  resulting_data$program_parameters=program_parameters
     resulting_data$results_to_save=results_to_save

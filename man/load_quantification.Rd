@@ -4,7 +4,7 @@
 \alias{load_quantification}
 \title{Load quantification}
 \usage{
-load_quantification(useful_data, imported_data, finaloutput, info,
+load_quantification(useful_data, imported_data, final_output, info,
   ROI_separator)
 }
 \arguments{
@@ -12,7 +12,7 @@ load_quantification(useful_data, imported_data, finaloutput, info,
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{info}{List with 'row' and 'column' indicating spectrum and signal to load.}
 
@@ -27,6 +27,6 @@ Load quantification
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
-loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$finaloutput,list(row=1,col=1),imported_data$ROI_separator)
+resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
+loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=1),imported_data$ROI_separator)
 }

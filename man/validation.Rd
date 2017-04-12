@@ -4,10 +4,10 @@
 \alias{validation}
 \title{Creation of matrix to validate quantifications, with information of difference with predicted shift, signal to total area ratio, fitting error, and difference with expected relative intensity}
 \usage{
-validation(finaloutput, validation_type, ROI_data, metadata)
+validation(final_output, validation_type, ROI_data, metadata)
 }
 \arguments{
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{validation_type}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)}
 
@@ -24,7 +24,7 @@ Creation of matrix to validate quantifications, with information of difference w
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
-validation_data=validation(quantification_variables$finaloutput,5,imported_data$ROI_data,imported_data$Metadata)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+validation_data=validation(quantification_variables$final_output,5,imported_data$ROI_data,imported_data$Metadata)
 DT::datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) \%>\% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
 }

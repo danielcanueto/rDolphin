@@ -4,12 +4,12 @@
 \alias{write_plots}
 \title{Import of variables stored in the parameters file and of the dataset to quantify}
 \usage{
-write_plots(path, finaloutput, imported_data, useful_data)
+write_plots(path, final_output, imported_data, useful_data)
 }
 \arguments{
 \item{path}{Path where plots are stored inside a created 'plots' folder}
 
-\item{finaloutput}{List with quantifications and indicators of quality of quantification.}
+\item{final_output}{List with quantifications and indicators of quality of quantification.}
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
@@ -24,6 +24,6 @@ Import of variables stored in the parameters file and of the dataset to quantify
 \examples{
 setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data)
-write_plots('quantification_plots',quantification_variables$finaloutput,imported_data,quantification_variables$useful_data)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
 }

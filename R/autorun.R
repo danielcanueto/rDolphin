@@ -2,21 +2,21 @@
 #' Automatic quantification of signals for all experiments using the information located in the ROI patterns file.
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
 #'
-#' @return List with updated finaloutput and useful_data variables.
+#' @return List with updated final_output and useful_data variables.
 #' @export autorun
 #' @import baseline
 #'
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
+#' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 
 
-autorun = function(imported_data, finaloutput,useful_data,ROI_data) {
+autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
   print('Be patient. Gonna take a while. You should be writing, meanwhile.')
 
@@ -163,7 +163,7 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data) {
      }
 
       #Generation of output variables specific of every quantification
-      finaloutput = save_output(spectrum_index,signals_codes,results_to_save,imported_data$buck_step,finaloutput)
+      final_output = save_output(spectrum_index,signals_codes,results_to_save,imported_data$buck_step,final_output)
 
       setTxtProgressBar(pb, spectrum_index)
       }
@@ -171,6 +171,6 @@ autorun = function(imported_data, finaloutput,useful_data,ROI_data) {
   }
   print("Done!")
 
-  quantification_variables=list(finaloutput=finaloutput,useful_data=useful_data)
+  quantification_variables=list(final_output=final_output,useful_data=useful_data)
   return(quantification_variables)
 }

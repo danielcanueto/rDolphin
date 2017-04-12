@@ -2,7 +2,7 @@
 #'
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param info List with 'row' and 'column' indicating spectrum and signal to load.  
 #' @param ROI_data ROIs data
 #'
@@ -14,12 +14,12 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' resulting_data=not_automatic_quant(imported_data,imported_data$finaloutput,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
-#' loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$finaloutput,list(row=1,col=1),imported_data$ROI_data)
+#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
+#' loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=1),imported_data$ROI_data)
 
 
 
-load_quantification=function(useful_data,imported_data,finaloutput,info,ROI_data) {
+load_quantification=function(useful_data,imported_data,final_output,info,ROI_data) {
   loaded_quantification=list()
 row=info$row
 col=info$col
@@ -55,7 +55,7 @@ if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantificatio
 	ind=which(ROI_separator[,2]-col>=0)[1]
 	ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
 
-	loaded_quantification$qualitypar=cbind(t(finaloutput$Area[row,ind,drop=F]),t(finaloutput$fitting_error[row,ind,drop=F]),t(finaloutput$signal_area_ratio[row,ind,drop=F]))
+	loaded_quantification$qualitypar=cbind(t(final_output$Area[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
 	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
 
 

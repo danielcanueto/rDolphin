@@ -1,7 +1,7 @@
 #' Import of variables stored in the parameters file and of the dataset to quantify
 #'
 #' @param path Path where plots are stored inside a created 'plots' folder
-#' @param finaloutput List with quantifications and indicators of quality of quantification.
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
 #' @return Plots in pdf files
@@ -13,14 +13,14 @@
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$finaloutput,imported_data$useful_data,imported_data$ROI_data)
-#' write_plots('quantification_plots',quantification_variables$finaloutput,imported_data,quantification_variables$useful_data)
+#' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
 
 
-write_plots = function(path,finaloutput,imported_data,useful_data) {
+write_plots = function(path,final_output,imported_data,useful_data) {
   path=paste(path,'plots/',sep='/')
   dir.create(path)
-  ind3=which(apply(finaloutput$shift,2, function(x) all(is.na(x)))==F)
+  ind3=which(apply(final_output$shift,2, function(x) all(is.na(x)))==F)
   print('Be patient. This could take a while. Take another cup of coffee, meanwhile')
   p <- vector(mode = "list", length = nrow(imported_data$dataset))
   pb   <- txtProgressBar(1, length(ind3), style=3)
@@ -74,7 +74,7 @@ write_plots = function(path,finaloutput,imported_data,useful_data) {
             y = signals,
             fill = 'Quantified Signal'
           )
-        ) + theme(legend.position = "none", text = element_text(size=5)) + ggtitle(paste(imported_data$Experiments[ind]," - fitting error ",round(finaloutput$fitting_error[ind,ind2],3)," - signal/area ratio ",round(finaloutput$signal_area_ratio[ind,ind2],3),sep=''))+
+        ) + theme(legend.position = "none", text = element_text(size=5)) + ggtitle(paste(imported_data$Experiments[ind]," - fitting error ",round(final_output$fitting_error[ind,ind2],3)," - signal/area ratio ",round(final_output$signal_area_ratio[ind,ind2],3),sep=''))+
         scale_x_reverse() + labs(x='ppm',y='Intensity')
     }
     grid.arrange(rectGrob(), rectGrob())
