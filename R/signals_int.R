@@ -50,10 +50,8 @@ fitting_type=ROI_profile[1,3]
         'gaussian',
         'J_coupling'
          )     
-      # signals_to_quantify=c(1,2)
       program_parameters$signals_to_quantify=signals_to_quantify
 
-    # print(signals_parameters)
       #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
       dummy = output_generator(
         signals_to_quantify,
@@ -64,7 +62,6 @@ fitting_type=ROI_profile[1,3]
       )
       output_data=dummy$output_data
       error1=dummy$error1
-    # print(output_data)
       output_data$intensity=signals_parameters[1, signals_to_quantify]
       output_data$half_band_width=signals_parameters[3, signals_to_quantify]
 

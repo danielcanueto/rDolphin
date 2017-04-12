@@ -15,7 +15,7 @@ Imports:
 	minpack.lm,
 	reshape2,
 	robust,
-	rio,
+	fread,
 	plotly,
 	DT,
 	shiny,

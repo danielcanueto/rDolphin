@@ -6,7 +6,7 @@
 #'
 #' @return Imported data of experiment
 #' @export import_data
-#' @import rio
+#' @import fread
 #'
 #' @examples
 #' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
@@ -58,11 +58,10 @@ import_data = function(parameters_path) {
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
 #Creation of repository adapted to biofluid
-  repository=as.data.frame(rio::import(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))
-  biofluid_column=which(colnames(repository)==biofluid)
+  repository=data.frame(fread(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))    biofluid_column=which(colnames(repository)==biofluid)
   repository=repository[!is.na(repository[,biofluid_column]),]
   repository=repository[repository[,biofluid_column]>0,]
-  repository=repository[sort(repository[,biofluid_column],decreasing = T,index.return=T)$ix,c(1:3,5:7,der)]
+  repository=repository[sort(repository[,biofluid_column],decreasing = T,index.return=T)$ix,c(1:3,5:7,biofluid_column)]
 
 
 
@@ -141,11 +140,10 @@ import_data = function(parameters_path) {
     if (dataset_path != '') {
       #Reading of dataset file (ideally with fread of data.table package, but seems that the package is not compatible with R 3.3.1). Maybe now it is possible.
       imported_data = list()
-      dummy = rio::import(dataset_path, sep = ',',header=F,colClasses='numeric')
-      imported_data$dataset=as.numeric(as.matrix(dummy[-1,]))
+      dummy = data.matrix(fread(dataset_path, sep = ',',header=F))
+      imported_data$dataset=dummy[-1,]
       imported_data$dataset[is.na(imported_data$dataset)]=0
-      dim(imported_data$dataset)=dim(dummy[-1,])
-	  imported_data$ppm = round(as.numeric(dummy[1,]),4)
+	  imported_data$ppm = round(dummy[1,],4)
       if (imported_data$ppm[1]<imported_data$ppm[2]) {
         imported_data$dataset=t(apply(imported_data$dataset,1,rev))
         imported_data$ppm=rev(imported_data$ppm)

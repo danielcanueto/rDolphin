@@ -34,7 +34,6 @@ ind=seq(nrow(imported_data$dataset))
     ind=apres@exemplars
   }
     updated_scaled_roi=scaled_roi[ind,,drop=F]
-print(dim(updated_scaled_roi))
   spectra_lag=rep(NA,nrow(updated_scaled_roi))
   dummy=apply(updated_scaled_roi, 2, function(x)  median(x,na.rm=T))
 
