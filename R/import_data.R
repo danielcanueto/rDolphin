@@ -9,7 +9,7 @@
 #' @import data.table
 #'
 #' @examples
-#' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+#' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 
 import_data = function(parameters_path) {
@@ -58,7 +58,7 @@ import_data = function(parameters_path) {
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
 #Creation of repository adapted to biofluid
-  repository=data.frame(fread(file.path(system.file(package = "Dolphin"),"extdata","HMDB_Repository.csv")))
+  repository=data.frame(fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
   biofluid_column=which(colnames(repository)==biofluid)
   repository=repository[!is.na(repository[,biofluid_column]),]
   repository=repository[repository[,biofluid_column]>0,]

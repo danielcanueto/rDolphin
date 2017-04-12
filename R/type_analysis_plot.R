@@ -14,7 +14,7 @@
 #' @import reshape2
 #'
 #' @examples
-#' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+#' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 #' type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,'boxplot')

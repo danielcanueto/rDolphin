@@ -16,7 +16,7 @@ Plotly figure with subset of spectra that represent different kinds of spectra t
 Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical shift tolerance...).
 }
 \examples{
-setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 clusterplot=clustspectraplot(imported_data)
 }

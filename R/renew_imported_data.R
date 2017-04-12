@@ -6,7 +6,7 @@
 #' @export renew_imported_data
 #'
 #' @examples
-#' setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+#' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' imported_data$ROI_data=imported_data$ROI_data[-1,]
 #' imported_data=renew_imported_data(imported_data)

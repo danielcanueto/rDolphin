@@ -1,18 +1,18 @@
 ---
-title: "Introduction to Dolphin"
+title: "Introduction to rDolphin"
 author: "Daniel Canueto"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{"Introduction to Dolphin"}
+  %\VignetteIndexEntry{"Introduction to rDolphin"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Dolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of all biofluids and outputs several indicators of quality of quantification and identification of signal. The package incorporates a Shiny GUI with Plotly figures that eases the use of the programme by researchers with non-expert programming skills.
+rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of all biofluids and outputs several indicators of quality of quantification and identification of signal. The package incorporates a Shiny GUI with Plotly figures that eases the use of the programme by researchers with non-expert programming skills.
 
-To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, Dolphin subdivides the spectrum into Regions of Interest (ROIs) with characteristic signals and method of quantification (integration or deconvolution; with or without baseline fitting) for each ROI. The correct parameters for each ROI for each dataset can be changed if necessary before performing an automatic profiling. The Shiny GUI is specially prepared to help during the parameter optimization process.
+To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin subdivides the spectrum into Regions of Interest (ROIs) with characteristic signals and method of quantification (integration or deconvolution; with or without baseline fitting) for each ROI. The correct parameters for each ROI for each dataset can be changed if necessary before performing an automatic profiling. The Shiny GUI is specially prepared to help during the parameter optimization process.
 
-Dolphin comes with tools to load individual quantifications to be evaluated if necessary. Dolphin can also perform different kinds of analysis of the generated data.
+rDolphin comes with tools to load individual quantifications to be evaluated if necessary. rDolphin can also perform different kinds of analysis of the generated data.
 
 ## Vignette Structure
 
@@ -23,7 +23,7 @@ The vignette will show how to perform in the R console the profiling of a subset
 * Next, a profiling of all spectra is performed and an output of quantifications (with associated quality parameters) and figures is generated.
 * Lastly, it is shown how to evaluate the quantifications performed and how to watch the results of basic uni and multivariate analyses of performed quantifications.
 
-A link to an on-line document showing how to perform similar steps through the Shiny GUI is available on the Readme file of the Github website: https://github.com/danielcanueto/Dolphin.
+A link to an on-line document showing how to perform similar steps through the Shiny GUI is available on the Readme file of the Github website: https://github.com/danielcanueto/rDolphin.
 
 ## Import of necessary data
 
@@ -47,7 +47,7 @@ In the `extdata` folder of the package there is the necessary information to loa
 
 Run these commands to set as directory the `extdata` folder and to import the data contained there:
 ```
-setwd(file.path(system.file(package = "Dolphin"),"extdata"))
+setwd(file.path(system.file(package = "rDolphin"),"extdata"))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 ```
 

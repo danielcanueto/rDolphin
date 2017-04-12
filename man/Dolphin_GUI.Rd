@@ -2,15 +2,15 @@
 % Please edit documentation in R/Dolphin_GUI.R
 \name{Dolphin_GUI}
 \alias{Dolphin_GUI}
-\title{Dolphin Shiny GUI}
+\title{rDolphin Shiny GUI}
 \usage{
 Dolphin_GUI()
 }
 \value{
-Dolphin Shiny GUI
+rDolphin Shiny GUI
 }
 \description{
-Dolphin Shiny GUI
+rDolphin Shiny GUI
 }
 \examples{
 Dolphin_GUI()

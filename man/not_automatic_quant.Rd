@@ -27,7 +27,7 @@ Output depends on if the function is being used or not in the interface. If not 
 Quantification of individual ROIs with selected spectra.
 }
 \examples{
-setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
 }

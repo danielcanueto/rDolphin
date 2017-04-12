@@ -16,7 +16,7 @@ plotly figure with performed fitting for every ROI and p value for every bin
 Automatic quantification in the model spectrum of the dataset using the information located in the ROI patterns file, with associated p values for every bin. The reulting information can be useful to analyze possible new ROIs to profile or modification of existing ones.
 }
 \examples{
-setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 model_spectrum_plot=autorun_model_spectrum(imported_data)
 }

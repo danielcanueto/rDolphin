@@ -20,7 +20,7 @@ RData with session and 'associated_data' folder with CSVs with quantification an
 Writing of quantification and quality information of fitting of signals
 }
 \examples{
-setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
 write_info('output_info',quantification_variables$final_output,imported_data$ROI_data)

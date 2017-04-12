@@ -18,7 +18,7 @@ p values from dataset of bins or quantificaitons
 Univariate analysis
 }
 \examples{
-setwd(paste(system.file(package = "Dolphin"),"extdata",sep='/'))
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 pval=p_values(imported_data$dataset,imported_data$Metadata)
 }

@@ -20,7 +20,7 @@ shinyUI(fluidPage(
     })
     ")),
 
-  titlePanel("Dolphin GUI"),
+  titlePanel("rDolphin GUI"),
   #First tab
   tabsetPanel(selected="Data Upload and Processing", id='mynavlist',
     tabPanel("Data Upload and Processing",
