@@ -16,7 +16,7 @@ Dolphin comes with tools to load individual quantifications to be evaluated if n
 
 ## Vignette Structure
 
-The vignette will show how to perform in the R console the profiling of a subset of 75 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 75 spectra belong to 15 patients with blood samples taken at five different times.
+The vignette will show how to perform in the R console the profiling of a subset of 30 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 30 spectra belong to 15 patients with blood samples taken at two different times.
 
 * First a CSV file is read to import all the necessary information to perform the profiling.
 * Then a profiling of a model spectrum will be carried to evaluate possible improvements in the original ROI profiles.
@@ -27,7 +27,7 @@ A link to an on-line document showing how to perform similar steps through the S
 
 ## Import of necessary data
 
-In the `extdata` folder of the package there is the necessary information to load the dataset of 75 spectra of MTBLS242:
+In the `extdata` folder of the package there is the necessary information to load the dataset of 30 spectra of MTBLS242:
 
 * A `Parameters` CSV file with the necessary information to import with the desired preprocessing parameters. A brief description is given inside the CSV file for each parameter.
 
@@ -36,8 +36,8 @@ In the `extdata` folder of the package there is the necessary information to loa
 * A `Metadata` CSV file with three columns:
 
     * `Sample` is the name of the sample. If reading Bruker processed spectra, it needs to be the same than the one in the Bruker folder.
-    * `Individual` is a number specifying each individual. For example, in the case of this MTBLS242 dataset, the 1-15 sequence is repeated 5 times because there are five samples for each individual.
-    * `Type` is a number specifying the kind of sample. In the case of this MTBLS242 dataset, it has `0,1,2,3,4` types as these are the five types of samples according to the moment of operation. If differences are to be analyzed, then the analysis of differences has to be specified with a negative number. For example, if one wants to compare differences before and after a drug treatment and a placebo treatment, samples before placebo can have `-1`, samples after placebo can have `1`, samples before treatment `-2`, and samples after treatment can have `2`.
+    * `Individual` is a number specifying each individual. For example, in the case of this MTBLS242 dataset, the 1-15 sequence is repeated 2 times because there are two samples for each individual.
+    * `Type` is a number specifying the kind of sample. If differences are to be analyzed, then the analysis of differences has to be specified with a negative number. For example, if one wants to compare differences before and after a drug treatment and a placebo treatment, samples before placebo can have `-1`, samples after placebo can have `1`, samples before treatment `-2`, and samples after treatment can have `2`.
     
     Information of `Individual` and `Type` is not necessary for the program to be run, but it will be useful for fingerprinting, univariate and multivariate analyses.
 
