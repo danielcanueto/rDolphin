@@ -43,12 +43,12 @@ import_data = function(parameters_path) {
   Experiments = as.vector(Experiments[Experiments != ''])
   Metadata=dummy[,-1,drop=F]
 
-  #Import of ROI profiles and generation of names and codes of signals 
-  ROI_data=try(read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F),silent=T) 
+  #Import of ROI profiles and generation of names and codes of signals
+  ROI_data=try(read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F),silent=T)
   signals_names=paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_')
   signals_codes = 1:length(signals_names)
 
-  
+
 #Other necessary variables
   export_path = dirname(parameters_path)
   freq = as.numeric(as.character(import_profile[10, 2]))
@@ -155,24 +155,24 @@ import_data = function(parameters_path) {
 	      length(imported_data$ppm),
 	    as.numeric(as.character(import_profile[11, 2]))
 	  )
-	  
+
 	#TODO: revise alignment and normalization when coming data from csv.
       if (alignment == 1) {
         #Glucose
         lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToGlucose(x,imported_data$ppm)$deltaPPM)
         } else if (alignment == 2) {
         #TSP
-          lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToTSP(x,imported_data$ppm)$deltaPPM)     
+          lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToTSP(x,imported_data$ppm)$deltaPPM)
           } else if (alignment == 3) {
         #Formate
-            lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToPeak(x,imported_data$ppm,params$ref_peak_pos)$deltaPPM)  
+            lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToPeak(x,imported_data$ppm,params$ref_peak_pos)$deltaPPM)
           }
             if (alignment!=4&&nrow(imported_data$dataset)>1) {
-      
+
               imported_data$ppm=imported_data$ppm-median(lmn)
-              
+
               spectra_lag=round((lmn-median(lmn))/params$buck_step)
-      
+
       so=(1+max(abs(spectra_lag))):(length(imported_data$ppm)-max(abs(spectra_lag)))
       for (i in 1:dim(imported_data$dataset)[1])   imported_data$dataset[i,so-spectra_lag[i]]=imported_data$dataset[i,so]
             }
@@ -185,14 +185,13 @@ import_data = function(parameters_path) {
         norm_factor=apply(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))],1,max)
       }
 	  imported_data$dataset=imported_data$dataset/norm_factor
-	  notnormalizeddataset=imported_data$dataset*norm_factor
     } else {
       print('Problem when creating the dataset. Please revise the parameters.')
       return()
     }
-	  
+
   } else {
-  
+
     #Reading of Bruker files
     params$dir = bruker_path
     params$expno = expno
@@ -200,8 +199,10 @@ import_data = function(parameters_path) {
     params$buck_step = as.numeric(as.character(import_profile[11,2]))
     imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
     norm_factor=imported_data$norm_factor
-    
-    if (dim(imported_data$dataset)==2) dummy=NA
+    notnormalizeddataset=imported_data$dataset*norm_factor
+
+
+    # if (dim(imported_data$dataset)==2) dummy=NA
   }
 
   imported_data$dataset[is.na(imported_data$dataset)]=min(abs(imported_data$dataset)[abs(imported_data$dataset)>0])
@@ -213,28 +214,28 @@ import_data = function(parameters_path) {
       imported_data$dataset=imported_data$dataset[,-ind,drop=F]
       imported_data$ppm=imported_data$ppm[-ind]
     }
- 
+
 # Possibility of removing zones without interesting information. Added in the future.
  #snr=apply(imported_data$dataset,1,function(x)stats::mad(x,na.rm=T))
 
   # ind=seq(1,ncol(imported_data$dataset),round(ncol(imported_data$dataset)/(0.1/params$buck_step)))
   # flan=rep(NA,length(ind))
   # for (i in 1:length(ind)) flan[i]=tryCatch(colMeans(imported_data$dataset[,ind[i]:(ind[i]+1)]), error=function(e) NA)
-  # 
+  #
   # snr=apply(imported_data$dataset[,ind[which.min(flan)]:ind[which.min(flan)+1]],1,function(x)stats::mad(x,na.rm=T))
-  # 
+  #
   # dfg=matrix(0,nrow(imported_data$dataset),ncol(imported_data$dataset))
   # for (i in 1:nrow(imported_data$dataset)) {
   #   dfg[i,which(imported_data$dataset[i,]>snr[i])]=1
   # }
-  # 
+  #
   # dfi=which(apply(dfg,2,sum)>0.5*nrow(imported_data$dataset))
   # dfj=c()
   # for (i in 1:length(dfi)) dfj=unique(c(dfj,round((dfi[i]-0.02/params$buck_step):(dfi[i]+0.02/params$buck_step))))
   # dfj = dfj[dfj > 0 & dfj <= ncol(imported_data$dataset)]
   #imported_data$dataset=imported_data$dataset[,dfj,drop=F]
   #imported_data$ppm=imported_data$ppm[dfj]
-  
+
   #If pqn is desired
   #TODO: specify which are the control samples or if there are no control samples.
   if (pqn=='Y'&&nrow(imported_data$dataset)>1) {
@@ -244,15 +245,15 @@ import_data = function(parameters_path) {
     quotient.median <- apply(quotient,2,function(x)median(x,na.rm=T))
     imported_data$dataset <- imported_data$dataset/quotient.median
     norm_factor=norm_factor*quotient.median
-    
+
   }
 
   #Adaptation of data to magnitudes similar to 1. To be removed in the future.
   secondfactor=quantile(imported_data$dataset,0.9,na.rm=T)
   imported_data$dataset=imported_data$dataset/secondfactor
   norm_factor=norm_factor*secondfactor
-  
-  
+
+
   imported_data$dataset=imported_data$dataset[,which(apply(imported_data$dataset,2,function(x) all(is.na(x)))==F),drop=F]
   imported_data$dataset[is.na(imported_data$dataset)]=0
 
