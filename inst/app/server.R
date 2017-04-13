@@ -10,7 +10,7 @@ server = function(input, output,session) {
   reactivequantdata <- reactiveValues(method1=NA, method2 = NA)
   #reactivequantdata <- reactiveValues(method2=NA, method1 = NA,stop3=0)
 
-  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=F,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),ROI_separator=NA,select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
+  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=F,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
   
   ## FIRST TAB REACTIVE OUTPUTS
 
@@ -37,9 +37,11 @@ server = function(input, output,session) {
 	 #Variables that can change during the use of the GUI are separated from 'imported_data'.  
     reactiveprogramdata$final_output=dummy$imported_data$final_output
     reactiveprogramdata$useful_data=dummy$imported_data$useful_data
-    reactiveprogramdata$ROI_separator=dummy$imported_data$ROI_separator
+    # reactiveprogramdata$ROI_separator=dummy$imported_data$ROI_separator
     reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=dummy$imported_data$ROI_data
-    reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_separator=reactiveprogramdata$imported_data$ROI_data=NULL
+    #reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_separator=reactiveprogramdata$imported_data$ROI_data=NULL
+	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
+
     
 	#When the session is prepared, the tabs and some inputs become active
 	output$sp = DT::renderDataTable(
@@ -77,7 +79,7 @@ server = function(input, output,session) {
     
     #Names of ROIS are prepared
 	dummy=NULL
-	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$ROI_separator,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
+	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
   }, error = function(e) {
 	print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
 	return(NULL)
@@ -176,7 +178,7 @@ server = function(input, output,session) {
 
    #Automatic quantification of all ROIs in all spectra
   tryCatch({observeEvent(input$autorun, {
-    quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data,reactiveprogramdata$ROI_separator)
+    quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data)
     reactiveprogramdata$final_output=quantification_variables$final_output
     reactiveprogramdata$useful_data=quantification_variables$useful_data
     })},
@@ -225,7 +227,13 @@ server = function(input, output,session) {
   tryCatch(observeEvent(input$select, {
     if (reactiveprogramdata$beginning==F) return()
     if (reactiveprogramdata$beginning ==T) {
-      reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[as.numeric(input$select), 1]:reactiveprogramdata$ROI_separator[as.numeric(input$select), 2],]
+	#Splitting of ROI data into individual ROIs to be quantified
+	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
+
+      reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
     }
 
 	#Setting of reactivity to edition of parameters prepared. Probably improvable, but it is a delicate matter. Now that I can debug it easily, it can be 'cleaned' in the future.
@@ -321,7 +329,12 @@ server = function(input, output,session) {
   tryCatch(observeEvent(input$x1_rows_selected, {
     if (reactiveprogramdata$beginning==F) return()
     if (reactiveprogramdata$beginning ==T) {
-      reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[as.numeric(input$select), 1]:reactiveprogramdata$ROI_separator[as.numeric(input$select), 2],]
+	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
+
+      reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
     }
 	#Reset of parameters
     reactiveprogramdata$change=reactiveprogramdata$change2=1
@@ -408,13 +421,19 @@ server = function(input, output,session) {
   
     #Save edition of ROI profile
   tryCatch(observeEvent(input$save_profile, {
+  dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
     if (length(reactiveprogramdata$info$col)>0) {
-      ind=which(reactiveprogramdata$ROI_separator[,2]-reactiveprogramdata$info$col>=0)[1]
+	
+      ind=which(ROI_separator[,2]-reactiveprogramdata$info$col>=0)[1]
     } else {
       ind=as.numeric(input$select)
     }
-    reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[ind, 1]:reactiveprogramdata$ROI_separator[ind, 2],]=reactiveprogramdata$ROI_data_check[reactiveprogramdata$ROI_separator[ind, 1]:reactiveprogramdata$ROI_separator[ind, 2],]=reactiveROItestingdata$ROIpar
-    ROI_names=paste(reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[, 1],1],reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[, 1],2])
+	
+    reactiveprogramdata$ROI_data[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveprogramdata$ROI_data_check[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveROItestingdata$ROIpar
+    ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
     names(reactiveprogramdata$select_options)=ROI_names
   }))
 
@@ -595,8 +614,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
     lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
-    reactiveprogramdata$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
-    ROI_names=paste(reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[, 1],1],reactiveprogramdata$ROI_data[reactiveprogramdata$ROI_separator[, 1],2])
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
+    ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
     reactiveprogramdata$select_options=1:length(ROI_names)
     names(reactiveprogramdata$select_options)=ROI_names
     updateSelectInput(session, "select",

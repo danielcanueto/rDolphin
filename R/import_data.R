@@ -292,10 +292,10 @@ import_data = function(parameters_path) {
       imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=NULL,program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
     }}
 
-	dummy = which(is.na(imported_data$ROI_data[, 1]))
-    if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
-    lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
-    imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
+	# dummy = which(is.na(imported_data$ROI_data[, 1]))
+    # if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
+    # lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
+    # imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
 
   #Useful data about conditions of import of data. TO BE REARRANGED
   dir.create(imported_data$export_path, showWarnings = FALSE)
