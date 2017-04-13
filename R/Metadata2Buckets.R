@@ -3,7 +3,7 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
 
   CURRENT = list()
   RAW = list()
-  not_loaded_experiments = read_spectra = c()
+  not_loaded_experiments = read_spectra =  norm_factor=c()
 
 
   left_spectral_border = ifelse(exists("left_spectral_border", where = params),
@@ -102,12 +102,12 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
       } else if (params$tsp_alignment == "Y") {
         JTP = JTPcalibrateToTSP(tmp, CURRENT$ppm)
       } else if (params$peak_alignment == "Y") {
-        if (nrow(as.matrix(ref_peak_pos)) == maxspec) {
-          JTP = JTPcalibrateToPeak2(tmp, CURRENT$ppm, 5.3, 0.4)
-          JTP = JTPcalibrateToPeak(tmp, CURRENT$ppm, ref_peak_pos[k])
-        } else {
+        # if (nrow(as.matrix(ref_peak_pos)) == maxspec) {
+        #   JTP = JTPcalibrateToPeak2(tmp, CURRENT$ppm, 5.3, 0.4)
+        #   JTP = JTPcalibrateToPeak(tmp, CURRENT$ppm, ref_peak_pos[k])
+        # } else {
           JTP = JTPcalibrateToPeak(tmp, CURRENT$ppm, ref_peak_pos)
-	}
+	# }
       } else {
 	JTP=list(ppm=CURRENT$ppm)
 	}
@@ -161,13 +161,23 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
         tmp_buck = c(tmp_buck, tmp_buck[length(tmp_buck)])
 
 
-
-
+      if (params$norm_PEAK == "Y" &
+          norm_PEAK_max > 0) {
+        normvalue=norm_PEAK_max
+      } else if (params$norm_AREA == "Y" &
+          norm_AREA > 0) {
+        normvalue=norm_AREA
+    } else {
+      normvalue=1
+    }
       if (k2 == 1) dataset = matrix(NA, maxspec, RAW$len_bucks)
+      
       dataset[k2,] = tmp_buck[1:RAW$len_bucks]
-      k2 = k2 + 1
-      read_spectra = append(read_spectra, as.character(Experiments[k]))
-
+      norm_factor = append(norm_factor,normvalue)
+         read_spectra = append(read_spectra, as.character(Experiments[k]))
+         k2 = k2 + 1
+         
+         
 
     } else {
       # llista d'objectes no inclosos
@@ -179,7 +189,7 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
   # dataset = dataset[complete.cases(dataset),,drop=F]
   rownames(dataset) = read_spectra
   colnames(dataset) = as.character(RAW$ppm_bucks)
-  finaldata = list(dataset=dataset,ppm=RAW$ppm_bucks,not_loaded_experiments = not_loaded_experiments)
+  finaldata = list(dataset=dataset,ppm=RAW$ppm_bucks,not_loaded_experiments = not_loaded_experiments,norm_factor=norm_factor)
 
 
   return(finaldata)

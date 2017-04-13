@@ -106,7 +106,7 @@ import_data = function(parameters_path) {
   params$glucose_alignment = 'N'
   params$tsp_alignment = 'N'
   params$peak_alignment = 'N'
-  params$ref_pos = 8.452
+  params$ref_peak_pos = 8.452
   if (alignment == 1) {
     #Glucose
     params$glucose_alignment = 'Y'
@@ -142,57 +142,55 @@ import_data = function(parameters_path) {
       #Reading of dataset file (ideally with fread of data.table package, but seems that the package is not compatible with R 3.3.1). Maybe now it is possible.
       imported_data = list()
       dummy = data.matrix(fread(dataset_path, sep = ',',header=F))
-      imported_data$dataset=dummy[-1,]
+      notnormalizeddataset=imported_data$dataset=dummy[-1,]
       imported_data$dataset[is.na(imported_data$dataset)]=0
 	  imported_data$ppm = round(dummy[1,],4)
       if (imported_data$ppm[1]<imported_data$ppm[2]) {
         imported_data$dataset=t(apply(imported_data$dataset,1,rev))
         imported_data$ppm=rev(imported_data$ppm)
       }
+	  params$buck_step = ifelse(
+	    as.character(import_profile[11, 2]) == '',
+	    abs(imported_data$ppm[1] - imported_data$ppm[length(imported_data$ppm)]) /
+	      length(imported_data$ppm),
+	    as.numeric(as.character(import_profile[11, 2]))
+	  )
 	  
 	#TODO: revise alignment and normalization when coming data from csv.
       if (alignment == 1) {
         #Glucose
-        limi=c(5.5,5.1)
-      } else if (alignment == 2) {
+        lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToGlucose(x,imported_data$ppm)$deltaPPM)
+        } else if (alignment == 2) {
         #TSP
-        limi=c(0.1,-0.1)
-      } else if (alignment == 3) {
+          lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToTSP(x,imported_data$ppm)$deltaPPM)     
+          } else if (alignment == 3) {
         #Formate
-        limi=c(8.48,8.42)
-      }
-      if (alignment!=4&&nrow(imported_data$dataset)>1) {
-      spectra_lag=rep(NA,nrow(imported_data$dataset))
-      for (i in 1:dim(imported_data$dataset)[1]) {
-        d <-
-          ccf(imported_data$dataset[i, ],
-            apply(imported_data$dataset[, which.min(abs(imported_data$ppm-limi[1])):which.min(abs(imported_data$ppm-limi[2]))], 2, median),
-            type = 'covariance',
-            plot = FALSE)
-        spectra_lag[i]=d$lag[which.max(d$acf)]
-      }
+            lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToPeak(x,imported_data$ppm,params$ref_peak_pos)$deltaPPM)  
+          }
+            if (alignment!=4&&nrow(imported_data$dataset)>1) {
+      
+              imported_data$ppm=imported_data$ppm-median(lmn)
+              
+              spectra_lag=round((lmn-median(lmn))/params$buck_step)
+      
       so=(1+max(abs(spectra_lag))):(length(imported_data$ppm)-max(abs(spectra_lag)))
       for (i in 1:dim(imported_data$dataset)[1])   imported_data$dataset[i,so-spectra_lag[i]]=imported_data$dataset[i,so]
-      }
+            }
+	  norm_factor=rep(1,nrow(imported_data$dataset))
       if (params$norm_AREA == 'Y') {
-        for (i in 1:dim(imported_data$dataset)[1])
-          imported_data$dataset[i,]=imported_data$dataset[i,]*mean(rowSums(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))]))/sum(imported_data$dataset[i,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))])
+        # for (i in 1:dim(imported_data$dataset)[1])
+        #   norm_factor[i]=mean(rowSums(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))]))/sum(imported_data$dataset[i,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))])
+        norm_factor=rowSums(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))])
       } else if (params$norm_PEAK == 'Y') {
-        for (i in 1:dim(imported_data$dataset)[1])
-          imported_data$dataset[i,]=imported_data$dataset[i,]*mean(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))],1,max))/sum(imported_data$dataset[i,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))])
+        norm_factor=apply(imported_data$dataset[,which.min(abs(imported_data$ppm-params$norm_left_ppm)):which.min(abs(imported_data$ppm-params$norm_right_ppm))],1,max)
       }
-
-	#Calculation of buck_step, if not given by user.
-      params$buck_step = ifelse(
-        as.character(import_profile[11, 2]) == '',
-        abs(imported_data$ppm[1] - imported_data$ppm[length(imported_data$ppm)]) /
-          length(imported_data$ppm),
-        as.numeric(as.character(import_profile[11, 2]))
-      )
+	  imported_data$dataset=imported_data$dataset/norm_factor
+	  notnormalizeddataset=imported_data$dataset*norm_factor
     } else {
       print('Problem when creating the dataset. Please revise the parameters.')
       return()
     }
+	  
   } else {
   
     #Reading of Bruker files
@@ -201,6 +199,8 @@ import_data = function(parameters_path) {
     params$processingno = processingno
     params$buck_step = as.numeric(as.character(import_profile[11,2]))
     imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
+    norm_factor=imported_data$norm_factor
+    
     if (dim(imported_data$dataset)==2) dummy=NA
   }
 
@@ -243,10 +243,16 @@ import_data = function(parameters_path) {
     quotient <- treated/reference
     quotient.median <- apply(quotient,2,function(x)median(x,na.rm=T))
     imported_data$dataset <- imported_data$dataset/quotient.median
+    norm_factor=norm_factor*quotient.median
+    
   }
 
   #Adaptation of data to magnitudes similar to 1. To be removed in the future.
-  imported_data$dataset=imported_data$dataset/quantile(imported_data$dataset,0.9,na.rm=T)
+  secondfactor=quantile(imported_data$dataset,0.9,na.rm=T)
+  imported_data$dataset=imported_data$dataset/secondfactor
+  norm_factor=norm_factor*secondfactor
+  
+  
   imported_data$dataset=imported_data$dataset[,which(apply(imported_data$dataset,2,function(x) all(is.na(x)))==F),drop=F]
   imported_data$dataset[is.na(imported_data$dataset)]=0
 
@@ -299,6 +305,10 @@ import_data = function(parameters_path) {
   )
   write.csv(imported_data$dataset,
     file.path(imported_data$export_path, 'initial_dataset.csv'),row.names=F)
+  write.csv(notnormalizeddataset,
+    file.path(imported_data$export_path, 'notnormalizeddataset.csv'),row.names=F)
+  write.csv(norm_factor,
+    file.path(imported_data$export_path, 'norm_factor.csv'),row.names=F)
   if ("not_loaded_experiments" %in% names(imported_data))
   write.table(
       imported_data$not_loaded_experiments,

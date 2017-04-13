@@ -92,8 +92,8 @@ JTP=list()
 regionMask = (ppm < PeakPos+0.1) & (ppm > PeakPos-0.1)
 #regionMask = (ppm < PeakPos+0.05) & (ppm > PeakPos-0.05);
 # nosaltres tenim la part positiva de l'espectre a l'esquerra
-maskOffset = which(ppm > PeakPos+0.1)
-maskOffset = maskOffset[length(maskOffset)]
+maskOffset = ifelse(length(which(ppm > PeakPos+0.1))>0,(which(ppm > PeakPos+0.1))[length(maskOffset)],ppm[1])
+
 
 # Take the approximate second derivative
 realSpectra2 = diff(realSpectra[regionMask], differences = 2)
