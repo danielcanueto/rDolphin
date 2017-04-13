@@ -214,7 +214,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       #Generation of the dataframe with the final output variables
       results_to_save = data.frame(
         shift = output_data$shift,
-        Area = output_data$Area,
+        quantification = output_data$quantification,
         signal_area_ratio = output_data$signal_area_ratio,
         fitting_error = output_data$fitting_error,
         intensity = output_data$intensity,

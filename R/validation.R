@@ -82,16 +82,16 @@ if (is.null(final_output)) return(NULL)
 
  metadata_types=unique(metadata[,2])
     for (k in 1:length(metadata_types)) {
-    iqr_data=apply(final_output$Area[metadata[,2]==metadata_types[k],],2,function(x) IQR(x,na.rm=T))
-    quartile_data=rbind(apply(final_output$Area[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.25,na.rm=T)),apply(final_output$Area[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.75,na.rm=T)))
+    iqr_data=apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) IQR(x,na.rm=T))
+    quartile_data=rbind(apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.25,na.rm=T)),apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.75,na.rm=T)))
     for (i in which(metadata[,2]==metadata_types[k])) {
       for (j in which(!is.na(iqr_data))) {
-        if (!is.na(final_output$Area[i,j]) && final_output$Area[i,j]>quartile_data[1,j]&&final_output$Area[i,j]<quartile_data[2,j]) {
+        if (!is.na(final_output$quantification[i,j]) && final_output$quantification[i,j]>quartile_data[1,j]&&final_output$quantification[i,j]<quartile_data[2,j]) {
           alarmmatrix[i,j]=0
-        } else if (!is.na(final_output$Area[i,j]) &&final_output$Area[i,j]<quartile_data[1,j]) {
-          alarmmatrix[i,j]=abs(final_output$Area[i,j]-quartile_data[1,j])/iqr_data[j]
-        } else if (!is.na(final_output$Area[i,j]) &&final_output$Area[i,j]>quartile_data[2,j]) {
-          alarmmatrix[i,j]=abs(final_output$Area[i,j]-quartile_data[2,j])/iqr_data[j]
+        } else if (!is.na(final_output$quantification[i,j]) &&final_output$quantification[i,j]<quartile_data[1,j]) {
+          alarmmatrix[i,j]=abs(final_output$quantification[i,j]-quartile_data[1,j])/iqr_data[j]
+        } else if (!is.na(final_output$quantification[i,j]) &&final_output$quantification[i,j]>quartile_data[2,j]) {
+          alarmmatrix[i,j]=abs(final_output$quantification[i,j]-quartile_data[2,j])/iqr_data[j]
         }
       }
     }}

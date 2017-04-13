@@ -55,7 +55,7 @@ An `imported_data` list is generated with several variables. Especially importan
 
 * `dataset`, with the dataset of spectra to profile.
 
-* `final_output`, a list that will contain performed quantifications in `Area` as well as several indicators of quality of quantification and of the signal.
+* `final_output`, a list that will contain performed quantifications in `quantification` as well as several indicators of quality of quantification and of the signal.
 
 * `useful_data`, a list of lists where useful information of individual quantifications will be stored, allowing that a signal can have different fitting parameters for different spectra if necessary.
 
@@ -89,7 +89,7 @@ quantification_variables=autorun(imported_data,imported_data$final_output,import
 
 `quantification_variables` has two variables:
 
-* `final_output`, a list that will contain performed quantifications in `Area` as well as several indicators of quality of quantification and of the signal.
+* `final_output`, a list that will contain performed quantifications in `quantification` as well as several indicators of quality of quantification and of the signal.
 
 * `useful_data`, a list of lists where useful information of individual quantifications will be stored, allowing that a signal can have different fitting parameters for different spectra if necessary.
 
@@ -131,24 +131,24 @@ pval=p_values(imported_data$dataset,imported_data$Metadata)
 
 However, the big advantage of profiling data to fingerprinting data is its resilience to overlapping and chemical shift variability (typical in urine) or baseline (typical in blood). Basic univariate analyses of profiling data can be evaluated changing the data called in `p_values`:
 ```
-pval=p_values(quantification_variables$final_output$Area,imported_data$Metadata)
+pval=p_values(quantification_variables$final_output$quantification,imported_data$Metadata)
 ```
 
 A fancier way to look to these results is with the next command:
 ```
-type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,imported_data$ROI_data,'boxplot')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'boxplot')
 ```
 
 With a Plotly figure that shows boxplots for every kind of sample in each signal and associated calculated p values.
 
 A basic PCA can also be observed to have an idea of the possible results found during later multivariate analyses:
 ```
-type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,imported_data$ROI_data,'pca')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'pca')
 ```
 
 Finally, dendrogram heatmaps can show us interesting subsets of samples or signals with the quantification or chemical shift information provided. For example, a not identified signal can be highly correlated in quantification with another signal because they are signals from the same metabolite. Or a not identified signal can have a chemical shift highly correlated to a identified signal, meaning that they possibly belong to metabolites with similar chemical traits.
 ```
-type_analysis_plot(quantification_variables$final_output$Area,quantification_variables$final_output,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
 type_analysis_plot(quantification_variables$final_output$shift,quantification_variables$final_output,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
 ```
 

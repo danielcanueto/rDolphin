@@ -363,7 +363,7 @@ server = function(input, output,session) {
     if (!is.null(reactivequantdata$method1$signals_parameters)) {
       reactiveprogramdata$plot=reactivequantdata$method1$p
       #reactivequantdata$stop3=1
-      reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$Area,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
+      reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
       rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
       ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
@@ -495,7 +495,7 @@ server = function(input, output,session) {
   #Quantification after direct edition of paramters
   tryCatch(observeEvent(input$direct_edition, {
     reactivequantdata$method1=reactivequantdata$method2=signals_int(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$ind,reactiveROItestingdata$signpar,reactiveROItestingdata$ROIpar)
-    reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method2$results_to_save$Area,reactivequantdata$method2$results_to_save$fitting_error,reactivequantdata$method2$results_to_save$signal_area_ratio)
+    reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method2$results_to_save$quantification,reactivequantdata$method2$results_to_save$fitting_error,reactivequantdata$method2$results_to_save$signal_area_ratio)
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method2$plot_data)[-c(1, 2, 3)]
   }))
@@ -577,7 +577,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
         new_signal_area_ratio[,i]=reactiveprogramdata$final_output$signal_area_ratio[,ind]
         new_shift[,i]=reactiveprogramdata$final_output$shift[,ind]
         new_width[,i]=reactiveprogramdata$final_output$half_band_width[,ind]
-        new_Area[,i]=reactiveprogramdata$final_output$Area[,ind]
+        new_Area[,i]=reactiveprogramdata$final_output$quantification[,ind]
         for (j in 1:length(new_useful_data)) new_useful_data[[j]][[i]]=reactiveprogramdata$useful_data[[j]][[ind]]
       }
     }
@@ -586,7 +586,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     reactiveprogramdata$final_output$signal_area_ratio=new_signal_area_ratio
     reactiveprogramdata$final_output$shift=new_shift
     reactiveprogramdata$final_output$half_band_width=new_width
-    reactiveprogramdata$final_output$Area=new_Area
+    reactiveprogramdata$final_output$quantification=new_Area
     reactiveprogramdata$useful_data=new_useful_data
     reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check
     reactiveprogramdata$imported_data$signals_codes=seq(nrow(reactiveprogramdata$ROI_data))
@@ -665,8 +665,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
   #Boxplot plot
   tryCatch(output$plot_p_value_2 <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
+    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
     }, error = function(e) {
       print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
       return(NULL)
@@ -674,9 +674,9 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
   #PCA plot
   tryCatch(output$pcascores <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)
@@ -705,9 +705,9 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
   #Dengrogran heatmaps for quantification and chemical shift
   tryCatch(output$dendheatmapareadata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$Area,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)
@@ -715,7 +715,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
 
   tryCatch(output$dendheatmapshiftdata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$Area))) return()
+    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
   }, error = function(e) {

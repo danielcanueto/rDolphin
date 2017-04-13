@@ -17,7 +17,7 @@ imported_data$signals_names=paste(imported_data$ROI_data[which(!is.na(imported_d
   imported_data$signals_codes = seq_along(signals_names)
 
   dummy=matrix(NaN,nrow(imported_data$dataset),length(imported_data$signals_names),dimnames=list(imported_data$Experiments,imported_data$signals_names))
-  imported_data$final_output = list(Area= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
+  imported_data$final_output = list(quantification= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
 
   #creation of list of necessary parameters to load quantifications and evaluate quality of them
   imported_data$useful_data=vector('list',length(imported_data$Experiments))

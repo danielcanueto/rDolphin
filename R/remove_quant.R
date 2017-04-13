@@ -14,7 +14,7 @@ remove_quant=function(info,imported_data,final_output) {
   ind2=info$col
 
 
-final_output$Area[ind1,ind2]=final_output$shift[ind1,ind2]=final_output$Area[ind1,ind2]=final_output$half_band_width[ind1,ind2]=final_output$signal_area_ratio[ind1,ind2]=final_output$fitting_error[ind1,ind2]=final_output$intensity[ind1,ind2]=NA
+final_output$quantification[ind1,ind2]=final_output$shift[ind1,ind2]=final_output$quantification[ind1,ind2]=final_output$half_band_width[ind1,ind2]=final_output$signal_area_ratio[ind1,ind2]=final_output$fitting_error[ind1,ind2]=final_output$intensity[ind1,ind2]=NA
 
 return(final_output)
 }

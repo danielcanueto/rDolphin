@@ -55,7 +55,7 @@ if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantificatio
 	ind=which(ROI_separator[,2]-col>=0)[1]
 	ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
 
-	loaded_quantification$qualitypar=cbind(t(final_output$Area[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
+	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
 	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
 
 

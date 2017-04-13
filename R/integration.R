@@ -4,7 +4,7 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,interface='F') {
   #preallocation of results_to_save
   results_to_save = list(
     shift = NA,
-    Area = NA,
+    quantification = NA,
     signal_area_ratio = NA,
     fitting_error = NA,
     intensity = NA,
@@ -19,7 +19,7 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,interface='F') {
   integrated_signal = Ydata - baseline
     integrated_signal[integrated_signal<0]=0
   #preparation of results_to_save
-  results_to_save$Area = sum(integrated_signal)
+  results_to_save$quantification = sum(integrated_signal)
   results_to_save$intensity = max(integrated_signal)
 
   cumulative_area = cumsum(integrated_signal) / sum(integrated_signal)

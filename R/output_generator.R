@@ -1,5 +1,5 @@
 
-#Calculation of output variables (Area, fitting_error,shift,signal_area_ratio,intensity, half bandwidth) and plot variables
+#Calculation of output variables (quantification, fitting_error,shift,signal_area_ratio,intensity, half bandwidth) and plot variables
 
 
 output_generator = function(signals_to_quantify,
@@ -50,7 +50,7 @@ output_generator = function(signals_to_quantify,
   subregion_fitted = output_data$fitted_sum[ROI_buckets[bins]]
   subregion_spectrum = Ydata[ROI_buckets[bins]]
   error1=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)
-  output_data$Area = rowSums(fitted_signals[signals_to_quantify, , drop =
+  output_data$quantification = rowSums(fitted_signals[signals_to_quantify, , drop =
                                               F])
   output_data$shift = signals_parameters[2, signals_to_quantify]
   output_data$intensity=signals_parameters[1, signals_to_quantify]

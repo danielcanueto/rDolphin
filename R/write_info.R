@@ -17,9 +17,9 @@
 
 write_info = function(export_path, final_output,ROI_data) {
   dir.create(export_path)
-  write.csv(final_output$Area,
+  write.csv(final_output$quantification,
     file.path(export_path,
-      "Area.csv"))
+      "quantification.csv"))
   write.csv(final_output$shift,
     file.path(export_path,
       "shift.csv"))
