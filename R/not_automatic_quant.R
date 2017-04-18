@@ -253,6 +253,7 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
 
 
     signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
+    colnames(signals_parameters)=c(signals_names,paste('baseline_signal',seq(ncol(signals_parameters)-length(signals_names)),sep='_'))
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }

@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "ts=signal_fitting(paramprov, Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)\nplot(ts[1,])\nplot(ts[2,])\nparamprov\ncumulative_area = cumsum(colSums(ts[1:2,])) / sum(colSums(ts[1:2,]))\nif (all(is.na(cumulative_area))) {\np1=1\np2=length(cumulative_area)\n} else {\np1 = which(cumulative_area< 0.05)[length(which(cumulative_area< 0.05))]\np2 = which(cumulative_area > 0.95)[1]\n}\np1\nwhich(cumulative_area< 0.05)[length(which(cumulative_area< 0.05))]\nresidFun <-\nfunction(par, observed, xx,multiplicities,roof_effect,freq)\nobserved[p1:p2] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,observed,freq))[p1:p2]\nnls.out <-\nnls.lm(\npar = s0,\nfn = residFun,\nobserved = Ydata,\nxx = Xdata,\nmultiplicities=multiplicities,\nroof_effect=roof_effect,\nfreq=program_parameters$freq,\nlower = lb,\nupper = ub,\ncontrol = nls.lm.control(\nfactor = program_parameters$factor,\nmaxiter = program_parameters$nls_lm_maxiter,\nftol = program_parameters$ftol,\nptol = program_parameters$ptol\n)\n)\ncoef(nls.out)\n\n\n\n\n\n\n\nsignals_to_quantify = which(ROI_profile[, 5] >0)\nsignals_codes = signals_names = rep(NA,length(signals_to_quantify))\nj = 1\nfor (i in signals_to_quantify) {\n  k = which(imported_data$signals_names == paste(ROI_profile[i,\n    4],ROI_profile[i,5],sep='_'))\n  \n  signals_codes[j] = imported_data$signals_codes[k]\n  signals_names[j] = as.character(imported_data$signals_names[k])\n  j = j + 1\n}\n\nsignals_to_quantify = which(ROI_profile[, 5] >0)\nsignals_codes = replicate(length(signals_to_quantify), NA)\nsignals_names = replicate(length(signals_to_quantify), NA)\nj = 1\nfor (i in signals_to_quantify) {\n  k = which(imported_data$signals_names == paste(ROI_profile[i,\n    4],ROI_profile[i,5],sep='_'))\n  \n  signals_codes[j] = imported_data$signals_codes[k]\n  signals_names[j] = as.character(imported_data$signals_names[k])\n  j = j + 1\n}\n\n",
+    "created" : 1492498791246.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "463453915",
+    "id" : "EC85ECF6",
+    "lastKnownWriteTime" : 3472328296227680302,
+    "last_content_update" : 1492500031002,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 11,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

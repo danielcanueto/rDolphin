@@ -51,7 +51,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
       program_parameters$ROI_buckets = ROI_buckets
       program_parameters$buck_step = imported_data$buck_step
 
-    
+
     #Quantification for every spectrum
     pb   <- txtProgressBar(1, nrow(imported_data$dataset), style=3)
     for (spectrum_index in 1:nrow(imported_data$dataset)) {
@@ -114,7 +114,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
         if (any(output_data$fitting_error>0.05)==T) {
         dummy = fittingloop(FeaturesMatrix,Xdata,Ydata,program_parameters)
         signals_parameters=dummy$signals_parameters
-        
+
 		#Fitting of the signals
         multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
@@ -123,7 +123,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
         dim(signals_parameters) = c(5, length(signals_parameters)/5)
 		signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
         rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling','multiplicities','roof effect')
-
+        colnames(signals_parameters)=c(signals_names,paste('baseline_signal',seq(ncol(signals_parameters)-length(signals_names)),sep='_'))
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
         dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
 

@@ -1,6 +1,6 @@
 Package: rDolphin
 Type: Package
-Title: Reliable automatic profiling of 1H 1D NMR Spectra, with additional tools for analysis
+Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
 Version: 0.1.0
 Author: c(person("Daniel", "Canueto", role = c("aut", "cre"), email =
     "daniel.canueto@urv.cat"))

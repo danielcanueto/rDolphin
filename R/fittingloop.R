@@ -101,7 +101,6 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
       # #Procedure to calculate the fititng error in all the ROI
       #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
-        paramprov=coef(nls.out)
         iter = iter + 1
         errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -min(Ydata))
         if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
