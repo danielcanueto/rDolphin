@@ -177,17 +177,18 @@ server = function(input, output,session) {
   # })
 
    #Automatic quantification of all ROIs in all spectra
-  tryCatch({observeEvent(input$autorun, {
+  observeEvent(input$autorun, {
+    tryCatch({
     quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data)
     reactiveprogramdata$final_output=quantification_variables$final_output
     reactiveprogramdata$useful_data=quantification_variables$useful_data
-    })},
+    },
     error = function(e) {
       print('Error. Please explain the issue in the Github page if necessary.')
       quantification_variables=NA
       return(quantification_variables)
     })
-
+  })
   #Alignment of signals
   tryCatch({observeEvent(input$alignment, {
     reactiveprogramdata$imported_data$dataset= alignment(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$buck_step)
