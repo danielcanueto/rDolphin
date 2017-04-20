@@ -24,7 +24,7 @@ Creation of matrix to validate quantifications, with information of difference w
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 validation_data=validation(quantification_variables$final_output,5,imported_data$ROI_data,imported_data$Metadata)
 DT::datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) \%>\% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
 }

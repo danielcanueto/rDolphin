@@ -2,9 +2,9 @@
 % Please edit documentation in R/roifunc.r
 \name{roifunc}
 \alias{roifunc}
-\title{Helper function to generate ROI data}
+\title{Helper function to generate ROI data. Not to be used in console.}
 \usage{
-roifunc(ROI_data, ROI_separator, Metadata, Experiments)
+roifunc(ROI_data, Metadata, Experiments)
 }
 \arguments{
 \item{ROI_data}{ROIs data}
@@ -12,14 +12,10 @@ roifunc(ROI_data, ROI_separator, Metadata, Experiments)
 \item{Metadata}{Metadata}
 
 \item{Experiments}{Experiments}
-
-\item{datapath}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)}
-
-\item{ROI_data}{ROI separator}
 }
 \value{
 dummy
 }
 \description{
-Helper function to generate ROI data
+Helper function to generate ROI data. Not to be used in console.
 }

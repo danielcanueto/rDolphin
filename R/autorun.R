@@ -127,7 +127,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
           colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
         } else {
           colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
-        }  
+        }
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
         dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
 
@@ -174,7 +174,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
   }
   print("Done!")
-
-  quantification_variables=list(final_output=final_output,useful_data=useful_data)
+  dummy=integration_error(ROI_data,useful_data,final_output)
+  quantification_variables=list(final_output=dummy$final_output,useful_data=dummy$useful_data)
   return(quantification_variables)
 }

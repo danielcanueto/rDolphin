@@ -9,7 +9,7 @@ save_roi_testing(provisional_data, imported_data, final_output, useful_data)
 \arguments{
 \item{provisional_data}{List with elements to save.}
 
-\item{imported_data}{Imported_data.}
+\item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 

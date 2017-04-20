@@ -11,7 +11,7 @@ write_info(export_path, final_output, ROI_data)
 
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 
-\item{ROI_data}{ROI data.}
+\item{ROI_data}{ROIs data.}
 }
 \value{
 RData with session and 'associated_data' folder with CSVs with quantification and quality information of fitting of signals.
@@ -22,6 +22,6 @@ Writing of quantification and quality information of fitting of signals
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 write_info('output_info',quantification_variables$final_output,imported_data$ROI_data)
 }

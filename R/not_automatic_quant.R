@@ -259,7 +259,6 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
       colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
     }  
     
-    colnames(signals_parameters)=ifelse(fitting_type == "Clean Fitting",paste(ROI_profile[,4],ROI_profile[,5],sep='_'),c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_')))
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }

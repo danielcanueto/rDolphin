@@ -4,8 +4,7 @@
 \alias{load_quantification}
 \title{Load quantification}
 \usage{
-load_quantification(useful_data, imported_data, final_output, info,
-  ROI_separator)
+load_quantification(useful_data, imported_data, final_output, info, ROI_data)
 }
 \arguments{
 \item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
@@ -16,7 +15,7 @@ load_quantification(useful_data, imported_data, final_output, info,
 
 \item{info}{List with 'row' and 'column' indicating spectrum and signal to load.}
 
-\item{ROI_separator}{Delimiter of ROIs in ROIdata}
+\item{ROI_data}{ROIs data}
 }
 \value{
 Loaded plot, signals parameters and quality of fitting parameters of quantifications
@@ -28,5 +27,5 @@ Load quantification
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
-loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=1),imported_data$ROI_separator)
+loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=1),imported_data$ROI_data)
 }

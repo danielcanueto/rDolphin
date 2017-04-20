@@ -13,7 +13,7 @@ write_plots(path, final_output, imported_data, useful_data)
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.#'}
+\item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
 }
 \value{
 Plots in pdf files
@@ -24,6 +24,6 @@ Import of variables stored in the parameters file and of the dataset to quantify
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data)
+quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
 }

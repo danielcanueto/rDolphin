@@ -1,6 +1,5 @@
 #' Helper function to generate ROI data. Not to be used in console.
 #'
-#' @param datapath Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)
 #' @param ROI_data ROIs data
 #' @param Metadata Metadata
 #' @param Experiments Experiments

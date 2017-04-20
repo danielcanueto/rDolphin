@@ -2,18 +2,16 @@
 % Please edit documentation in R/helperimport.R
 \name{helperimport}
 \alias{helperimport}
-\title{Helper function to import data}
+\title{Helper function to import data in GUI. Not to be used in console.}
 \usage{
 helperimport(datapath, dummy)
 }
 \arguments{
-\item{datapath}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)}
-
-\item{dummy}{ROIs data}
+\item{dummy}{}
 }
 \value{
 dummy
 }
 \description{
-Helper function to import data
+Helper function to import data in GUI. Not to be used in console.
 }

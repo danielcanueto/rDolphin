@@ -14,7 +14,7 @@ not_automatic_quant(imported_data, final_output, ind, ROI_profile, useful_data,
 
 \item{ind}{Experiment to quantify.}
 
-\item{ROI_profile}{Data frame with ROI profiles}
+\item{ROI_profile}{Information of signals to fit in ROI}
 
 \item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
 

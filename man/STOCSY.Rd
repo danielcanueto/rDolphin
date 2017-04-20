@@ -11,15 +11,18 @@ STOCSY(dataset, ppm, limits, method)
 
 \item{ppm}{ppm}
 
-\item{limits}{Limits}
+\item{limits}{Left and right edges of the region to correalte with the rest of spectrum.}
 
-\item{method}{Correlation method.}
-
-\item{ROI_separator}{ROI separator.}
+\item{method}{Correlation method ('pearson','spearman').}
 }
 \value{
-STOCSY plot
+STOCSY interactive plot
 }
 \description{
 Automatic quantification of signals for all experiments using the information located in the ROI patterns file.
+}
+\examples{
+setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
+imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
+STOCSY(imported_data$dataset,imported_data$ppm,c(1,0.995),'spearman')
 }

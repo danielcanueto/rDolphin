@@ -92,10 +92,10 @@ import_data = function(parameters_path) {
   } else if (normalization == 4) {
     #Spectrum AreA
     params$norm_AREA = 'Y'
-  } else if (normalization == 5) {
+  } else if (normalization == 0) {
     #No normailzation
 
-  } else if (normalization == 6) {
+  } else if (normalization == 5) {
     #PQN normailzation
     params$norm_AREA = 'Y'
     pqn='Y'
@@ -149,6 +149,8 @@ import_data = function(parameters_path) {
         imported_data$dataset=t(apply(imported_data$dataset,1,rev))
         imported_data$ppm=rev(imported_data$ppm)
       }
+	  colnames(imported_data$dataset) = imported_data$ppm
+	  rownames(imported_data$dataset) = Experiments
 	  params$buck_step = ifelse(
 	    as.character(import_profile[11, 2]) == '',
 	    abs(imported_data$ppm[1] - imported_data$ppm[length(imported_data$ppm)]) /
@@ -167,7 +169,7 @@ import_data = function(parameters_path) {
         #Formate
             lmn=apply(imported_data$dataset,1,function(x)JTPcalibrateToPeak(x,imported_data$ppm,params$ref_peak_pos)$deltaPPM)
           }
-            if (alignment!=4&&nrow(imported_data$dataset)>1) {
+            if (alignment!=0&&nrow(imported_data$dataset)>1) {
 
               imported_data$ppm=imported_data$ppm-median(lmn)
 
@@ -269,7 +271,7 @@ import_data = function(parameters_path) {
   imported_data$parameters_path = parameters_path
   imported_data$signals_names = signals_names
   imported_data$signals_codes = signals_codes
-  imported_data$Experiments = setdiff(Experiments, imported_data$not_loaded_experiments)
+  imported_data$Experiments = rownames(imported_data$dataset)
   imported_data$ROI_data = ROI_data
   imported_data$freq = freq
   imported_data$Metadata=Metadata
@@ -277,8 +279,7 @@ import_data = function(parameters_path) {
   imported_data$jres_path=jres_path
   imported_data$program_parameters=program_parameters
   imported_data$export_path=export_path
-  colnames(imported_data$dataset) = imported_data$ppm
-  rownames(imported_data$dataset) = imported_data$Experiments
+
 
   #creation of list with the different final outputs
   dummy=matrix(NaN,nrow(imported_data$dataset),length(imported_data$signals_names),dimnames=list(imported_data$Experiments,imported_data$signals_names))
@@ -299,24 +300,12 @@ import_data = function(parameters_path) {
 
   #Useful data about conditions of import of data. TO BE REARRANGED
   dir.create(imported_data$export_path, showWarnings = FALSE)
-  write.csv(
-    as.data.frame(imported_data$params),
-    file.path(imported_data$export_path, 'initial_params.csv'),
-    row.names = F
-  )
-  write.csv(imported_data$dataset,
-    file.path(imported_data$export_path, 'initial_dataset.csv'),row.names=F)
-  write.csv(notnormalizeddataset,
-    file.path(imported_data$export_path, 'notnormalizeddataset.csv'),row.names=F)
-  write.csv(norm_factor,
-    file.path(imported_data$export_path, 'norm_factor.csv'),row.names=F)
-  if ("not_loaded_experiments" %in% names(imported_data))
-  write.table(
-      imported_data$not_loaded_experiments,
-      file.path(imported_data$export_path, 'not_loaded_experiments.csv'),
-      row.names = F,
-      col.names = F
-    )
+  # fwrite(as.data.frame(imported_data$params),file=file.path(imported_data$export_path, 'initial_params.csv'))
+  fwrite(as.data.frame(imported_data$dataset),file=file.path(imported_data$export_path, 'initial_dataset.csv'))
+  fwrite(as.data.frame(notnormalizeddataset),file=file.path(imported_data$export_path, 'notnormalizeddataset.csv'))
+  fwrite(as.data.frame(norm_factor),file=file.path(imported_data$export_path, 'norm_factor.csv'))
+  if ("not_loaded_experiments" %in% names(imported_data)&&length(imported_data$not_loaded_experiments)>0)
+    fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(imported_data$export_path, 'not_loaded_experiments.csv'),col.names = F)
   print('Done!')
   return(imported_data)
 

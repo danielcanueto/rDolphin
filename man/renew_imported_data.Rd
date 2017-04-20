@@ -7,7 +7,7 @@
 renew_imported_data(imported_data)
 }
 \arguments{
-\item{imported_data}{Imported data}
+\item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 }
 \value{
 Changed imported data
