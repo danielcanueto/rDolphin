@@ -3,11 +3,10 @@
 ## Please run these commands in the R console to install the package:
 
 1. `install.packages(c("devtools","knitr","rmarkdown","rprojroot","evaluate","yaml","htmltools","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","RJSONIO","DEoptimR"))`               (installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github) 
-2. `library(devtools)`           (loads package devtools to use the install_github function)
-3. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             (installs D3TableFilter) 
-4. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            (installs MassSpecWavelet) 
-5. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           (installs rDolphin)
-6. `library(rDolphin)`          (loads rDolphin)
+2. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             (installs D3TableFilter) 
+3. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            (installs MassSpecWavelet) 
+4. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           (installs rDolphin)
+5. `library(rDolphin)`          (loads rDolphin)
 
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 

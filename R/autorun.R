@@ -123,7 +123,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
         dim(signals_parameters) = c(5, length(signals_parameters)/5)
 		signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
         rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling','multiplicities','roof effect')
-        colnames(signals_parameters)=c(signals_names,paste('baseline_signal',seq(ncol(signals_parameters)-length(signals_names)),sep='_'))
+        colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
         dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
 
