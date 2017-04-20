@@ -1,0 +1,21 @@
+{
+    "debugBreakpointsState" : {
+        "breakpoints" : [
+            {
+                "editor_line_number" : 255,
+                "editor_state" : 2,
+                "function_name" : "not_automatic_quant",
+                "function_steps" : "",
+                "id" : 1,
+                "is_package_breakpoint" : true,
+                "is_pending_debug_completion" : false,
+                "line_number" : 255,
+                "needs_updated_steps" : false,
+                "package_name" : "rDolphin",
+                "path" : "~/GitHub/prova/R/not_automatic_quant.R",
+                "state" : 2,
+                "type" : 0
+            }
+        ]
+    }
+}

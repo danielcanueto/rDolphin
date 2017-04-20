@@ -11,7 +11,6 @@
 
 signals_int = function(imported_data, final_output,spectrum_index,signals_introduce,ROI_profile) {
 
-  c=NULL
     #Preparation of necessary variables and folders to store figures and information of the fitting
 
   ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
@@ -131,7 +130,11 @@ fitting_type=ROI_profile[1,3]
     #   imported_data$buck_step,
     #   final_output)
       signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
-      colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
+      if (fitting_type == "Clean Fitting") {
+        colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
+      } else {
+        colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
+      }  
       provisional_data=list()
     provisional_data$signals_parameters=signals_parameters
     provisional_data$program_parameters=program_parameters
