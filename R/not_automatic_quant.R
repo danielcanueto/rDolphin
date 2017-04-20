@@ -257,8 +257,8 @@ colors=c('red','blue','black','brown','cyan','green','yellow')
       colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
     } else {
       colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
-    }  
-    
+    }
+
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }
@@ -298,7 +298,13 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
     }
 
 	    if (identical(ind,seq(nrow(imported_data$dataset))))  setTxtProgressBar(pb, spectrum_index)
+    if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum") {
 
+      dummy=integration_error(ROI_data,useful_data,final_output,signals_codes)
+      resulting_data$useful_data=dummy$useful_data
+      resulting_data$final_output=dummy$final_output
+
+    }
 	if (interface == T) {
 		resulting_data$p=p
 		resulting_data$results_to_save=results_to_save

@@ -174,7 +174,12 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
   }
   print("Done!")
-  dummy=integration_error(ROI_data,useful_data,final_output)
-  quantification_variables=list(final_output=dummy$final_output,useful_data=dummy$useful_data)
+  ind=which(ROI_data[,3]=="Clean Sum"| ROI_data[,3]=="Baseline Sum")
+  if (length(ind>0)) {
+  dummy=integration_error(ROI_data,useful_data,final_output,ind)
+  final_output=dummy$final_output
+  useful_data=dummy$useful_data
+}
+  quantification_variables=list(final_output=final_output,useful_data=useful_data)
   return(quantification_variables)
 }

@@ -3,11 +3,11 @@
 #' @param ROI_data ROI_data
 #' @param useful_data useful_data
 #' @param final_output final_output
+#' @param ind ind
 #' @return dummy
 #' @export integration_error
 
-integration_error <- function(ROI_data,useful_data,final_output) {
-ind=which(ROI_data[,3]=="Clean Sum"| ROI_data[,3]=="Baseline Sum")
+integration_error <- function(ROI_data,useful_data,final_output,ind) {
 for (ii in ind) {
   all4=t(as.data.frame(lapply(useful_data,function(x)x[[ii]]$plot_data[1,])))
   spectra_lag=rep(NA,dim(all4)[1])
