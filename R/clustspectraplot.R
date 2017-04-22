@@ -27,7 +27,7 @@ ind=seq(nrow(imported_data$dataset))
     stop=1
     if (length(rm_ind)>0) scaled_roi=scaled_roi[-rm_ind,]
     rm_ind=c()
-    apres <- apclusterK(negDistMat(r=2), scaled_roi, K=min(c(dim(scaled_roi)[1]-1,10)),verbose=F)
+    apres <- suppressWarnings(apclusterK(negDistMat(r=2), scaled_roi, K=min(c(dim(scaled_roi)[1]-1,10)),verbose=F))
     for (i in 1:length(apres@clusters)) {
       if (length(apres@clusters[[i]])==1) rm_ind=c(rm_ind,apres@clusters[[i]][1])
     }
@@ -47,7 +47,7 @@ ind=seq(nrow(imported_data$dataset))
     visual_roi=original_roi=imported_data$dataset
     ind=seq(nrow(imported_data$dataset))
 }
-  for (i in 1:nrow(original_roi))   visual_roi[i,]=original_roi[i,]+(i-1)*mean(original_roi)
+  # for (i in 1:nrow(original_roi))   visual_roi[i,]=original_roi[i,]+(i-1)*mean(original_roi)
 
 
   plotdata = data.frame(Xdata=imported_data$ppm, signals = t(visual_roi) )

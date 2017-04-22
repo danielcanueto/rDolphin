@@ -4,7 +4,6 @@
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param data Data to be used to get the analysis plot
 #' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')
-#' @param ROI_data ROIs data.
 #'
 #' @return Analysis plot
 #' @export type_analysis_plot
@@ -20,14 +19,14 @@
 #' type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'boxplot')
 
 
-type_analysis_plot = function(data,final_output,imported_data,ROI_data,type=c('boxplot','pca','dendrogram_heatmap')) {
+type_analysis_plot = function(data,final_output,imported_data,type=c('boxplot','pca','dendrogram_heatmap')) {
 
   m <- list(l = 150, r = 0, b = 150, t = 0,pad = 4)
-
-data=data[,which(ROI_data[,5]>0)]
+  ind=apply(data,2,function(x)!all(is.na(x)))
+data=data[,ind]
 if (imported_data$program_parameters$automatic_removal=='Y') {
-  data[final_output$fitting_error[,which(ROI_data[,5]>0)]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
-  data[final_output$signal_area_ratio[,which(ROI_data[,5]>0)]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
+  data[final_output$fitting_error[,ind]>imported_data$program_parameters$fitting_error_analysis_limit]=NA
+  data[final_output$signal_area_ratio[,ind]<imported_data$program_parameters$signal_area_ratio_analysis_limit]=NA
   data=data[,!apply(data,2,function(x)length(which(is.na(x)))>0.5*length(x))]
 }
 
@@ -56,6 +55,6 @@ p <- layout(p,title="PCA scores and loadings",
 print(p)
 }, dendrogram_heatmap = {
   data=as.data.frame(scale(data))
-heatmaply(data) %>% layout(margin = list(l = 130, b = 130))
+heatmaply(data[seq(nrow(data)),]) %>% layout(margin = list(l = 130, b = 130))
 })
 }

@@ -25,7 +25,7 @@ storedpars$NC_proc=as.numeric(storedpars$NC_proc)
 storedpars$SW=as.numeric(storedpars$SW)
 
 
-readCon <- file(path, 'rb')
+readCon <- suppressWarnings(file(path, 'rb'))
 
 
 data <- matrix(nrow=storedpars$SI[2], ncol=storedpars$SI[1])
