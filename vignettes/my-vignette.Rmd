@@ -66,7 +66,7 @@ Looking to a figure of results of profiling in a model spectrum can help to impr
 
 Run the next command:
 ```
-autorun_model=autorun_model_spectrum(imported_data)
+autorun_model=profile_model_spectrum(imported_data)
 ```
 
 `autorun_model` has three elements:
@@ -124,7 +124,7 @@ calculates possibles outliers as they differ too much from the interquartile ran
 	
 ## Uni and multivariate analysis of fingerprinting and profiling data
 
-Univariate analyses of every bin could be already seen with the `autorun_model_spectrum` function. The p values calculated can be also analysed with the `p_values` function:
+Univariate analyses of every bin could be already seen with the `profile_model_spectrum` function. The p values calculated can be also analysed with the `p_values` function:
 ```
 pval=p_values(imported_data$dataset,imported_data$Metadata)
 ```
