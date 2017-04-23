@@ -14,8 +14,7 @@
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' load("MTBLS242_subset_example.RData")
 #' type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'boxplot')
 
 
@@ -48,7 +47,7 @@ carsDf <- data.frame(b$x,metadata=imported_data$Metadata)
 colnames(carsDf)[length(colnames(carsDf))]='metadata'
 p <- plot_ly(x=~ carsDf2$PC1,y=~ carsDf2$PC2,type='scatter',
   mode=~"markers",text = rownames(carsDf2),color='loadings',marker=list(size=8))%>% add_trace(x=~ carsDf$PC1,y=~ carsDf$PC2,
-    mode=~"markers",text = rownames(carsDf),color =~ as.factor(carsDf$metadata),marker=list(size=11))
+    mode=~"markers",text = rownames(carsDf),color =~ (as.factor(carsDf$metadata)+1),marker=list(size=11))
 p <- layout(p,title="PCA scores and loadings",
   xaxis=list(title="PC1"),
   yaxis=list(title="PC2"),margin=m)

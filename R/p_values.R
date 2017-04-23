@@ -13,6 +13,7 @@
 
 
 p_values=function(dataset,metadata) {
+  print ('Preparing an univariate analysis.')
 
 
 types=unique(unlist(metadata[,-1]))[which(unique(unlist(metadata[,-1]))>=0)]
@@ -128,5 +129,8 @@ for (k in 1:dim(dataset)[2]) {
 p_value_final=rep(1,length(p_value))
 p_value_final[which(!is.na(p_value))]=round(t(as.matrix(p.adjust(p_value[which(!is.na(p_value))],method="none"))),3)
 names(p_value_final)=colnames(dataset)
+print ('Done!')
+
 return(p_value_final)
+
 }

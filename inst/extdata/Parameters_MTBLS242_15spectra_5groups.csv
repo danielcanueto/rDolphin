@@ -5,10 +5,10 @@ Metadata path (csv format),Metadata_MTBLS242_15spectra_5groups.csv
 1D data index,
 proc_no,
 ROI patterns file,ROI_profiles_MTBLS242_15spectra_5groups.csv
-Normalization (1=Eretic; 2=TSP; 3=Creatinine; 4=Spectra Sum; 5=No;6=PQN),5
-Alignment (1=Glucose; 2=TSP; 3=Formate),1
+Normalization (0=No;1=Eretic; 2=TSP; 3=Creatinine; 4=Spectra Sum; 5=PQN),0
+Alignment (0=No;1=Glucose; 2=TSP; 3=Formate),1
 Default Suppressions,
-Spectometer Frequency (Hz),600.04
+Spectometer Frequency (MHz),600.04
 Bucket resolution,0.0006
 Biofluid,Blood
 2D-Path,

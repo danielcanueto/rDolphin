@@ -12,7 +12,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' model_spectrum_plot=profile_model_spectrum(imported_data)
+#' model_spectrum_plot=profile_model_spectrum(imported_data,imported_data$ROI_data)
 
 
 

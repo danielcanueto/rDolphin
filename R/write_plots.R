@@ -12,13 +12,12 @@
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' load("MTBLS242_subset_example.RData")
 #' write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
 
 
 write_plots = function(path,final_output,imported_data,useful_data) {
-  path=paste(path,'plots/',sep='/')
+  path=file.path(path,'plots')
   dir.create(path)
   ind3=which(apply(final_output$shift,2, function(x) all(is.na(x)))==F)
   print('Be patient. This could take a while. Take another cup of coffee, meanwhile')

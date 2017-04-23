@@ -30,10 +30,11 @@ server = function(input, output,session) {
 	# return(dummy)
 	# })
 	tryCatch({
-	reactiveprogramdata$imported_data = suppressWarnings(import_data(reactiveprogramdata$inFile$datapath))
-    # reactiveprogramdata$originaldataset=imported_data$dataset
-	    #plot of quantification in model spectrum with current roi profiles
-	reactiveprogramdata$final_output=reactiveprogramdata$imported_data$final_output
+	reactiveprogramdata$imported_data = tryCatch({suppressWarnings(import_data(reactiveprogramdata$inFile$datapath))}, error = function(e) {
+	  print('Import of data not posible with current input')
+	  return(NULL)
+	})
+  reactiveprogramdata$final_output=reactiveprogramdata$imported_data$final_output
 	reactiveprogramdata$useful_data=reactiveprogramdata$imported_data$useful_data
 	reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=reactiveprogramdata$imported_data$ROI_data
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
@@ -87,7 +88,13 @@ server = function(input, output,session) {
     session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
     session$sendCustomMessage('activeNavs', 'ROI Profiles')
     session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
-	 }})})
+	}}, error = function(e) {
+	  print('Error. Please explain the issue in the Github page.')
+	  reactiveprogramdata$imported_data=NA
+	  return(reactiveprogramdata$imported_data)
+	})
+
+	})
 
 
 
@@ -143,7 +150,7 @@ server = function(input, output,session) {
   #Choice and storage of data associated to session
 
   observe({
-    volumes <- c("UserFolder"="C:/")
+    volumes=c(home = '~/')
     shinyFileSave(input, "save", roots=volumes, session=session)
     fileinfo <- parseSavePath(volumes, input$save)
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))

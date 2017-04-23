@@ -66,10 +66,10 @@ Looking to a figure of results of profiling in a model spectrum can help to impr
 
 Run the next command:
 ```
-autorun_model=profile_model_spectrum(imported_data)
+profile_model=profile_model_spectrum(imported_data,imported_data$ROI_data)
 ```
 
-`autorun_model` has three elements:
+`profile_model` has three elements:
 
 * `p`, a Plotly figure showing the fitting applied to every ROI in the model spectrum as well as fingerprinting data of every bin (with this information, you can look for example if there are zones of the spectrum with significant differences that are not profiled yet). 
 
@@ -136,20 +136,20 @@ pval=p_values(quantification_variables$final_output$quantification,imported_data
 
 A fancier way to look to these results is with the next command:
 ```
-type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'boxplot')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'boxplot')
 ```
 
 With a Plotly figure that shows boxplots for every kind of sample in each signal and associated calculated p values.
 
 A basic PCA can also be observed to have an idea of the possible results found during later multivariate analyses:
 ```
-type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'pca')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'pca')
 ```
 
 Finally, dendrogram heatmaps can show us interesting subsets of samples or signals with the quantification or chemical shift information provided. For example, a not identified signal can be highly correlated in quantification with another signal because they are signals from the same metabolite. Or a not identified signal can have a chemical shift highly correlated to a identified signal, meaning that they possibly belong to metabolites with similar chemical traits.
 ```
-type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
-type_analysis_plot(quantification_variables$final_output$shift,quantification_variables$final_output,imported_data,imported_data$ROI_data,'dendrogram_heatmap')
+type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'dendrogram_heatmap')
+type_analysis_plot(quantification_variables$final_output$shift,quantification_variables$final_output,imported_data,'dendrogram_heatmap')
 ```
 
 
