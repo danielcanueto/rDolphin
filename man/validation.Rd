@@ -25,5 +25,4 @@ Creation of matrix to validate quantifications, with information of difference w
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 load("MTBLS242_subset_example.RData")
 validation_data=validation(quantification_variables$final_output,5,imported_data$ROI_data,imported_data$Metadata)
-DT::datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) \%>\% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
 }

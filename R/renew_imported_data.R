@@ -4,12 +4,7 @@
 #'
 #' @return Changed imported data
 #' @export renew_imported_data
-#'
-#' @examples
-#' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' imported_data$ROI_data=imported_data$ROI_data[-1,]
-#' imported_data=renew_imported_data(imported_data)
+
 
 renew_imported_data= function(imported_data) {
 
@@ -26,6 +21,6 @@ imported_data$signals_names=paste(imported_data$ROI_data[which(!is.na(imported_d
     for (j in seq_along(imported_data$useful_data[[i]])) {
       imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=NULL,program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
     }}
-	
+
 	return(imported_data)
 	}

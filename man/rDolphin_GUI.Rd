@@ -12,7 +12,3 @@ rDolphin Shiny GUI
 \description{
 rDolphin Shiny GUI
 }
-\examples{
-rDolphin_GUI()
-
-}

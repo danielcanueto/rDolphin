@@ -24,5 +24,6 @@ Import of variables stored in the parameters file and of the dataset to quantify
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 load("MTBLS242_subset_example.RData")
-write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
+#Not run:
+#write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
 }

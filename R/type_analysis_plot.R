@@ -47,7 +47,7 @@ carsDf <- data.frame(b$x,metadata=imported_data$Metadata)
 colnames(carsDf)[length(colnames(carsDf))]='metadata'
 p <- plot_ly(x=~ carsDf2$PC1,y=~ carsDf2$PC2,type='scatter',
   mode=~"markers",text = rownames(carsDf2),color='loadings',marker=list(size=8))%>% add_trace(x=~ carsDf$PC1,y=~ carsDf$PC2,
-    mode=~"markers",text = rownames(carsDf),color =~ (as.factor(carsDf$metadata)+1),marker=list(size=11))
+    mode=~"markers",text = rownames(carsDf),color =~ (as.factor(carsDf$metadata+1)),marker=list(size=11))
 p <- layout(p,title="PCA scores and loadings",
   xaxis=list(title="PC1"),
   yaxis=list(title="PC2"),margin=m)

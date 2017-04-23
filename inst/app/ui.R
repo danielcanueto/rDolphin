@@ -44,7 +44,7 @@ shinyUI(fluidPage(
           div(style="display:inline-block",uiOutput('varselect')),
           div(style="display:inline-block",uiOutput('align_button')),
           div(style="display:inline-block",uiOutput('model_button')),
-          fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in the spectrum model and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given. If you find other signals interesting to fit you can add them in the 'ROI Profiles' tab."))),
+          fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in a model spectrum and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given. If you find other signals interesting to fit you can add them in the 'ROI Profiles' tab."))),
           plotlyOutput("autorun_plot"),
           div(dataTableOutput("sp"), style = "font-size:80%")
           # div(dataTableOutput("indicators"), style = "font-size:80%")

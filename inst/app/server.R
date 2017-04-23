@@ -10,7 +10,7 @@ server = function(input, output,session) {
   reactivequantdata <- reactiveValues(method1=NA)
   #reactivequantdata <- reactiveValues(method2=NA, method1 = NA,stop3=0)
 
-  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=F,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
+  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=FALSE,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
 
   ## FIRST TAB REACTIVE OUTPUTS
 
@@ -22,7 +22,7 @@ server = function(input, output,session) {
     }
 
 	#Imported data is loaded to 'dummy'. Only after the check that the parameters are correct, they are stored in 'reactiveprogramdata'.
-	# dummy=list(imported_data=NA,autorun_plot=NA,select_options=NA,spectra=NA,clusterplot=NA,medianplot=NA,beginning=F,jres_plot=NA)
+	# dummy=list(imported_data=NA,autorun_plot=NA,select_options=NA,spectra=NA,clusterplot=NA,medianplot=NA,beginning=FALSE,jres_plot=NA)
 	# Import of data
 	# dummy = tryCatch({helperimport(reactiveprogramdata$inFile$datapath,dummy)
 	  # }, error = function(e) {
@@ -68,11 +68,11 @@ server = function(input, output,session) {
 	if (!is.null(dummy)) {
 	reactiveprogramdata$select_options=dummy$select_options
 	reactiveprogramdata$spectra=dummy$spectra
-	reactiveprogramdata$beginning =T
+	reactiveprogramdata$beginning =TRUE
 
 	reactiveprogramdata$jres_plot=tryCatch(twod_data(reactiveprogramdata$imported_data$jres_path), error = function(e) NA)
 
-	# if (dummy$beginning==T) {
+	# if (dummy$beginning==TRUE) {
 	  # plo=names(sapply(dummy, names))
 	  # for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=dummy[[plo[i]]]
 
@@ -128,7 +128,7 @@ server = function(input, output,session) {
 	if (!is.null(dummy)) {
 	reactiveprogramdata$select_options=dummy$select_options
 	reactiveprogramdata$spectra=dummy$spectra
-	reactiveprogramdata$beginning =T
+	reactiveprogramdata$beginning =TRUE
 	print("Done!")
 
     #When the session is loaded the tabs and some inputs become active
@@ -166,7 +166,7 @@ server = function(input, output,session) {
   #Choice of folder to save plots
 
   folderInput1 <- reactive({
-    volumes = c("UserFolder"="C:/")
+    volumes=c(home = '~/')
     shinyDirChoose(input, 'folder', roots = volumes, session = session,
       restrictions = system.file(package = 'base'))
     return(parseDirPath(volumes, input$folder))
@@ -185,10 +185,10 @@ server = function(input, output,session) {
   #   for (i in 1:length(plo)) {
   #     added_data[[plo[i]]]=savedreactivedata[plo[i]]
   #   }
-  #   ind=which(reactiveprogramdata$imported_data$Experiments %in% added_data$imported_data$Experiments==T)
-  #   ind2=which(reactiveprogramdata$imported_data$signals_names %in% added_data$imported_data$signals_names==T)
-  #   ind3=which(added_data$imported_data$Experiments %in% reactiveprogramdata$imported_data$Experiments==T)
-  #   ind4=which(added_data$imported_data$signals_names %in% reactiveprogramdata$imported_data$signals_names==T)
+  #   ind=which(reactiveprogramdata$imported_data$Experiments %in% added_data$imported_data$Experiments==TRUE)
+  #   ind2=which(reactiveprogramdata$imported_data$signals_names %in% added_data$imported_data$signals_names==TRUE)
+  #   ind3=which(added_data$imported_data$Experiments %in% reactiveprogramdata$imported_data$Experiments==TRUE)
+  #   ind4=which(added_data$imported_data$signals_names %in% reactiveprogramdata$imported_data$signals_names==TRUE)
   #
   #   for (i in 1:length(reactiveprogramdata$final_output)) {
   #     reactiveprogramdata$final_output[[i]][ind,ind2]=added_data$final_output[[i]][ind3,ind4]
@@ -204,23 +204,23 @@ server = function(input, output,session) {
 
   #Appearance of autorun and aligment buttons only after beginning or loading session
   output$varselect <- renderUI({
-    if(reactiveprogramdata$beginning==F){return()}
+    if(reactiveprogramdata$beginning==FALSE){return()}
     actionButton('autorun', 'Autorun all spectra')
   })
   output$align_button <- renderUI({
-    if(reactiveprogramdata$beginning==F){return()}
+    if(reactiveprogramdata$beginning==FALSE){return()}
     actionButton('alignment', 'Alignment of signals')
   })
   output$model_button <- renderUI({
-    if(reactiveprogramdata$beginning==F){return()}
-    actionButton('model_spectrum', 'Profile model spectrum')
+    if(reactiveprogramdata$beginning==FALSE){return()}
+    actionButton('model_spectrum', 'Profile model spectrum again')
   })
   output$sp = DT::renderDataTable(
-    reactiveprogramdata$total_signals_parameters , selection = list(selected = NULL),server = T)
+    reactiveprogramdata$total_signals_parameters , selection = list(selected = NULL),server = TRUE)
 
 #Removed by now because it is unstable.
  # output$peak_analysis <- renderUI({
-  #   if(reactiveprogramdata$beginning==F){return()}
+  #   if(reactiveprogramdata$beginning==FALSE){return()}
   #   actionButton('peak_analysis', 'Peak analysis')
   # })
 
@@ -271,7 +271,7 @@ server = function(input, output,session) {
 
   #Plot where quantification of model spectrum amnd p values for every bucket are stored
   output$autorun_plot <- renderPlotly({
-    if (reactiveprogramdata$beginning==F) return()
+    if (reactiveprogramdata$beginning==FALSE) return()
     reactiveprogramdata$autorun_plot
   })
 
@@ -284,11 +284,11 @@ server = function(input, output,session) {
 
   # ROI parameters are loaded when a ROI is selected
   observeEvent(input$select, {
-    if (reactiveprogramdata$beginning==F) return()
+    if (reactiveprogramdata$beginning==FALSE) return()
 	#Splitting of ROI data into individual ROIs to be quantified
 	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
-    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
       reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
     reactiveROItestingdata$ROIpar <- reactiveprogramdata$ROIdata_subset
@@ -317,7 +317,7 @@ server = function(input, output,session) {
 	#TODO: it seems sometiems the edition fails if the change was too quick. Revise possible ways to control it.
     output$ROIdata <- renderD3tf({
       tableProps <- list(
-        btn_reset = F,
+        btn_reset = FALSE,
         sort = TRUE,
         sort_config = list(
           sort_types = c("String", rep("Number", ncol(reactiveprogramdata$ROIdata_subset)))
@@ -325,7 +325,7 @@ server = function(input, output,session) {
 
       d3tf(reactiveROItestingdata$ROIpar,
            tableProps = tableProps,
-           enableTf = F,
+           enableTf = FALSE,
            edit=TRUE,
            tableStyle = "table table-bordered")
 
@@ -384,11 +384,11 @@ server = function(input, output,session) {
 
   #Selection of spectra, or of cluster or median plots
   observeEvent(input$x1_rows_selected, {
-    if (reactiveprogramdata$beginning==F) return()
-    if (reactiveprogramdata$beginning ==T) {
+    if (reactiveprogramdata$beginning==FALSE) return()
+    if (reactiveprogramdata$beginning ==TRUE) {
 	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
-    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
 
       reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
@@ -425,7 +425,7 @@ server = function(input, output,session) {
     }
 
 	#The automatic quantification
-    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)},error=function(e) {
+    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)},error=function(e) {
       print("There was a problem.")
       return(NULL)
       })
@@ -455,7 +455,7 @@ server = function(input, output,session) {
     is_autorun='Y'
 
     tryCatch({
-    dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=T)
+    dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
   })})
@@ -488,7 +488,7 @@ server = function(input, output,session) {
   tryCatch(observeEvent(input$save_profile, {
   dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
-    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
     if (length(reactiveprogramdata$info$col)>0) {
 
@@ -505,14 +505,14 @@ server = function(input, output,session) {
 
 
   #Spectra table.
-    output$x1 = tryCatch(DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = T))
+    output$x1 = tryCatch(DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE))
     # proxy = dataTableProxy('x1')
 
 
 
 	#Plotly figure where to analyze peak shape fitting
   output$plot <- renderPlotly({
-    if (reactiveprogramdata$beginning==F) return()
+    if (reactiveprogramdata$beginning==FALSE) return()
       reactiveprogramdata$plot
   })
 
@@ -523,8 +523,8 @@ server = function(input, output,session) {
     tableProps =
     d3tf(reactiveROItestingdata$qualitypar,
       tableProps = list(btn_reset = TRUE),
-      enableTf = F,
-      edit=F,
+      enableTf = FALSE,
+      edit=FALSE,
       showRowNames = TRUE,
       tableStyle = "table table-bordered")
   })
@@ -533,14 +533,14 @@ server = function(input, output,session) {
   observe({
     if (!is.na(reactiveprogramdata$imported_data))  {
   output$repository = DT::renderDataTable(
-    reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>reactiveROItestingdata$ROIpar[1,2]&reactiveprogramdata$imported_data$repository[,3]<reactiveROItestingdata$ROIpar[1,1]),] , server = T)
+    reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>reactiveROItestingdata$ROIpar[1,2]&reactiveprogramdata$imported_data$repository[,3]<reactiveROItestingdata$ROIpar[1,1]),] , server = TRUE)
     }
   })
   observe({
     if (!is.na(reactiveprogramdata$imported_data))  {
       output$repository2 = DT::renderDataTable(
-        # reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]-0.05)&reactiveprogramdata$imported_data$repository[,3]<(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]+0.05)),] , server = T)
-      reactiveprogramdata$imported_data$repository , filter='top', server = T)
+        # reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]-0.05)&reactiveprogramdata$imported_data$repository[,3]<(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]+0.05)),] , server = TRUE)
+      reactiveprogramdata$imported_data$repository , filter='top', server = TRUE)
 
       }
   })
@@ -579,7 +579,7 @@ server = function(input, output,session) {
     })
     d3tf(reactiveROItestingdata$signpar,
       tableProps = list(btn_reset = TRUE),
-      enableTf = F,
+      enableTf = FALSE,
       edit=TRUE,
       rowStyles = reactiveprogramdata$bgColScales,
       showRowNames = TRUE,
@@ -625,7 +625,7 @@ server = function(input, output,session) {
 
   #Creation of table to check quantifications with the parameter chosen by the user
   observe({
-    if (reactiveprogramdata$beginning==F) return()
+    if (reactiveprogramdata$beginning==FALSE) return()
     tryCatch({
     validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata)
     output$fit_selection = DT::renderDataTable({ datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'multiple', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
@@ -690,7 +690,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   }))
   observeEvent(input$save_changes, {
     tryCatch({
-    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=T)$ix,]
+    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=TRUE)$ix,]
     new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
     new_signals_codes=new_signals_names=rep(NA,nrow(reactiveprogramdata$ROI_data_check))
     new_useful_data=reactiveprogramdata$useful_data
@@ -720,7 +720,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
     dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
-    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==F)
+    lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
     ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
     reactiveprogramdata$select_options=1:length(ROI_names)
@@ -781,8 +781,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     })
 
     d3tf(reactiveprogramdata$ROI_data_check,
-      tableProps = list(btn_reset = F),
-      enableTf = F,
+      tableProps = list(btn_reset = FALSE),
+      enableTf = FALSE,
       edit=TRUE,
       selectableRows = "single",
       tableStyle = "table table-bordered")
@@ -794,7 +794,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   #Boxplot plot
   output$plot_p_value_2 <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='boxplot')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
     }, error = function(e) {
       print('Error. Please explain the issue in the Github page.')
       return(NULL)
@@ -804,7 +804,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   output$pcascores <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='pca')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
   }, error = function(e) {
     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
     return(NULL)
@@ -833,7 +833,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch(output$dendheatmapareadata <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')
   }, error = function(e) {
     print('Error. Please explain the issue in the Github page.')
     return(NULL)
@@ -843,7 +843,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch(output$dendheatmapshiftdata <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data,type='dendrogram_heatmap')
+    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')
   }, error = function(e) {
     print('Error. Please explain the issue in the Github page.')
     return(NULL)
