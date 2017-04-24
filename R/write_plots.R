@@ -79,7 +79,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
     }
     grid.arrange(rectGrob(), rectGrob())
     ml <- marrangeGrob(p, top = imported_data$signals_names[ind2],nrow=3, ncol=1)
-    ggsave(paste(path,imported_data$signals_names[ind2],".pdf",sep=''),  ml)
+    ggsave(file.path(path,paste(imported_data$signals_names[ind2],".pdf",sep='')),  ml)
     setTxtProgressBar(pb, ind2)
 
   }
