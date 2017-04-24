@@ -150,8 +150,33 @@ server = function(input, output,session) {
   #Choice and storage of data associated to session
 
   observe({
-	volumes <- c("UserFolder"=getwd())
-    shinyFileSave(input, "save", roots=volumes, session=session)
+osSystem <- Sys.info()["sysname"]
+if (osSystem == "Darwin") {
+    volumes <- list.files("/Volumes/", full.names = T)
+    names(volumes) <- basename(volumes)
+} else if (osSystem == "Linux") {
+    volumes <- c(Computer = "/")
+    media <- list.files("/media/", full.names = T)
+    names(media) <- basename(media)
+    volumes <- c(volumes, media)
+} else if (osSystem == "Windows") {
+    volumes <- system("wmic logicaldisk get Caption", intern = T)
+    volumes <- sub(" *\\r$", "", volumes)
+    keep <- !tolower(volumes) %in% c("caption", "")
+    volumes <- volumes[keep]
+    volNames <- system("wmic logicaldisk get VolumeName", 
+                       intern = T)
+    volNames <- sub(" *\\r$", "", volNames)
+    volNames <- volNames[keep]
+    volNames <- paste0(volNames, ifelse(volNames == "", "", 
+                                        " "))
+    volNames <- paste0(volNames, "(", volumes, ")")
+    names(volumes) <- volNames
+} else {
+    stop("unsupported OS")
+}
+volumes=c("UserFolder"=volumes)   
+	  shinyFileSave(input, "save", roots=volumes, session=session)
     fileinfo <- parseSavePath(volumes, input$save)
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
     if (nrow(fileinfo) > 0) {
@@ -166,8 +191,32 @@ server = function(input, output,session) {
   #Choice of folder to save plots
 
   folderInput1 <- reactive({
-	  	volumes <- c("UserFolder"=getwd())
-    shinyDirChoose(input, 'folder', roots = volumes, session = session,
+osSystem <- Sys.info()["sysname"]
+if (osSystem == "Darwin") {
+    volumes <- list.files("/Volumes/", full.names = T)
+    names(volumes) <- basename(volumes)
+} else if (osSystem == "Linux") {
+    volumes <- c(Computer = "/")
+    media <- list.files("/media/", full.names = T)
+    names(media) <- basename(media)
+    volumes <- c(volumes, media)
+} else if (osSystem == "Windows") {
+    volumes <- system("wmic logicaldisk get Caption", intern = T)
+    volumes <- sub(" *\\r$", "", volumes)
+    keep <- !tolower(volumes) %in% c("caption", "")
+    volumes <- volumes[keep]
+    volNames <- system("wmic logicaldisk get VolumeName", 
+                       intern = T)
+    volNames <- sub(" *\\r$", "", volNames)
+    volNames <- volNames[keep]
+    volNames <- paste0(volNames, ifelse(volNames == "", "", 
+                                        " "))
+    volNames <- paste0(volNames, "(", volumes, ")")
+    names(volumes) <- volNames
+} else {
+    stop("unsupported OS")
+}
+volumes=c("UserFolder"=volumes)    shinyDirChoose(input, 'folder', roots = volumes, session = session,
       restrictions = system.file(package = 'base'))
     return(parseDirPath(volumes, input$folder))
   })
