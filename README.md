@@ -2,11 +2,11 @@
 
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages(c("devtools","knitr","rmarkdown","rprojroot","evaluate","yaml","htmltools","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","RJSONIO","DEoptimR"))`               (installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github) 
-2. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             (installs D3TableFilter) 
-3. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            (installs MassSpecWavelet) 
-4. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           (installs rDolphin)
-5. `library(rDolphin)`          (loads rDolphin)
+1. `install.packages(c("devtools","knitr","rmarkdown","rprojroot","evaluate","yaml","htmltools","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","RJSONIO","DEoptimR"))`               #installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github 
+2. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             #installs D3TableFilter 
+3. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
+4. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+5. `library(rDolphin)`          #loads rDolphin
 
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 
@@ -28,7 +28,7 @@ A vignette is available for the use of functions outside the GUI and can be run 
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331880/df9f75e2-28e4-11e7-8e85-ae117f279d17.png)
 
-![alt text](https://cloud.githubusercontent.com/assets/21126465/25332211/eaf7aa62-28e5-11e7-9f57-c2e4c2bc6c98.png)
+![alt text](https://cloud.githubusercontent.com/assets/21126465/25332294/25baf29e-28e6-11e7-8fa5-feeeecfb6493.png)
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331878/df9d5ca8-28e4-11e7-99d4-9bd89e3d8174.png)
 
