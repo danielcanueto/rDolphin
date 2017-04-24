@@ -57,7 +57,7 @@ shinyUI(fluidPage(
       selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
       plotlyOutput(outputId = "roi_profiles_plot"),
       div(dataTableOutput("repository2"), style = "font-size:80%"),
-      actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
+      actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
         div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
       )),
 
@@ -67,12 +67,11 @@ shinyUI(fluidPage(
       sidebarLayout(
 
         sidebarPanel(
-
-          actionButton("save_results", label = "Save quantification"),
-          actionButton("save_profile", label = "Save ROI profile"),
-          actionButton("autorun_signal", label = "ROI autorun"),
-          actionButton("remove_q", label = "Remove quantification"),
           actionButton("action", label = "Check quantification"),
+          actionButton("save_results", label = "Save quantification"),
+          actionButton("remove_q", label = "Remove quantification"),
+          actionButton("autorun_signal", label = "ROI autorun"),
+          actionButton("save_profile", label = "Save ROI profile"),
           fluidRow(column(width = 12, h4("Select ROI"))),
           selectInput("select",label=NULL,choices=""),
           fluidRow(column(width = 12, h4("Select spectrum"))),

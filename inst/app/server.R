@@ -681,6 +681,23 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     })})
 
   #Add and remove signals and save changes
+  observeEvent(input$add_hmdb_signal, {
+    dummy=reactiveprogramdata$imported_data$repository[input$repository2_rows_selected,]
+    dummy=c(dummy[,3]+0.02,dummy[,3]-0.02,'Baseline Fitting',dummy[,1],1,dummy[,3],0.005,median(savedreactivedata$ROI_data_check[,8]),dummy[,4],dummy[,5],0,dummy[,6])
+    if (dummy[9]=='d') {
+      dummy[9]=2
+    } else if (dummy[9]=='t') {
+      dummy[9]=3
+    } else {
+      dummy[9]=1
+    }
+    
+    if (is.na(as.numeric(dummy[10])))  dummy[10]=0
+    dummy=as.list(dummy)
+    dummy[-c(3,4)]=as.numeric(dummy[-c(3,4)])
+    
+    reactiveprogramdata$ROI_data_check=rbind(dummy,reactiveprogramdata$ROI_data_check)
+  })
   tryCatch(observeEvent(input$add_signal, {
     reactiveprogramdata$ROI_data_check=rbind(rep(NA,ncol(reactiveprogramdata$ROI_data_check),reactiveprogramdata$ROI_data_check))
   }))
