@@ -26,4 +26,4 @@ A vignette is available for the use of functions outside the GUI and can be run 
 
 ## Images:
 
-![alt text](http://imgur.com/cKAFyIG)
+![alt text](https://cloud.githubusercontent.com/assets/21126465/25331880/df9f75e2-28e4-11e7-8e85-ae117f279d17.png)
