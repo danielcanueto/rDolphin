@@ -150,8 +150,9 @@ server = function(input, output,session) {
   #Choice and storage of data associated to session
 
   observe({
-    shinyFileSave(input, "save", roots=getVolumes(), session=session)
-    fileinfo <- parseSavePath(getVolumes(), input$save)
+	volumes <- c("UserFolder"=getwd())
+    shinyFileSave(input, "save", roots=volumes, session=session)
+    fileinfo <- parseSavePath(volumes, input$save)
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
     if (nrow(fileinfo) > 0) {
       save(savedreactivedata, file=as.character(fileinfo$datapath))
@@ -165,9 +166,10 @@ server = function(input, output,session) {
   #Choice of folder to save plots
 
   folderInput1 <- reactive({
-    shinyDirChoose(input, 'folder', roots = getVolumes(), session = session,
+	  	volumes <- c("UserFolder"=getwd())
+    shinyDirChoose(input, 'folder', roots = volumes, session = session,
       restrictions = system.file(package = 'base'))
-    return(parseDirPath(getVolumes(), input$folder))
+    return(parseDirPath(volumes, input$folder))
   })
   observe({
     if (length(folderInput1()) > 0) tryCatch(write_plots(folderInput1(),reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$useful_data),error= function(e) print('Not possible to overwrite open files'))
