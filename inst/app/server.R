@@ -175,7 +175,7 @@ if (osSystem == "Darwin") {
 } else {
     stop("unsupported OS")
 }
-volumes=c("UserFolder"=volumes)   
+volumes=c("UserFolder"=paste(volumes[[1]],"/",sep=""))   
 	  shinyFileSave(input, "save", roots=volumes, session=session)
     fileinfo <- parseSavePath(volumes, input$save)
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
@@ -216,7 +216,7 @@ if (osSystem == "Darwin") {
 } else {
     stop("unsupported OS")
 }
-volumes=c("UserFolder"=volumes)   
+volumes=c("UserFolder"=paste(volumes[[1]],"/",sep=""))   
 	  shinyDirChoose(input, 'folder', roots = volumes, session = session,
       restrictions = system.file(package = 'base'))
     return(parseDirPath(volumes, input$folder))
