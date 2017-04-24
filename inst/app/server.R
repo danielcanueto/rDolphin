@@ -150,8 +150,7 @@ server = function(input, output,session) {
   #Choice and storage of data associated to session
 
   observe({
-    volumes=c(home = '~/')
-    shinyFileSave(input, "save", roots=volumes, session=session)
+    shinyFileSave(input, "save", roots=getVolumes(), session=session)
     fileinfo <- parseSavePath(volumes, input$save)
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
     if (nrow(fileinfo) > 0) {
@@ -166,8 +165,7 @@ server = function(input, output,session) {
   #Choice of folder to save plots
 
   folderInput1 <- reactive({
-    volumes=c(home = '~/')
-    shinyDirChoose(input, 'folder', roots = volumes, session = session,
+    shinyDirChoose(input, 'folder', roots = getVolumes(), session = session,
       restrictions = system.file(package = 'base'))
     return(parseDirPath(volumes, input$folder))
   })
