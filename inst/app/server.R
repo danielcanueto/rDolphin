@@ -216,7 +216,8 @@ if (osSystem == "Darwin") {
 } else {
     stop("unsupported OS")
 }
-volumes=c("UserFolder"=volumes)    shinyDirChoose(input, 'folder', roots = volumes, session = session,
+volumes=c("UserFolder"=volumes)   
+	  shinyDirChoose(input, 'folder', roots = volumes, session = session,
       restrictions = system.file(package = 'base'))
     return(parseDirPath(volumes, input$folder))
   })
