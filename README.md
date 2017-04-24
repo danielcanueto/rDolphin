@@ -28,7 +28,7 @@ A vignette is available for the use of functions outside the GUI and can be run 
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331880/df9f75e2-28e4-11e7-8e85-ae117f279d17.png)
 
-![alt text](https://cloud.githubusercontent.com/assets/21126465/25331884/dfa2235a-28e4-11e7-8874-7c60968d392b.png)
+![alt text](https://cloud.githubusercontent.com/assets/21126465/25332211/eaf7aa62-28e5-11e7-9f57-c2e4c2bc6c98.png)
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331878/df9d5ca8-28e4-11e7-99d4-9bd89e3d8174.png)
 
