@@ -24,3 +24,6 @@ To load e.g. the MTBLS242 profiling session, run “Dolphin_GUI()” to open the
 
 A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
 
+## Images:
+
+![alt text](https://www.dropbox.com/s/c853p4s1wm0c9bq/Screenshot%202017-04-24%2010.18.21.png?dl=0)
