@@ -31,8 +31,12 @@ shinyUI(fluidPage(
           ),
           fileInput("file2", "Reanudate a saved profiling session.",
             accept = c("text/RData")),
-          shinySaveButton("save", "Save a profiling session", "Save session as...", filetype=list(RData="RData")),
-          shinyDirButton('folder', 'Save quantification plots', 'Please select a folder', FALSE)
+          actionButton("save", "Save a profiling session"),
+          actionButton('folder', 'Save quantification plots'),
+          br(),
+          br(),
+          
+          textInput("caption", "Specify the path of the session to save (e.g. C:/session.RData) or of the folder where to generate the plots folder (e.g. C:/session)", '')
           # ,
           # fileInput("file3", "Combine data of other sessions",
           #   accept = c("text/RData"))

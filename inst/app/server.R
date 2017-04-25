@@ -148,107 +148,23 @@ server = function(input, output,session) {
 
 
   #Choice and storage of data associated to session
-
-  observe({
-osSystem <- Sys.info()["sysname"]
-if (osSystem == "Darwin") {
-    volumes <- list.files("/Volumes/", full.names = T)
-    names(volumes) <- basename(volumes)
-} else if (osSystem == "Linux") {
-    volumes <- c(Computer = "/")
-    media <- list.files("/media/", full.names = T)
-    names(media) <- basename(media)
-    volumes <- c(volumes, media)
-} else if (osSystem == "Windows") {
-    volumes <- system("wmic logicaldisk get Caption", intern = T)
-    volumes <- sub(" *\\r$", "", volumes)
-    keep <- !tolower(volumes) %in% c("caption", "")
-    volumes <- volumes[keep]
-    volNames <- system("wmic logicaldisk get VolumeName", 
-                       intern = T)
-    volNames <- sub(" *\\r$", "", volNames)
-    volNames <- volNames[keep]
-    volNames <- paste0(volNames, ifelse(volNames == "", "", 
-                                        " "))
-    volNames <- paste0(volNames, "(", volumes, ")")
-    names(volumes) <- volNames
-} else {
-    stop("unsupported OS")
-}
-volumes=c("UserFolder"=paste(volumes[[1]],"/",sep=""))   
-	  shinyFileSave(input, "save", roots=volumes, session=session)
-    fileinfo <- parseSavePath(volumes, input$save)
+  observeEvent(input$save, {
+    tryCatch({
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
-    if (nrow(fileinfo) > 0) {
-      save(savedreactivedata, file=as.character(fileinfo$datapath))
-      export_path=paste(substr(as.character(fileinfo$datapath),1,(nchar(as.character(fileinfo$datapath))-6)),'_associated_data',sep='')
-      tryCatch(write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data),error= function(e) print('Not possible to overwrite open files'))
-    }
+    tryCatch({save(savedreactivedata, file=input$caption)},error= function(e) {
+      print('Not possible to save the session. Please check that the path ends in .RData and you have permissions for the path specified.')
+    })
+      export_path=paste(substr(as.character(input$caption),1,(nchar(as.character(input$caption))-6)),'_associated_data',sep='')
+      write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data)
+    })
   })
 
+observeEvent(input$folder, {
+  tryCatch({
+    write_plots(input$caption,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$useful_data)},
+    error= function(e) {       print('Not possible to generate the plot folder. Please check that you have permissions for the path specified.')
 
-
-  #Choice of folder to save plots
-
-  folderInput1 <- reactive({
-osSystem <- Sys.info()["sysname"]
-if (osSystem == "Darwin") {
-    volumes <- list.files("/Volumes/", full.names = T)
-    names(volumes) <- basename(volumes)
-} else if (osSystem == "Linux") {
-    volumes <- c(Computer = "/")
-    media <- list.files("/media/", full.names = T)
-    names(media) <- basename(media)
-    volumes <- c(volumes, media)
-} else if (osSystem == "Windows") {
-    volumes <- system("wmic logicaldisk get Caption", intern = T)
-    volumes <- sub(" *\\r$", "", volumes)
-    keep <- !tolower(volumes) %in% c("caption", "")
-    volumes <- volumes[keep]
-    volNames <- system("wmic logicaldisk get VolumeName", 
-                       intern = T)
-    volNames <- sub(" *\\r$", "", volNames)
-    volNames <- volNames[keep]
-    volNames <- paste0(volNames, ifelse(volNames == "", "", 
-                                        " "))
-    volNames <- paste0(volNames, "(", volumes, ")")
-    names(volumes) <- volNames
-} else {
-    stop("unsupported OS")
-}
-volumes=c("UserFolder"=paste(volumes[[1]],"/",sep=""))   
-	  shinyDirChoose(input, 'folder', roots = volumes, session = session,
-      restrictions = system.file(package = 'base'))
-    return(parseDirPath(volumes, input$folder))
-  })
-  observe({
-    if (length(folderInput1()) > 0) tryCatch(write_plots(folderInput1(),reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$useful_data),error= function(e) print('Not possible to overwrite open files'))
-  })
-
-  #Load of quantifications of previous session to combine with current session, to avoid repeating already performed quantifications. UNSTABLE!!!!
-  # observeEvent(input$file3, {
-  #   reactiveprogramdata$inFile2 <- input$file2
-  #   if (is.null(reactiveprogramdata$inFile2))
-  #     return(NULL)
-  #   load(reactiveprogramdata$inFile2$datapath)
-  #   plo=names(sapply(savedreactivedata, names))
-  #   for (i in 1:length(plo)) {
-  #     added_data[[plo[i]]]=savedreactivedata[plo[i]]
-  #   }
-  #   ind=which(reactiveprogramdata$imported_data$Experiments %in% added_data$imported_data$Experiments==TRUE)
-  #   ind2=which(reactiveprogramdata$imported_data$signals_names %in% added_data$imported_data$signals_names==TRUE)
-  #   ind3=which(added_data$imported_data$Experiments %in% reactiveprogramdata$imported_data$Experiments==TRUE)
-  #   ind4=which(added_data$imported_data$signals_names %in% reactiveprogramdata$imported_data$signals_names==TRUE)
-  #
-  #   for (i in 1:length(reactiveprogramdata$final_output)) {
-  #     reactiveprogramdata$final_output[[i]][ind,ind2]=added_data$final_output[[i]][ind3,ind4]
-  #   }
-  #   for (i in 1:length(reactiveprogramdata$useful_data)) {
-  #     for (j in 1:length(reactiveprogramdata$final_output[[j]])) {
-  #
-  #       reactiveprogramdata$useful_data[[ind[i]]][[ind2[j]]]=added_data$useful_data[[ind3[i]]][[ind4[j]]]
-  #     }}
-  # })
+})})
 
 
 
