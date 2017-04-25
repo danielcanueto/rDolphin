@@ -27,7 +27,6 @@ Imports:
 	heatmaply,
 	ggplot2,
 	gridExtra,
-	shinyFiles,
 	stringr,
 	robustbase,
 	D3TableFilter,
