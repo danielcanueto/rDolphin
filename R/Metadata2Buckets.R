@@ -30,8 +30,8 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
   maxspec = length(Experiments)
 
   for (k in 1:maxspec) {
-    filename = paste(params$dir, "nmr", Experiments[k], params$expno, "pdata", params$processingno, sep = "/")
-    partname = paste(params$dir, "nmr", Experiments[k], params$expno, sep = "/")
+    filename = paste(params$dir, Experiments[k], params$expno, "pdata", params$processingno, sep = "/")
+    partname = paste(params$dir, Experiments[k], params$expno, sep = "/")
     storedpars = topspin_read_spectrum2(partname, filename,spectrum_borders[2]-0.1, spectrum_borders[1]+0.1)
     if (all(is.nan(storedpars$real)) == 0) {
       CURRENT$minppm = storedpars$OFFSET - storedpars$SW
