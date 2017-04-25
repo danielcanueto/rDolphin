@@ -1,5 +1,4 @@
 library(shiny)
-library(shinyFiles)
 library(plotly)
 library(DT)
 library(D3TableFilter)
