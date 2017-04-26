@@ -23,6 +23,7 @@ shinyUI(fluidPage(
   #First tab
   tabsetPanel(selected="Data Upload", id='mynavlist',
     tabPanel("Data Upload",
+fluidRow(column(width = 12, h4("Here you can import spectra datasets and save and load profiling sessions. Here you can also begin the aumatic profiling.")),
       sidebarLayout(
         sidebarPanel(
           fileInput("file1", "Load a file of parameters of the dataset to profile.",
@@ -56,12 +57,18 @@ shinyUI(fluidPage(
         ))),
 	#Second tab
     tabPanel("ROI Profiles",
-      fluidRow(column(width = 12, h4("Here you have the current ROI profiles to add and edit ROIs to optimize the profiling.")),
+	           fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits")),
+
       selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
       plotlyOutput(outputId = "roi_profiles_plot"),
+	       fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters.")),
+
       div(dataTableOutput("repository2"), style = "font-size:80%"),
-      actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
-        div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
+      fluidRow(column(width = 12, h4("Here you have the current ROI profiles to add and edit ROIs to optimize the profiling.")),
+
+			actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
+       
+			div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
       )),
 
     #Third tab
