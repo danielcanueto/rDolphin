@@ -486,13 +486,16 @@ observeEvent(input$folder, {
 
   #Table where to analyze quantifications
   output$qualitypar <- renderD3tf({
-    tableProps =
+    tryCatch({
+    tableProps = 
     d3tf(reactiveROItestingdata$qualitypar,
       tableProps = list(btn_reset = TRUE),
       enableTf = FALSE,
       edit=FALSE,
       showRowNames = TRUE,
       tableStyle = "table table-bordered")
+    },error=function(e) {return(NULL) })
+    
   })
 
   #Repository table
@@ -514,6 +517,7 @@ observeEvent(input$folder, {
   #Direct edition of parameters before quantification
   output$directedition <- renderD3tf({
     observe({
+      tryCatch({
       if(is.null(input$directedition_edit)|(reactiveprogramdata$stop2==1)) {
         reactiveprogramdata$change2=0
         return(NULL)
@@ -542,7 +546,7 @@ observeEvent(input$folder, {
           confirmEdit(session, tbl = "directedition_edit", row = row, col = col, id = id, value = round(val,4))
         }
       })
-    })
+    
     d3tf(reactiveROItestingdata$signpar,
       tableProps = list(btn_reset = TRUE),
       enableTf = FALSE,
@@ -550,7 +554,8 @@ observeEvent(input$folder, {
       rowStyles = reactiveprogramdata$bgColScales,
       showRowNames = TRUE,
       tableStyle = "table table-bordered")
-  })
+      },error=function(e) {return(NULL) })
+  })})
 
   #Quantification after direct edition of paramters
   observeEvent(input$direct_edition, {
@@ -808,7 +813,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
         STOCSY(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,c(input$left_ppm,input$right_ppm),input$correlation_method)
           }
         })
-    })})
+  },error=function(e) {return(NULL) })
+    })
 
 
 
