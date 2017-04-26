@@ -22,55 +22,54 @@ shinyUI(fluidPage(
   titlePanel("rDolphin GUI"),
   #First tab
   tabsetPanel(selected="Data Upload", id='mynavlist',
-    tabPanel("Data Upload",
-fluidRow(column(width = 12, h4("Here you can import spectra datasets and save and load profiling sessions. Here you can also begin the aumatic profiling.")),
-      sidebarLayout(
-        sidebarPanel(
-          fileInput("file1", "Load a file of parameters of the dataset to profile.",
-            accept = c("text/csv")
-          ),
-          fileInput("file2", "Reanudate a saved profiling session.",
-            accept = c("text/RData")),
-          actionButton("save", "Save a profiling session"),
-          actionButton('folder', 'Save quantification plots'),
-          br(),
-          br(),
-          
-          textInput("caption", "Specify the path of the session to save (e.g. C:/session.RData) or of the folder where to generate the plots folder (e.g. C:/session)", '')
-          # ,
-          # fileInput("file3", "Combine data of other sessions",
-          #   accept = c("text/RData"))
-
-
-
-        ),
-        mainPanel(
-          div(style="display:inline-block",uiOutput('varselect')),
-          div(style="display:inline-block",uiOutput('align_button')),
-          div(style="display:inline-block",uiOutput('model_button')),
-          fluidRow(column(width = 12, h4("You can watch how the signals have been quantified in a model spectrum and, at the same time, an univariate analysis of every bin in the spectrum, according to the metadata given. If you find other signals interesting to fit you can add them in the 'ROI Profiles' tab."))),
-          plotlyOutput("autorun_plot"),
-          div(dataTableOutput("sp"), style = "font-size:80%")
-          # div(dataTableOutput("indicators"), style = "font-size:80%")
-
-
-        ))),
-	#Second tab
-    tabPanel("ROI Profiles",
-	           fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits")),
-
-      selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
-      plotlyOutput(outputId = "roi_profiles_plot"),
-	       fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters.")),
-
-      div(dataTableOutput("repository2"), style = "font-size:80%"),
-      fluidRow(column(width = 12, h4("Here you have the current ROI profiles to add and edit ROIs to optimize the profiling.")),
-
-			actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
-       
-			div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
-      )),
-
+       tabPanel("Data Upload",
+                       fluidRow(column(width = 12, h4("Here you can import spectra datasets and save and load profiling sessions. After importing data, profiling results on a model spectrum will appear on the right panel."))),
+                                sidebarLayout(
+                                  sidebarPanel(
+                                    fileInput("file1", "Load a file of parameters of the dataset to profile.",
+                                              accept = c("text/csv")
+                                    ),
+                                    fileInput("file2", "Reanudate a saved profiling session.",
+                                              accept = c("text/RData")),
+                                    actionButton("save", "Save a profiling session"),
+                                    actionButton('folder', 'Save quantification plots'),
+                                    br(),
+                                    br(),
+                                    
+                                    textInput("caption", "Specify the path of the session to save (e.g. C:/session.RData) or of the folder where to generate the plots folder (e.g. C:/session)", '')
+                                    # ,
+                                    # fileInput("file3", "Combine data of other sessions",
+                                    #   accept = c("text/RData"))
+                                    
+                                    
+                                    
+                                  ),
+                                  mainPanel(
+                                    div(style="display:inline-block",uiOutput('varselect')),
+                                    div(style="display:inline-block",uiOutput('align_button')),
+                                    div(style="display:inline-block",uiOutput('model_button')),
+                                    fluidRow(column(width = 12, h4())),
+                                    plotlyOutput("autorun_plot"),
+                                    div(dataTableOutput("sp"), style = "font-size:80%")
+                                    # div(dataTableOutput("indicators"), style = "font-size:80%")
+                                    
+                                    
+                                  ))),
+                       #Second tab
+                       tabPanel("ROI Profiles",
+                                fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
+                                         
+                                         selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
+                                         plotlyOutput(outputId = "roi_profiles_plot"),
+                                         fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters."))),
+                                                  
+                                                  div(dataTableOutput("repository2"), style = "font-size:80%"),
+                                                  fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
+                                                           
+                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
+                                                           
+                                                           div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
+                                                  ),
     #Third tab
     tabPanel("Individual Quantification",
       fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary."))),
