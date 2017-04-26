@@ -151,12 +151,10 @@ server = function(input, output,session) {
   observeEvent(input$save, {
     tryCatch({
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
-    tryCatch({save(savedreactivedata, file=input$caption)},error= function(e) {
-      print('Not possible to save the session. Please check that the path ends in .RData and you have permissions for the path specified.')
-    })
-      export_path=paste(substr(as.character(input$caption),1,(nchar(as.character(input$caption))-6)),'_associated_data',sep='')
+    save(savedreactivedata, file=input$caption)
+      export_path=paste(gsub(".RData","",input$caption),'associated_data',sep='_')
       write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data)
-    })
+    },error=function(e) {print('Not possible to generate the output the session files. Please revise the path given.')})
   })
 
 observeEvent(input$folder, {
@@ -419,12 +417,13 @@ observeEvent(input$folder, {
   #Quantification of all spectra in the ROI:
   observeEvent(input$autorun_signal, {
     is_autorun='Y'
-
     tryCatch({
     dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
-  })})
+  
+    },error=function(e) {print('Error. Please explain the issue on the Github website')})
+    })
 
 
 
@@ -437,7 +436,9 @@ observeEvent(input$folder, {
       ind=as.numeric(input$select)
     }
     reactiveprogramdata$final_output <- remove_quant(reactiveprogramdata$info,reactiveprogramdata$imported_data, reactiveprogramdata$final_output)
-  })})
+    },error=function(e) {print('Error. Please explain the issue on the Github website')})
+    
+    })
 
   observeEvent(input$save_results, {
     tryCatch({
@@ -446,12 +447,14 @@ observeEvent(input$folder, {
     dummy=save_roi_testing(reactivequantdata$method1,reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
-  })})
+    },error=function(e) {print('Error. Please explain the issue on the Github website')})
+      })
 
 
 
     #Save edition of ROI profile
-  tryCatch(observeEvent(input$save_profile, {
+  observeEvent(input$save_profile, {
+    tryCatch({
   dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
     lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
@@ -466,12 +469,13 @@ observeEvent(input$folder, {
     reactiveprogramdata$ROI_data[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveprogramdata$ROI_data_check[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveROItestingdata$ROIpar
     ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
     names(reactiveprogramdata$select_options)=ROI_names
-  }))
+    },error=function(e) {print('Error. Please explain the issue on the Github website')})
+    })
 
 
 
   #Spectra table.
-    output$x1 = tryCatch(DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE))
+    output$x1 = tryCatch({DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE)},error=function(e){})
     # proxy = dataTableProxy('x1')
 
 
@@ -649,7 +653,10 @@ if (length(input$fit_selection_cell_clicked)<1) return()
           reactiveprogramdata$medianplot
           }
         })
-    })})
+  },error=function(e) {print('Error. Please explain the issue on the Github website')})
+    
+    
+    })
 
   #Add and remove signals and save changes
   observeEvent(input$add_hmdb_signal, {
@@ -669,13 +676,13 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     
     reactiveprogramdata$ROI_data_check=rbind(dummy,reactiveprogramdata$ROI_data_check)
   })
-  tryCatch(observeEvent(input$add_signal, {
+  observeEvent(input$add_signal, {
     reactiveprogramdata$ROI_data_check=rbind(rep(NA,ncol(reactiveprogramdata$ROI_data_check),reactiveprogramdata$ROI_data_check))
-  }))
-  tryCatch(observeEvent(input$remove_signal, {
+  })
+  observeEvent(input$remove_signal, {
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[-input$roi_profiles_select,]
     resetInput(session, "roi_profiles_edit")
-  }))
+  })
   observeEvent(input$save_changes, {
     tryCatch({
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=TRUE)$ix,]
@@ -722,7 +729,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
 
   #ROI Profiles table
-  tryCatch(output$roi_profiles <- renderD3tf({
+  output$roi_profiles <- renderD3tf({
     observe({
       edit <- input$roi_profiles_edit
       if (!is.null(edit)) {
@@ -775,7 +782,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       selectableRows = "single",
       tableStyle = "table table-bordered")
 
-  }))
+  })
 
   ## FIFTH TAB REACTIVE OUTPUTS
 
