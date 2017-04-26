@@ -53,7 +53,9 @@ p <- layout(p,title="PCA scores and loadings",
   yaxis=list(title="PC2"),margin=m)
 print(p)
 }, dendrogram_heatmap = {
-  data=as.data.frame(scale(data,scale=F))
+  data=as.data.frame(scale(data))
+ind=apply(data,2,function(x)!all(is.na(x)))
+data=data[,ind]
 heatmaply(data[seq(nrow(data)),]) %>% layout(margin = list(l = 130, b = 130))
 })
 }
