@@ -66,7 +66,7 @@ shinyUI(fluidPage(
                                                   div(dataTableOutput("repository2"), style = "font-size:80%"),
                                                   fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
                                                            
-                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signals"),actionButton("save_changes", label = "Save changes"),
+                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Save changes"),
                                                            
                                                            div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
                                                   ),

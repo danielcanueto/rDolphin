@@ -117,7 +117,7 @@ server = function(input, output,session) {
       return(NULL)
     })
 
-
+    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
     #Names of ROIS are prepared
 	dummy=NULL
 	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
@@ -150,10 +150,12 @@ server = function(input, output,session) {
   #Choice and storage of data associated to session
   observeEvent(input$save, {
     tryCatch({
+      print('Saving information...')
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
     save(savedreactivedata, file=input$caption)
       export_path=paste(gsub(".RData","",input$caption),'associated_data',sep='_')
       write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data)
+      print('Done!')
     },error=function(e) {print('Not possible to generate the output the session files. Please revise the path given.')})
   })
 
@@ -513,7 +515,7 @@ observeEvent(input$folder, {
     if (!is.na(reactiveprogramdata$imported_data))  {
       output$repository2 = DT::renderDataTable(
         # reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]-0.05)&reactiveprogramdata$imported_data$repository[,3]<(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]+0.05)),] , server = TRUE)
-      reactiveprogramdata$imported_data$repository , filter='top', server = TRUE)
+      reactiveprogramdata$imported_data$repository , selection = list(mode = 'single', selected = NULL),filter='top', server = TRUE)
 
       }
   })
@@ -603,7 +605,7 @@ observeEvent(input$folder, {
     if (reactiveprogramdata$beginning==FALSE) return()
     tryCatch({
     validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata)
-    output$fit_selection = DT::renderDataTable({ datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'multiple', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
+    output$fit_selection = DT::renderDataTable({ datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
     })},error=function(e) {
       print("Not enough data to model it.")
     })
@@ -648,10 +650,10 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch({
       output$roi_profiles_plot=renderPlotly({
         if (input$roi_profile_option==1) {
-          reactiveprogramdata$clusterplot
+          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),1,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
         } else if (input$roi_profile_option==2) {
-          reactiveprogramdata$medianplot
-          }
+          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),2,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
+        }
         })
   },error=function(e) {print('Error. Please explain the issue on the Github website')})
     
@@ -677,18 +679,28 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     reactiveprogramdata$ROI_data_check=rbind(dummy,reactiveprogramdata$ROI_data_check)
   })
   observeEvent(input$add_signal, {
-    reactiveprogramdata$ROI_data_check=rbind(rep(NA,ncol(reactiveprogramdata$ROI_data_check),reactiveprogramdata$ROI_data_check))
-  })
+    tryCatch({
+    reactiveprogramdata$ROI_data_check=rbind(rep(NA,ncol(reactiveprogramdata$ROI_data_check)),reactiveprogramdata$ROI_data_check)
+    }, error = function(e) {
+      print('Error. Please explain the issue in the Github page.')
+    })
+     })
   observeEvent(input$remove_signal, {
+    tryCatch({
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[-input$roi_profiles_select,]
     resetInput(session, "roi_profiles_edit")
-  })
+    }, error = function(e) {
+      print('Error. Please explain the issue in the Github page.')
+    })
+     })
   observeEvent(input$save_changes, {
     tryCatch({
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=TRUE)$ix,]
     new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
     new_signals_codes=new_signals_names=rep(NA,nrow(reactiveprogramdata$ROI_data_check))
     new_useful_data=reactiveprogramdata$useful_data
+    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[!duplicated(reactiveprogramdata$ROI_data_check[,4:5]),]
+    reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data[!duplicated(reactiveprogramdata$ROI_data[,4:5]),]
     for (i in 1:length(new_useful_data)) new_useful_data[[i]]=vector("list", nrow(reactiveprogramdata$ROI_data_check))
     for (i in 1:nrow(reactiveprogramdata$ROI_data_check)) {
       ind=which(reactiveprogramdata$ROI_data[,4]==reactiveprogramdata$ROI_data_check[i,4]&reactiveprogramdata$ROI_data[,5]==reactiveprogramdata$ROI_data_check[i,5])
@@ -815,7 +827,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     right_ppm <- renderText({ input$right_ppm })
       output$stocsy_plot=renderPlotly({
         if (input$stocsy==1) {
-          reactiveprogramdata$clusterplot
+          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),1,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
         } else {
         STOCSY(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,c(input$left_ppm,input$right_ppm),input$correlation_method)
           }
