@@ -58,10 +58,10 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
                                             "N")
       program_parameters$freq=imported_data$freq
-      baseline = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
+      baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
       Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline,interface='T')
+     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline_int,interface='T')
 
       results_to_save=dummy$results_to_save
       p=dummy$p

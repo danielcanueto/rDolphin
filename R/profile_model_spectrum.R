@@ -74,10 +74,10 @@ profile_model_spectrum = function(imported_data, ROI_data) {
       program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
                                             "N")
       program_parameters$freq=imported_data$freq
-      baseline = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
+      baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
       Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline)
+      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline_int)
 
       total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
