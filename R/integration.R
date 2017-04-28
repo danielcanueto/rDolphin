@@ -1,6 +1,6 @@
 
-integration = function(clean_fit, Xdata, Ydata,Ydatamedian,interface='F') {
-  
+integration = function(clean_fit, Xdata, Ydata,Ydatamedian,baseline,interface='F') {
+
   #preallocation of results_to_save
   results_to_save = list(
     shift = NA,
@@ -12,8 +12,7 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,interface='F') {
   )
 
   #preparation of baseline, if specified by the user
-  baseline = replicate(length(Xdata), 0)
-  if (clean_fit == 'N') baseline = seq(min(Ydata[1:5]), min(Ydata[(length(Xdata) - 4):length(Xdata)]), len =length(Xdata))
+  if (clean_fit == 'Y')   baseline = rep(0,length(Xdata))
 
   #integration ad chechk that there are no negative values
   integrated_signal = Ydata - baseline

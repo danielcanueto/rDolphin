@@ -30,8 +30,6 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
   program_parameters$freq = imported_data$freq
   program_parameters$ROI_buckets = ROI_buckets
   program_parameters$buck_step = imported_data$buck_step
-  baselinedataset=baseline.rollingBall(imported_data$dataset[,(ROI_buckets[1]-5):(ROI_buckets[length(ROI_buckets)]+5)],5,5)$baseline
-  baselinedataset=baselinedataset[,6:(5+length(ROI_buckets))]
   fitting_type = as.character(ROI_profile[1, 3])
   signals_to_quantify = which(ROI_profile[, 5] >0)
   signals_codes = signals_names = rep(NA,length(signals_to_quantify))
@@ -46,6 +44,9 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
   }
 
   for (spectrum_index in ind) {
+    dummy=imported_data$dataset[spectrum_index,(ROI_buckets[1]-5):(ROI_buckets[length(ROI_buckets)]+5)]
+    baseline=baseline.rollingBall(rbind(dummy,dummy),5,5)$baseline[1,]
+    baseline=baseline[6:(5+length(ROI_buckets))]
     # print(paste("Spectrum ",spectrum_index))
 
     Ydata = as.numeric(imported_data$dataset[spectrum_index, ROI_buckets])
@@ -54,10 +55,13 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
     # If the quantification is through integration with or without baseline
     if (fitting_type == "Clean Sum" ||
         fitting_type == "Baseline Sum") {
-      clean_fit = ifelse(fitting_type == "Clean Sum", "Y", "N")
+      program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+                                            "N")
+      program_parameters$freq=imported_data$freq
+      baseline = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
       Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-     dummy = integration(clean_fit, Xdata,Ydata,Ydatamedian,interface='T')
+     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline,interface='T')
 
       results_to_save=dummy$results_to_save
       p=dummy$p
@@ -94,7 +98,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       FeaturesMatrix = fitting_prep(Xdata,
                                     Ydata,
                                     ROI_profile[, 5:11,drop=F],
-                                    program_parameters,baselinedataset[spectrum_index,])
+                                    program_parameters,baseline)
       #Calculation of the parameters that will achieve the best fitting
       dummy = fittingloop(FeaturesMatrix,
                                        Xdata,

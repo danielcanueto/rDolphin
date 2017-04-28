@@ -5,7 +5,6 @@
 #' @return Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical shift, half bandwidth, etc.
 #' @export clustspectraplot
 #' @import apcluster
-#' @import reshape2
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
@@ -27,7 +26,7 @@ ind=seq(nrow(imported_data$dataset))
     stop=1
     if (length(rm_ind)>0) scaled_roi=scaled_roi[-rm_ind,]
     rm_ind=c()
-    apres <- suppressWarnings(apclusterK(negDistMat(r=2), scaled_roi, K=min(c(dim(scaled_roi)[1]-1,10)),verbose=F))
+    apres <- suppressWarnings(apcluster::apclusterK(apcluster::negDistMat(r=2), scaled_roi, K=min(c(dim(scaled_roi)[1]-1,10)),verbose=F))
     for (i in 1:length(apres@clusters)) {
       if (length(apres@clusters[[i]])==1) rm_ind=c(rm_ind,apres@clusters[[i]][1])
     }
@@ -49,17 +48,19 @@ ind=seq(nrow(imported_data$dataset))
 }
   # for (i in 1:nrow(original_roi))   visual_roi[i,]=original_roi[i,]+(i-1)*mean(original_roi)
 
+  p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
-  plotdata = data.frame(Xdata=imported_data$ppm, signals = t(visual_roi) )
-  colnames(plotdata)=c('Xdata',imported_data$Experiments[ ind])
+  ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0,max(visual_roi)))
+  az = list(title = "Intensity",range = c(-1, max(visual_roi)-1))
+
+  p=plot_ly(x=~imported_data$ppm)
+  for (i in seq(nrow(visual_roi))){
+    p=p%>%add_lines(y = visual_roi[i,],name=imported_data$Experiments[ ind[i]])
+  }
+  p=p%>%add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
+    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
 
 
-  plotdata=melt(plotdata,id = "Xdata")
- clusterplot=plot_ly(data=plotdata,x=~Xdata,y=~ value,color=~variable,type='scatter',mode='lines',colors = "Blues")%>% layout(xaxis = list(range = c(imported_data$ppm[1], imported_data$ppm[length(imported_data$ppm)]),title='ppm'),yaxis = list(range = range,title='Intensity'))
 
-
-
-
-
-  return(clusterplot)
+  return(p)
 }

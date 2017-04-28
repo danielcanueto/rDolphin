@@ -39,7 +39,7 @@ plotdata3 = melt(plotdata3, id = "Xdata")
 r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[col])
 plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )
 plot_title = paste(imported_data$Experiments[row],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
-loaded_quantification$plot=suppressWarnings(plot_ly(plotdata3,x = ~Xdata, y = ~value, name=~'Surrounding signals',type='scatter',mode='lines',fill='tozeroy',fillcolor='rgb(127, 166, 238)') %>% add_trace(data=plotdata2,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL)  %>% add_trace(data=plotdata,x = ~Xdata, y = ~signals, type = 'scatter', color= imported_data$signals_names[col],mode = 'lines', fill = 'tozeroy',fillcolor='rgb(60, 60, 60)')  %>%layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(title = 'Intensity')))
+loaded_quantification$plot=suppressWarnings(plot_ly(plotdata3,x = ~Xdata, y = ~value,name="Surrounding signals",type='scatter',mode='lines',fill='tozeroy',fillcolor='rgb(127, 166, 238)') %>% add_trace(data=plotdata2,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',name=plotdata2$variable,fill=NULL)  %>% add_trace(data=plotdata,x = ~Xdata, y = ~signals, type = 'scatter', color= imported_data$signals_names[col],mode = 'lines', fill = 'tozeroy',name=plotdata$variable,fillcolor='rgb(60, 60, 60)')   %>%layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(title = 'Intensity')))
 
 #Preparation of ROI parameters and of indicators of quality of quantification
 loaded_quantification$ROIpar=ROI_profile
@@ -57,7 +57,6 @@ if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantificatio
 
 	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
 	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
-	loaded_quantification
 
 return(loaded_quantification)
 }

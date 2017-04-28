@@ -2,7 +2,7 @@
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
-#' @return Plotly figure with the median spectrum for each group of spectra 
+#' @return Plotly figure with the median spectrum for each group of spectra
 #' @export medianplot
 #' @import reshape2
 #'
@@ -15,11 +15,16 @@ medianplot = function(imported_data) {
   types=unique(imported_data$Metadata[,2])
   mediandataset=matrix(NA,length(types),ncol(imported_data$dataset))
   for (i in 1:length(types)) mediandataset[i,]=apply(imported_data$dataset[which(imported_data$Metadata[,2]==types[i]),,drop=F],2,median)
+  p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
-  plotdata = data.frame(Xdata=imported_data$ppm, signals = t(mediandataset ))
-  colnames(plotdata)=c('Xdata',types)
- plotdata=melt(plotdata,id = "Xdata")
-  median_plot=plot_ly(data=plotdata,x=~Xdata,y=~ value,color=~variable,type='scatter',mode='lines')%>% layout(xaxis = list(range = c(imported_data$ppm[1], imported_data$ppm[length(imported_data$ppm)]),title='ppm'),yaxis = list(range = range,title='Intensity'))
+  ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0,max(mediandataset)))
+  az = list(title = "Intensity",range = c(-1, max(mediandataset)-1))
 
-  return(median_plot)
+  p=plot_ly(x=~imported_data$ppm)
+  for (i in seq(nrow(mediandataset))){
+    p=p%>%add_lines(y = mediandataset[i,],name=types[i])
+  }
+  p=p%>%add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
+    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
+  return(p)
 }

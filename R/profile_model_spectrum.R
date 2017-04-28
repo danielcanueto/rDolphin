@@ -26,7 +26,6 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     lal=which(duplicated(ROI_data[-dummy,1:2])==F)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
 
-  baselinedataset=baseline.rollingBall(imported_data$dataset,5,5)$baseline
   # indicators=matrix(NA,nrow(ROI_data),2,dimnames=list(imported_data$signals_names)))
   total_signals_parameters=matrix(NA,nrow(ROI_data),9,dimnames=list(imported_data$signals_names))
   colnames(total_signals_parameters)=c("intensity",	" chemical shift",	"half_band_width",	"gaussian %",	"J coupling",	"multiplicities",	"roof_effect","fitting error","signal / total area ratio")
@@ -36,6 +35,8 @@ profile_model_spectrum = function(imported_data, ROI_data) {
   spectrum_index = which.min(apply(imported_data$dataset, 1, function(x)
     sqrt(mean((x - quartile_spectrum) ^ 2
       ,na.rm=T))))
+  baseline=baseline.rollingBall(rbind(imported_data$dataset[spectrum_index,],imported_data$dataset[spectrum_index,]),5,5)$baseline[1,]
+
   plotdata = data.frame(Xdata=as.numeric(imported_data$ppm),Ydata = as.numeric(imported_data$dataset[spectrum_index,]))
   fitted_data=rep(0,length(imported_data$ppm))
   pb   <- txtProgressBar(1, nrow(ROI_separator), style=3)
@@ -70,12 +71,13 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     # If the quantification is through integration with or without baseline
     if (fitting_type == "Clean Sum" ||
         fitting_type == "Baseline Sum") {
-      baseline = ifelse(fitting_type == "Clean Sum", rep(0,length(Xdata)),seq(min(Ydata[1:5]), min(Ydata[(length(Xdata) - 4):length(Xdata)]), len=length(Xdata)))
-
+      program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+                                            "N")
+      program_parameters$freq=imported_data$freq
+      baseline = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
       Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-      clean_fit = ifelse(fitting_type == "Clean Sum", "Y", "N")
-      integration_variables = integration(clean_fit, Xdata,Ydata,Ydatamedian)
+      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline[ROI_buckets])
 
       total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
@@ -86,7 +88,6 @@ profile_model_spectrum = function(imported_data, ROI_data) {
 
     } else if (fitting_type == "Clean Fitting" || fitting_type ==
         "Baseline Fitting") {
-      is_roi_testing = "N"
       program_parameters$clean_fit='N'
 
       initial_fit_parameters = ROI_profile[, 5:11,drop=F]
@@ -95,7 +96,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
       FeaturesMatrix = fitting_prep(Xdata,
         Ydata,
         ROI_profile[, 5:11,drop=F],
-        program_parameters,baselinedataset[spectrum_index,ROI_buckets])
+        program_parameters,baseline[ROI_buckets])
 
       #Calculation of the parameters that will achieve the best fitting
       dummy = fittingloop(FeaturesMatrix,
@@ -145,7 +146,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
   ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0, max(as.numeric(imported_data$dataset[spectrum_index, ]))))
   az = list(title = "Intensity",range = c(-1, max(as.numeric(imported_data$dataset[spectrum_index, ]))-1))
   p=plot_ly()%>%
-    add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),,name='Model spectrum')%>%
+    add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),name='Model spectrum')%>%
     add_lines(x=~imported_data$ppm,y = ~fitted_data,name='Fitted spectrum',fill='tozeroy')%>%
   add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)

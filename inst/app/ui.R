@@ -35,14 +35,14 @@ shinyUI(fluidPage(
                                     actionButton('folder', 'Save quantification plots'),
                                     br(),
                                     br(),
-                                    
+
                                     textInput("caption", "Specify the path of the session to save (e.g. C:/session.RData) or of the folder where to generate the plots folder (e.g. C:/session)", '')
                                     # ,
                                     # fileInput("file3", "Combine data of other sessions",
                                     #   accept = c("text/RData"))
-                                    
-                                    
-                                    
+
+
+
                                   ),
                                   mainPanel(
                                     div(style="display:inline-block",uiOutput('varselect')),
@@ -52,22 +52,22 @@ shinyUI(fluidPage(
                                     plotlyOutput("autorun_plot"),
                                     div(dataTableOutput("sp"), style = "font-size:80%")
                                     # div(dataTableOutput("indicators"), style = "font-size:80%")
-                                    
-                                    
+
+
                                   ))),
                        #Second tab
                        tabPanel("ROI Profiles",
                                 fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
-                                         
+
                                          selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
                                          plotlyOutput(outputId = "roi_profiles_plot"),
                                          fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters."))),
-                                                  
+
                                                   div(dataTableOutput("repository2"), style = "font-size:80%"),
                                                   fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
-                                                           
-                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Save changes"),
-                                                           
+
+                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("open_hmdb_url", label = "Open signal HMDB website"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Save changes"),
+
                                                            div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
                                                   ),
     #Third tab

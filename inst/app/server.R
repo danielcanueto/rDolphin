@@ -6,11 +6,9 @@ server = function(input, output,session) {
   options(shiny.maxRequestSize=1000*1024^2)
 
   #Setting of reactive parameters in the Shiny GUI
-  reactiveROItestingdata <- reactiveValues()
+  reactiveROItestingdata <- reactiveValues(signpar = matrix(NA,2,7,dimnames = list(seq(2),c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect"))),qualitypar = matrix(NA,2,3,dimnames=list(seq(2),c('Quantification','fitting_error','signal/total area ratio'))))
   reactivequantdata <- reactiveValues(method1=NA)
-  #reactivequantdata <- reactiveValues(method2=NA, method1 = NA,stop3=0)
-
-  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=FALSE,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
+ reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=FALSE,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
 
   ## FIRST TAB REACTIVE OUTPUTS
 
@@ -312,7 +310,7 @@ observeEvent(input$folder, {
 
         if(col == 0) {
           oldval <- rownames(reactiveROItestingdata$ROIpar)[row]
-        } else if (col %in% c(1:2,5:11)){
+        } else if (col %in% c(1:2,6:11)){
           # numeric columns
           if(is.na(suppressWarnings(as.numeric(val)))) {
             oldval <- reactiveROItestingdata$ROIpar[row, col]
@@ -404,7 +402,7 @@ observeEvent(input$folder, {
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
       rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
       ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
-      reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
+      # reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
       if (!is.null(reactivequantdata$method1$signals_parameters)) reactiveROItestingdata$signpar <- t(reactivequantdata$method1$signals_parameters)
       reactiveprogramdata$stop=0
          # reactiveprogramdata$roi=1
@@ -423,7 +421,7 @@ observeEvent(input$folder, {
     dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$useful_data=dummy$useful_data
-  
+
     },error=function(e) {print('Error. Please explain the issue on the Github website')})
     })
 
@@ -439,7 +437,7 @@ observeEvent(input$folder, {
     }
     reactiveprogramdata$final_output <- remove_quant(reactiveprogramdata$info,reactiveprogramdata$imported_data, reactiveprogramdata$final_output)
     },error=function(e) {print('Error. Please explain the issue on the Github website')})
-    
+
     })
 
   observeEvent(input$save_results, {
@@ -493,7 +491,7 @@ observeEvent(input$folder, {
   #Table where to analyze quantifications
   output$qualitypar <- renderD3tf({
     tryCatch({
-    tableProps = 
+    tableProps =
     d3tf(reactiveROItestingdata$qualitypar,
       tableProps = list(btn_reset = TRUE),
       enableTf = FALSE,
@@ -501,7 +499,7 @@ observeEvent(input$folder, {
       showRowNames = TRUE,
       tableStyle = "table table-bordered")
     },error=function(e) {return(NULL) })
-    
+
   })
 
   #Repository table
@@ -520,17 +518,17 @@ observeEvent(input$folder, {
       }
   })
 
+
   #Direct edition of parameters before quantification
   output$directedition <- renderD3tf({
     observe({
-      tryCatch({
       if(is.null(input$directedition_edit)|(reactiveprogramdata$stop2==1)) {
         reactiveprogramdata$change2=0
         return(NULL)
       }
       edit <- input$directedition_edit
       isolate({
-      id <- edit$id
+        id <- edit$id
         row <- as.integer(edit$row)
         col <- as.integer(edit$col)
         val <- as.numeric(edit$val)
@@ -540,7 +538,7 @@ observeEvent(input$folder, {
           if(is.na(suppressWarnings(as.numeric(val)))) {
             oldval <- reactiveROItestingdata$signpar[row, col]
             rejectEdit(session, tbl = "directedition_edit", row = row, col = col, id = id, value = oldval)
-               # reactiveprogramdata$roi=0
+            # reactiveprogramdata$roi=0
             return(NULL)
           }
         }
@@ -552,16 +550,14 @@ observeEvent(input$folder, {
           confirmEdit(session, tbl = "directedition_edit", row = row, col = col, id = id, value = round(val,4))
         }
       })
-    
+    })
     d3tf(reactiveROItestingdata$signpar,
-      tableProps = list(btn_reset = TRUE),
-      enableTf = FALSE,
-      edit=TRUE,
-      rowStyles = reactiveprogramdata$bgColScales,
-      showRowNames = TRUE,
-      tableStyle = "table table-bordered")
-      },error=function(e) {return(NULL) })
-  })})
+         tableProps = list(btn_reset = TRUE),
+         enableTf = F,
+         edit=TRUE,
+         showRowNames = TRUE,
+         tableStyle = "table table-bordered")
+  })
 
   #Quantification after direct edition of paramters
   observeEvent(input$direct_edition, {
@@ -577,7 +573,7 @@ observeEvent(input$folder, {
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
     ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
-    reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
+    # reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
     if (!is.null(reactivequantdata$method1$signals_parameters)) reactiveROItestingdata$signpar <- t(reactivequantdata$method1$signals_parameters)
   },error=function(e) {
     print("Prepare a valid input")
@@ -656,8 +652,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
         }
         })
   },error=function(e) {print('Error. Please explain the issue on the Github website')})
-    
-    
+
+
     })
 
   #Add and remove signals and save changes
@@ -671,12 +667,18 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     } else {
       dummy[9]=1
     }
-    
+
     if (is.na(as.numeric(dummy[10])))  dummy[10]=0
     dummy=as.list(dummy)
     dummy[-c(3,4)]=as.numeric(dummy[-c(3,4)])
-    
+
     reactiveprogramdata$ROI_data_check=rbind(dummy,reactiveprogramdata$ROI_data_check)
+  })
+  observeEvent(input$open_hmdb_url, {
+    tryCatch({
+      browseURL(paste("http://www.hmdb.ca/metabolites/",reactiveprogramdata$imported_data$repository[input$repository2_rows_selected,2],"#spectra",sep=''))    }, error = function(e) {
+      print('Not possible to load HMDB url.')
+    })
   })
   observeEvent(input$add_signal, {
     tryCatch({
@@ -695,12 +697,12 @@ if (length(input$fit_selection_cell_clicked)<1) return()
      })
   observeEvent(input$save_changes, {
     tryCatch({
-    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=TRUE)$ix,]
+      reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[!duplicated(reactiveprogramdata$ROI_data_check[,4:5]),]
+
+      reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[sort(reactiveprogramdata$ROI_data_check[,1],index.return=TRUE)$ix,]
     new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
     new_signals_codes=new_signals_names=rep(NA,nrow(reactiveprogramdata$ROI_data_check))
     new_useful_data=reactiveprogramdata$useful_data
-    reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data_check[!duplicated(reactiveprogramdata$ROI_data_check[,4:5]),]
-    reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data[!duplicated(reactiveprogramdata$ROI_data[,4:5]),]
     for (i in 1:length(new_useful_data)) new_useful_data[[i]]=vector("list", nrow(reactiveprogramdata$ROI_data_check))
     for (i in 1:nrow(reactiveprogramdata$ROI_data_check)) {
       ind=which(reactiveprogramdata$ROI_data[,4]==reactiveprogramdata$ROI_data_check[i,4]&reactiveprogramdata$ROI_data[,5]==reactiveprogramdata$ROI_data_check[i,5])

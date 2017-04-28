@@ -77,33 +77,32 @@ fitting_prep = function(Xdata,Ydata,initial_fit_parameters,program_parameters,cr
 
 
     #Parameters of background signals
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 1] = 0
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 2] = BGSig_maximums
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 3] = BGSigrightlimits
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 4] = BGSigleftlimits
-    # FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 5] = (1.5 /
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 1] = 0
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 2] = BGSig_maximums
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 3] = BGSigrightlimits
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 4] = BGSigleftlimits
+    # FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 5] = (1.5 /
     #                                                                     program_parameters$freq) * 10
-    # FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 6] = (1.5 /
+    # FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 6] = (1.5 /
     #                                                                      program_parameters$freq) * 15
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 5] = program_parameters$BG_width-program_parameters$BG_width*program_parameters$BG_width_tolerance
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 6] = program_parameters$BG_width+program_parameters$BG_width*program_parameters$BG_width_tolerance
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 5] = program_parameters$BG_width-program_parameters$BG_width*program_parameters$BG_width_tolerance
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 6] = program_parameters$BG_width+program_parameters$BG_width*program_parameters$BG_width_tolerance
 
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 7] = 0
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 8] = program_parameters$BG_gaussian_percentage
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 9] = 0
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 10] = 0 #j coupling makes no sense with backgorund signals
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 11] = 0 #arbitrary number used to signal later background signals
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1], 12] = 0
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 7] = 0
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 8] = program_parameters$BG_gaussian_percentage
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 9] = 0
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 10] = 0 #j coupling makes no sense with backgorund signals
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 11] = 0 #arbitrary number used to signal later background signals
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 12] = 0
 
 
 
     # optimization of baseline parameters , to be sure that the algorithm doesn ot try ti fot spurious signals as basleine
-    BG_intensities = fittingloop_bg(FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1],],
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix),2] = fittingloop_bg(FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix),],
                                 Xdata,
                                 created_baseline,
-                                program_parameters)
+                                program_parameters)$BG_intensities
 
-    FeaturesMatrix[(signals_to_fit + 1):dim(FeaturesMatrix)[1],2]=BG_intensities
 
   }
 

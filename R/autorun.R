@@ -63,10 +63,14 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
       if (fitting_type == "Clean Sum" ||
           fitting_type == "Baseline Sum") {
         #Fitting error is calculated through the comparison with the median spectrum, so singals interfering with the integration can be controlled
+        program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+                                              "N")
+        program_parameters$freq=imported_data$freq
+        baseline = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
         Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-        clean_fit = ifelse(fitting_type == "Clean Sum", "Y", "N")
-        dummy = integration(clean_fit, Xdata,Ydata,Ydatamedian)
+        dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baselinedataset[spectrum_index, ROI_buckets])
+
         results_to_save=dummy$results_to_save
 
         #Generation of useful variables specific of every quantification

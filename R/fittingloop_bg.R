@@ -1,4 +1,3 @@
-
 fittingloop_bg = function(FeaturesMatrix, Xdata, Ydata, program_parameters) {
 
   residFun <-
@@ -15,25 +14,24 @@ fittingloop_bg = function(FeaturesMatrix, Xdata, Ydata, program_parameters) {
 
   s0 = lb + (ub - lb) * runif(length(ub))
 
-    nls.out <-
-      nls.lm(
-        par = s0,
-        fn = residFun,
-        observed = Ydata,
-        xx = Xdata,
-        multiplicities=multiplicities,
-        roof_effect=roof_effect,
-        lower = lb,
-        upper = ub,
-        freq=program_parameters$freq,
-        control = nls.lm.control(
-          factor = program_parameters$factor,
-          maxiter = program_parameters$nls_lm_maxiter,
-          ftol = program_parameters$ftol,
-          ptol = program_parameters$ptol
-        )
+  nls.out <-
+    nls.lm(
+      par = s0,
+      fn = residFun,
+      observed = Ydata,
+      xx = Xdata,
+      multiplicities=multiplicities,
+      roof_effect=roof_effect,
+      lower = lb,
+      upper = ub,
+      freq=program_parameters$freq,
+      control = nls.lm.control(
+        factor = program_parameters$factor,
+        maxiter = program_parameters$nls_lm_maxiter,
+        ftol = program_parameters$ftol,
+        ptol = program_parameters$ptol
       )
-      BG_intensities = coef(nls.out)[which(seq(length(coef(nls.out)))%%5==1)]
-      
-  return(BG_intensities)
+    )
+  dummy=list(BG_intensities = coef(nls.out)[which(seq(length(coef(nls.out)))%%5==1)],baseline=Ydata-nls.out$fvec)
+  return(dummy)
 }

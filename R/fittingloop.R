@@ -48,7 +48,6 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
     }
 
 
-
     #Conditions to keep the loop:
     # -The error is bigger than the specified in program_parameters
     # -There is no fitting with more than 66.7% improvement from the worst solution
@@ -58,6 +57,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       lb = as.vector(t(FeaturesMatrix[, seq(1, 9, 2), drop = F]))
       ub = as.vector(t(FeaturesMatrix[, seq(2, 10, 2), drop = F]))
       s0 = lb + (ub - lb) * runif(length(ub))
+      order1=order(rowMeans(FeaturesMatrix[signals_to_quantify ,3:4,drop=F])[signals_to_quantify])
 
       # aaa=iter%%3/3
       # bbb=ifelse((iter+1)%%3/3==0,1,(iter+1)%%3/3)
@@ -102,9 +102,11 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       # #Procedure to calculate the fititng error in all the ROI
       #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
         iter = iter + 1
+        order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_quantify])
+
         errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -min(Ydata))
         if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
-        if (errorprov < error1) {
+        if (errorprov < error1 && identical(order1,order2)) {
           error1 = errorprov
           paramprov=coef(nls.out)
         } else if (errorprov > worsterror) {
@@ -133,11 +135,13 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
         )
 
       iter = iter + 1
+
+      order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_quantify])
       # #Procedure to calculate the fititng error in all the ROI
       #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
       errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -min(Ydata))
       if (is.nan(errorprov) || is.na(errorprov))errorprov = error1
-      if (errorprov < error1) {
+      if (errorprov < error1 && identical(order1,order2)) {
         error1 = errorprov
         paramprov=coef(nls.out)
       } else if (errorprov > worsterror) {
