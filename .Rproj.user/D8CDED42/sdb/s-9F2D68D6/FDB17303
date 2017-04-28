@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\nfitting_prep_integration = function(Xdata,Ydata,program_parameters,created_baseline) {\n  #Created by Daniel Canueto 30/08/2016\n  #Preparation of parameters to optimize to achieve the best fitting\n\n\n  Ydata[Ydata<0]=0\n\n  ROIlength = length(Xdata)\n\n\n  #Calculation of number of background signals, if baseline fitting is performed\n  BGSigNum = ifelse(program_parameters$clean_fit == 'N', max(round(abs(Xdata[1] -\n                                                                        Xdata[ROIlength]) * program_parameters$BGdensity), 3), 0)\n\n  #Preallocation of parameters to optimize into a matrix of features\n  FeaturesMatrix = matrix(NA, (BGSigNum), 12)\n\n  #Finding of maximum intensity and shift tolerance of every background signal\n  if (BGSigNum>0) {\n    BGSigrightlimits = seq(Xdata[1]-0.005, Xdata[ROIlength]+0.005, length = BGSigNum) -\n      0.005\n    BGSigleftlimits = BGSigrightlimits + 0.01\n\n    peaks = peakdet(Ydata, program_parameters$peakdet_minimum*max(1e-10,max(Ydata)))\n    left = which(peaks$mintab$pos < ROIlength / 5)\n    right = which(peaks$mintab$pos > 4 * ROIlength / 5)\n    dummy = round(seq(1, ROIlength, length = 2 * BGSigNum - 1))\n    BGleftlimits = dummy[c(1, seq(2, length(dummy) - 1, 2))]\n    BGrightlimits = dummy[c(seq(2, length(dummy) - 1, 2), length(dummy))]\n    BGSig_maximums = replicate(BGSigNum, NA)\n    for (ss in 1:BGSigNum)\n      BGSig_maximums[ss] = min(Ydata[BGleftlimits[ss]:BGrightlimits[ss]])\n\n\n    #Parameters of background signals\n    FeaturesMatrix[, 1] = 0\n    FeaturesMatrix[, 2] = BGSig_maximums\n    FeaturesMatrix[, 3] = BGSigrightlimits\n    FeaturesMatrix[, 4] = BGSigleftlimits\n    FeaturesMatrix[, 5] = program_parameters$BG_width-program_parameters$BG_width*program_parameters$BG_width_tolerance\n    FeaturesMatrix[, 6] = program_parameters$BG_width+program_parameters$BG_width*program_parameters$BG_width_tolerance\n    FeaturesMatrix[, 7] = 0\n    FeaturesMatrix[, 8] = program_parameters$BG_gaussian_percentage\n    FeaturesMatrix[, 9] = 0\n    FeaturesMatrix[, 10] = 0 #j coupling makes no sense with backgorund signals\n    FeaturesMatrix[, 11] = 0 #arbitrary number used to signal later background signals\n    FeaturesMatrix[, 12] = 0\n\n\n\n    # optimization of baseline parameters , to be sure that the algorithm doesn ot try ti fot spurious signals as basleine\n    baseline = fittingloop_bg(FeaturesMatrix,\n                                Xdata,\n                                created_baseline,\n                                program_parameters)$baseline\n\n\n  }\n\n\n  return(baseline)\n}\n",
+    "created" : 1493373369353.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3040150881",
+    "id" : "FDB17303",
+    "lastKnownWriteTime" : 1493362805,
+    "last_content_update" : 1493362805,
+    "path" : "~/GitHub/rDolphin/R/fitting_prep_integration.R",
+    "project_path" : "R/fitting_prep_integration.R",
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

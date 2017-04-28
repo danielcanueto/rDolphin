@@ -21,10 +21,11 @@ medianplot = function(imported_data) {
   az = list(title = "Intensity",range = c(-1, max(mediandataset)-1))
 
   p=plot_ly(x=~imported_data$ppm)
+  shade=as.character(seq(0.2,1,length.out = nrow(mediandataset)))
   for (i in seq(nrow(mediandataset))){
     p=p%>%add_lines(y = mediandataset[i,],name=types[i])
   }
-  p=p%>%add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
+  p=p%>%add_lines(y = ~p_value_bucketing,name='p value', yaxis = "y2",line = list(color = 'rgba(255, 0, 0, 1)'))%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
   return(p)
 }

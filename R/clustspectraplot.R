@@ -54,10 +54,11 @@ ind=seq(nrow(imported_data$dataset))
   az = list(title = "Intensity",range = c(-1, max(visual_roi)-1))
 
   p=plot_ly(x=~imported_data$ppm)
+  shade=as.character(seq(0.2,1,length.out = nrow(visual_roi)))
   for (i in seq(nrow(visual_roi))){
-    p=p%>%add_lines(y = visual_roi[i,],name=imported_data$Experiments[ ind[i]])
-  }
-  p=p%>%add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
+        p=p%>%add_lines(y = visual_roi[i,],name=imported_data$Experiments[ ind[i]],line = list(color = paste('rgba(0, 0, 255,',shade[i],')',sep='')))
+    }
+  p=p%>%add_lines(y = ~p_value_bucketing,name='p value', yaxis = "y2",line = list(color = 'rgba(255, 0, 0, 1)'))%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
 
 

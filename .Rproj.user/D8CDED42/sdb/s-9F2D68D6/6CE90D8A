@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Creation of plotly figure with the median spectrum for each group of spectra\n#'\n#' @param imported_data List with typical elements necessary to perform quantification of ROIs.\n#'\n#' @return Plotly figure with the median spectrum for each group of spectra\n#' @export medianplot\n#' @import reshape2\n#'\n#' @examples\n#' setwd(paste(system.file(package = \"rDolphin\"),\"extdata\",sep='/'))\n#' imported_data=import_data(\"Parameters_MTBLS242_15spectra_5groups.csv\")\n#' median_plot=medianplot(imported_data)\n\nmedianplot = function(imported_data) {\n  types=unique(imported_data$Metadata[,2])\n  mediandataset=matrix(NA,length(types),ncol(imported_data$dataset))\n  for (i in 1:length(types)) mediandataset[i,]=apply(imported_data$dataset[which(imported_data$Metadata[,2]==types[i]),,drop=F],2,median)\n  p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))\n\n  ay <- list(tickfont = list(color = \"red\"),overlaying = \"y\",side = \"right\",title = \"p value\",range = c(0,max(mediandataset)))\n  az = list(title = \"Intensity\",range = c(-1, max(mediandataset)-1))\n\n  p=plot_ly(x=~imported_data$ppm)\n  shade=as.character(seq(0.2,1,length.out = nrow(mediandataset)))\n  for (i in seq(nrow(mediandataset))){\n    p=p%>%add_lines(y = mediandataset[i,],name=types[i])\n  }\n  p=p%>%add_lines(y = ~p_value_bucketing,name='p value', yaxis = \"y2\",line = list(color = 'rgba(255, 0, 0, 1)'))%>%\n    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)\n  return(p)\n}\n",
+    "created" : 1493371609858.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2731772442",
+    "id" : "6CE90D8A",
+    "lastKnownWriteTime" : 1493374745,
+    "last_content_update" : 1493374745624,
+    "path" : "~/GitHub/rDolphin/R/medianplot.R",
+    "project_path" : "R/medianplot.R",
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

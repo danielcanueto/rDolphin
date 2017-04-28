@@ -44,6 +44,7 @@ server = function(input, output,session) {
 	reactiveprogramdata$total_signals_parameters=dummy$total_signals_parameters
 	# dummy$indicators=dummy2$indicators
 
+	print('Generating additional information...')
 
 	#plots of representative spectra and median spectra per group to help setting the right ROI parameters
 
@@ -78,6 +79,7 @@ server = function(input, output,session) {
 
 
 	#When the session is prepared, the tabs and some inputs become active
+	print('Done!')
 
     updateSelectInput(session, "select",choices = reactiveprogramdata$select_options,selected = 1)
     updateSelectInput(session, "select_validation",selected = 1)
@@ -646,10 +648,10 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch({
       output$roi_profiles_plot=renderPlotly({
         if (input$roi_profile_option==1) {
-          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),1,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
-        } else if (input$roi_profile_option==2) {
-          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),2,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
-        }
+          reactiveprogramdata$clusterplot
+          } else if (input$roi_profile_option==2) {
+            reactiveprogramdata$medianplot
+            }
         })
   },error=function(e) {print('Error. Please explain the issue on the Github website')})
 

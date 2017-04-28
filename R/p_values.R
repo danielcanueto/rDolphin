@@ -13,7 +13,7 @@
 
 
 p_values=function(dataset,metadata) {
-  print ('Preparing an univariate analysis.')
+  # print ('Preparing an univariate analysis.')
 
 
 types=unique(unlist(metadata[,-1]))[which(unique(unlist(metadata[,-1]))>=0)]
@@ -27,7 +27,7 @@ types2=abs(unique(unlist(metadata[,-1]))[which(unique(unlist(metadata[,-1]))<0)]
 datasetlist=list()
 paireddata=F
 if (identical(types,types2)) {
-  print ('Analysis of differences')
+  # print ('Analysis of differences')
 
 
 for (i in seq_along(types)) {
@@ -40,7 +40,7 @@ paireddata=F
 
 }
 } else {
-  print ('Analysis of groups')
+  # print ('Analysis of groups')
   paireddata=T
   lal=metadata[which(metadata[,-1] ==types[1])%%nrow(metadata),1]
   for (i in 1:length(types)) {
@@ -52,9 +52,9 @@ paireddata=F
   }
 }
 if (paireddata==F) {
-  print('Unpaired data')
+  # print('Unpaired data')
 } else {
-  print('Paired data')
+  # print('Paired data')
 }
 
 if (length(datasetlist)==2) {
@@ -129,7 +129,7 @@ for (k in 1:dim(dataset)[2]) {
 p_value_final=rep(1,length(p_value))
 p_value_final[which(!is.na(p_value))]=round(t(as.matrix(p.adjust(p_value[which(!is.na(p_value))],method="none"))),3)
 names(p_value_final)=colnames(dataset)
-print ('Done!')
+# print ('Done!')
 
 return(p_value_final)
 
