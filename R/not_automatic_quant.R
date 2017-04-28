@@ -302,7 +302,7 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
     }
 
 	    if (identical(ind,seq(nrow(imported_data$dataset))))  setTxtProgressBar(pb, spectrum_index)
-    if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum") {
+    if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum"&&identical(ind,seq(nrow(imported_data$dataset)))) {
 
       dummy=integration_error(ROI_data,useful_data,final_output,signals_codes)
       resulting_data$useful_data=dummy$useful_data
