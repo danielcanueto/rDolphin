@@ -32,13 +32,27 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
   #For every ROI
   for (ROI_index in seq_along(ROI_separator[, 1])) {
 
+
     #Preparation of ROI parameters
     ROI_profile = ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
     if (length(ROI_buckets)<5) next
     if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
+
+
+    #Preparation of program parameters to be sued during fitting, with some variables added to ease interpretability of code
+    program_parameters=imported_data$program_parameters
+    program_parameters$freq = imported_data$freq
+    program_parameters$ROI_buckets = ROI_buckets
+    program_parameters$buck_step = imported_data$buck_step
+
     Xdata = imported_data$ppm[ROI_buckets]
     fitting_type = as.character(ROI_profile[1, 3])
+    if (length(grep("Clean",fitting_type))==1) {
+      program_parameters$clean_fit="Y"
+    } else {
+      program_parameters$clean_fit="N"
+    }
 	signals_to_quantify = which(ROI_profile[, 5] >= 1)
 	signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])[signals_to_quantify]
 
@@ -46,11 +60,6 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
     print(paste(ROI_profile[1,1], ROI_profile[1,2], sep = '-'))
     print(paste('ROI',ROI_index,'of',nrow(ROI_separator)))
 
-      #Preparation of program parameters to be sued during fitting, with some variables added to ease interpretability of code
-      program_parameters=imported_data$program_parameters
-      program_parameters$freq = imported_data$freq
-      program_parameters$ROI_buckets = ROI_buckets
-      program_parameters$buck_step = imported_data$buck_step
 
 
     #Quantification for every spectrum
@@ -59,20 +68,19 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
       #Preparation of necessary variables to store figures and information of the fitting
       Ydata = as.numeric(imported_data$dataset[spectrum_index, ROI_buckets])
+
       #If the quantification is through integration with or without baseline
       if (fitting_type == "Clean Sum" ||
           fitting_type == "Baseline Sum") {
         #Fitting error is calculated through the comparison with the median spectrum, so singals interfering with the integration can be controlled
-        program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
-                                              "N")
-        program_parameters$freq=imported_data$freq
-        baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baselinedataset[spectrum_index, ROI_buckets])
-        Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
-
-        dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline_int)
+        # program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+        #                                       "N")
+        # program_parameters$freq=imported_data$freq
+        # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baselinedataset[spectrum_index, ROI_buckets])
+        # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
+        dummy = integration(program_parameters$clean_fit, Xdata,Ydata)
 
         results_to_save=dummy$results_to_save
-
         #Generation of useful variables specific of every quantification
         useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
         useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
@@ -85,8 +93,6 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
       } else if (fitting_type == "Clean Fitting" || fitting_type ==
           "Baseline Fitting") {
 
-        program_parameters$clean_fit = ifelse(fitting_type == "Clean Fitting", "Y",
-          "N")
 
         #Adaptation of the info of the parameters into a single matrix and preparation (if necessary) of the background signals that will conform the baseline
         FeaturesMatrix = fitting_prep(Xdata,
@@ -100,18 +106,20 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
           Ydata,
           program_parameters)
         signals_parameters=dummy$signals_parameters
-
+		Xdata_2=imported_data$ppm
+	    program_parameters$signals_to_quantify=signals_to_quantify
+		Ydata_2 = as.numeric(imported_data$dataset[spectrum_index, ])
         #Fitting of the signals
         multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         fitted_signals = signal_fitting(signals_parameters,
-          Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
+          Xdata_2,multiplicities,roof_effect,program_parameters$freq)
                dim(signals_parameters) = c(5, length(signals_parameters)/5)
         rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling')
         signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
 
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
-        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
+        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata_2,Xdata_2,signals_parameters,multiplicities)
         output_data=dummy$output_data
         error1=ifelse(is.nan(dummy$error1),3000,dummy$error1)
 
@@ -124,7 +132,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
         multiplicities=c(FeaturesMatrix[,11],rep(1,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
         fitted_signals = signal_fitting(signals_parameters,
-          Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
+          Xdata_2,multiplicities,roof_effect,program_parameters$freq)
         dim(signals_parameters) = c(5, length(signals_parameters)/5)
 		signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
         rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling','multiplicities','roof effect')
@@ -134,7 +142,7 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
           colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
         }
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
-        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata,Xdata,signals_parameters,multiplicities)
+        dummy = output_generator(signals_to_quantify,fitted_signals,Ydata_2,Xdata_2,signals_parameters,multiplicities)
 
         #If new deconvolution has improved previous one
         if (dummy$error1<error1) {
@@ -179,12 +187,12 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
   }
   print("Done!")
-  ind=which(ROI_data[,3]=="Clean Sum"| ROI_data[,3]=="Baseline Sum")
-  if (length(ind>0)) {
-  dummy=integration_error(ROI_data,useful_data,final_output,ind)
-  final_output=dummy$final_output
-  useful_data=dummy$useful_data
-}
+#   ind=which(ROI_data[,3]=="Clean Sum"| ROI_data[,3]=="Baseline Sum")
+#   if (length(ind>0)) {
+#   dummy=integration_error(ROI_data,useful_data,final_output,ind)
+#   final_output=dummy$final_output
+#   useful_data=dummy$useful_data
+# }
   quantification_variables=list(final_output=final_output,useful_data=useful_data)
   return(quantification_variables)
 }

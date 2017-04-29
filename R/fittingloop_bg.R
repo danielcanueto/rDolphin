@@ -2,7 +2,7 @@ fittingloop_bg = function(FeaturesMatrix, Xdata, Ydata, program_parameters) {
 
   residFun <-
     function(par, observed, xx,multiplicities,roof_effect,freq)
-      observed - colSums(signal_fitting(par, xx,multiplicities,roof_effect,observed,freq))
+      observed - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))
 
   # Loop to control if additional signals are incorporated, until a maximum of iterations specified bt fitting_maxiterrep.
   # If at the last fitting the improvement was lesser than 25% respective to the previous fitting,

@@ -113,7 +113,7 @@ if (is.null(final_output)) return(NULL)
 
   }
 
-    brks <-c(seq(min(alarmmatrix,na.rm=T), 1, length.out=10),seq(1, max(alarmmatrix,na.rm=T), length.out=10)[-1])
+    brks <- c(seq(0.25, 1,length.out = 10), seq(1, 4, length.out = 10)[-1])
     clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
     {paste0("rgb(255,", ., ",", ., ")")}
   }

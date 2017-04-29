@@ -1,5 +1,5 @@
 
-integration = function(clean_fit, Xdata, Ydata,Ydatamedian,baseline,interface='F') {
+integration = function(clean_fit, Xdata, Ydata,interface='F') {
 
   #preallocation of results_to_save
   results_to_save = list(
@@ -11,9 +11,10 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,baseline,interface='F
     half_band_width = NA
   )
 
+  baseline = rep(0,length(Xdata))
   #preparation of baseline, if specified by the user
-  if (clean_fit == 'Y')   baseline = rep(0,length(Xdata))
-
+  if (clean_fit == 'N') baseline = seq(min(Ydata[1:5]), min(Ydata[(length(Xdata) - 4):length(Xdata)]), len =length(Xdata))
+baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   #integration ad chechk that there are no negative values
   integrated_signal = Ydata - baseline
     integrated_signal[integrated_signal<0]=0
@@ -34,9 +35,9 @@ integration = function(clean_fit, Xdata, Ydata,Ydatamedian,baseline,interface='F
   results_to_save$signal_area_ratio = tryCatch((sum(integrated_signal[p1:p2]) / sum(Ydata[p1:p2])) *
     100,error = function(e) NaN, silent=T)
 
-  d=ccf(Ydata,Ydatamedian,type = 'covariance',plot = FALSE)
-  so=(1+max(abs(d$lag[which.max(d$acf)]))):(length(Ydata)-max(abs(d$lag[which.max(d$acf)])))
-  results_to_save$fitting_error=summary(lm(Ydatamedian[so]~Ydata [so]))$sigma/max(Ydatamedian[so])
+  # d=ccf(Ydata,Ydatamedian,type = 'covariance',plot = FALSE)
+  # so=(1+max(abs(d$lag[which.max(d$acf)]))):(length(Ydata)-max(abs(d$lag[which.max(d$acf)])))
+  # results_to_save$fitting_error=summary(lm(Ydatamedian[so]~Ydata [so]))$sigma/max(Ydatamedian[so])
   results_to_save$half_band_width = NaN
 
   peaks = peakdet(integrated_signal, 0.2*max(0.000001,max(integrated_signal)))

@@ -31,6 +31,11 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
   program_parameters$ROI_buckets = ROI_buckets
   program_parameters$buck_step = imported_data$buck_step
   fitting_type = as.character(ROI_profile[1, 3])
+  if (length(grep("Clean",fitting_type))==1) {
+    program_parameters$clean_fit="Y"
+  } else {
+    program_parameters$clean_fit="N"
+  }
   signals_to_quantify = which(ROI_profile[, 5] >0)
   signals_codes = signals_names = rep(NA,length(signals_to_quantify))
   j = 1
@@ -50,18 +55,19 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
     # print(paste("Spectrum ",spectrum_index))
 
     Ydata = as.numeric(imported_data$dataset[spectrum_index, ROI_buckets])
+
     experiment_name = imported_data$Experiments[[spectrum_index]]
 
     # If the quantification is through integration with or without baseline
     if (fitting_type == "Clean Sum" ||
         fitting_type == "Baseline Sum") {
-      program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
-                                            "N")
-      program_parameters$freq=imported_data$freq
-      baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
-      Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
+      # program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+      #                                       "N")
+      # program_parameters$freq=imported_data$freq
+      # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
+      # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline_int,interface='T')
+     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,interface='T')
 
       results_to_save=dummy$results_to_save
       p=dummy$p
@@ -91,8 +97,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       #If the quantification is through fitting with or without baseline
     } else if (fitting_type == "Clean Fitting" || fitting_type ==
                "Baseline Fitting") {
-      program_parameters$clean_fit = ifelse(fitting_type == "Clean Fitting", "Y",
-        "N")
+
       program_parameters$freq=imported_data$freq
 
       FeaturesMatrix = fitting_prep(Xdata,
@@ -122,6 +127,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       )
 
       Xdata_2=imported_data$ppm
+	   program_parameters$signals_to_quantify=signals_to_quantify
+      Ydata_2 = as.numeric(imported_data$dataset[spectrum_index, ])
       # signals_parameters_2=unlist(signals_parameters_2)
       # multiplicities_2=unlist(multiplicities_2)
       # roof_effect_2=unlist(roof_effect_2)
@@ -130,7 +137,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       roof_effect_2=unlist(roof_effect)
 
       fitted_signals = signal_fitting(signals_parameters_2,
-                                         Xdata_2,multiplicities_2,roof_effect_2,Ydata,program_parameters$freq)
+                                         Xdata_2,multiplicities_2,roof_effect_2,program_parameters$freq)
       # signals_parameters=as.matrix(signals_parameters)
 
       # dim(signals_parameters_2) = c(5, length(signals_parameters_2)/5)
@@ -141,8 +148,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       #   'gaussian',
       #   'J_coupling'
       # )
-      program_parameters$signals_to_quantify=signals_to_quantify
-      Ydata_2 = as.numeric(imported_data$dataset[spectrum_index, ])
+
 
       #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
       dummy = output_generator(
@@ -165,8 +171,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         roof_effect=c(FeaturesMatrix[,12],rep(0,(length(signals_parameters)/5)-dim(FeaturesMatrix)[1]))
 
         signals_parameters_2=signals_parameters
-        multiplicities_2=multiplicities
-        roof_effect_2=roof_effect
+        # multiplicities_2=multiplicities
+        # roof_effect_2=roof_effect
         #Fitting of the signals
         dim(signals_parameters) = c(5, length(signals_parameters)/5)
         rownames(signals_parameters) = c(
@@ -177,7 +183,6 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
           'J_coupling'
         )
 
-        Xdata_2=imported_data$ppm
         # signals_parameters_2=unlist(signals_parameters_2)
         # multiplicities_2=unlist(multiplicities_2)
         # roof_effect_2=unlist(roof_effect_2)
@@ -186,7 +191,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         roof_effect_2=unlist(roof_effect)
 
         fitted_signals = signal_fitting(signals_parameters_2,
-          Xdata_2,multiplicities_2,roof_effect_2,Ydata,program_parameters$freq)
+          Xdata_2,multiplicities_2,roof_effect_2,program_parameters$freq)
         # signals_parameters=as.matrix(signals_parameters)
 
         # dim(signals_parameters_2) = c(5, length(signals_parameters_2)/5)
@@ -197,8 +202,6 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         #   'gaussian',
         #   'J_coupling'
         # )
-        program_parameters$signals_to_quantify=signals_to_quantify
-        Ydata_2 = as.numeric(imported_data$dataset[spectrum_index, ])
 
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
         dummy = output_generator(
@@ -247,7 +250,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         rep('Generated Background', length(Ydata_2))
       )
       plot_title = paste(imported_data$Experiments[spectrum_index],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
-colors=c('red','blue','black','brown','cyan','green','yellow')
+colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow'))
       p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
         for (i in 4:nrow(plot_data)) {
           plotdata5 =  data.frame(Xdata=Xdata_2, variable=rownames(plot_data)[i] ,value=plot_data[i,])
@@ -302,11 +305,11 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
     }
 
 	    if (identical(ind,seq(nrow(imported_data$dataset))))  setTxtProgressBar(pb, spectrum_index)
-    if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum"&&identical(ind,seq(nrow(imported_data$dataset)))) {
-
-      dummy=integration_error(ROI_data,useful_data,final_output,signals_codes)
-      resulting_data$useful_data=dummy$useful_data
-      resulting_data$final_output=dummy$final_output
+    # if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum"&&identical(ind,seq(nrow(imported_data$dataset)))) {
+    #
+    #   dummy=integration_error(ROI_data,useful_data,final_output,signals_codes)
+    #   resulting_data$useful_data=dummy$useful_data
+    #   resulting_data$final_output=dummy$final_output
 
     }
 	if (interface == T) {
@@ -317,6 +320,6 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
 		resulting_data$fitting_type=fitting_type
 		# resulting_data$signals_names=signals_names
 	}
-  }
+  # }
   return(resulting_data)
 }

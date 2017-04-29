@@ -17,7 +17,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
   #Function where to find a minimum
   residFun <-
     function(par, observed, xx,multiplicities,roof_effect,freq)
-      observed - colSums(signal_fitting(par, xx,multiplicities,roof_effect,observed,freq))
+      observed - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))
 
 
   # Loop to control if additional signals are incorporated, until a maximum of iterations specified bt fitting_maxiterrep.

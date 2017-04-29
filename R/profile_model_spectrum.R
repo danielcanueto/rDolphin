@@ -56,6 +56,11 @@ profile_model_spectrum = function(imported_data, ROI_data) {
 
 
     fitting_type = as.character(ROI_profile[1, 3])
+    if (length(grep("Clean",fitting_type))==1) {
+      program_parameters$clean_fit="Y"
+    } else {
+      program_parameters$clean_fit="N"
+    }
     signals_to_quantify = which(ROI_profile[, 5] >= 1)
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
     if (length(ROI_buckets)<5) next
@@ -71,13 +76,13 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     # If the quantification is through integration with or without baseline
     if (fitting_type == "Clean Sum" ||
         fitting_type == "Baseline Sum") {
-      program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
-                                            "N")
-      program_parameters$freq=imported_data$freq
-      baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
-      Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
+      # program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
+      #                                       "N")
+      # program_parameters$freq=imported_data$freq
+      # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
+      # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,Ydatamedian,baseline_int)
+      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata)
 
       total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
@@ -88,9 +93,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
 
     } else if (fitting_type == "Clean Fitting" || fitting_type ==
         "Baseline Fitting") {
-      program_parameters$clean_fit='N'
 
-      initial_fit_parameters = ROI_profile[, 5:11,drop=F]
 
       #Adaptation of the info of the parameters into a single matrix and preparation (if necessary) of the background signals that will conform the baseline
       FeaturesMatrix = fitting_prep(Xdata,
@@ -105,13 +108,14 @@ profile_model_spectrum = function(imported_data, ROI_data) {
         program_parameters)
       signals_parameters=dummy$signals_parameters
 
+
       #Fitting of the signals
       multiplicities=FeaturesMatrix[,11]
       roof_effect=FeaturesMatrix[,12]
 
 
       fitted_signals = signal_fitting(signals_parameters,
-        Xdata,multiplicities,roof_effect,Ydata,program_parameters$freq)
+        Xdata,multiplicities,roof_effect,program_parameters$freq)
       dim(signals_parameters) = c(5, length(signals_parameters)/5)
       rownames(signals_parameters) = c(
         'intensity',

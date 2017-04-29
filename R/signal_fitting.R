@@ -1,7 +1,7 @@
 
 
-signal_fitting = function(parS, Xdata,multiplicities,roof_effect,Ydata,freq) {
-  
+signal_fitting = function(parS, Xdata,multiplicities,roof_effect,freq) {
+
   i = as.numeric(parS[seq(1, length(parS) - 4, 5)])
   p = as.numeric(parS[seq(2, length(parS) - 3, 5)])
   w = as.numeric(parS[seq(3, length(parS) - 2, 5)])*0.5/freq

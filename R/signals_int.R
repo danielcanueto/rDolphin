@@ -41,6 +41,7 @@ experiment_name = imported_data$Experiments[[spectrum_index]]
 
 
 fitting_type=ROI_profile[1,3]
+
       #Fitting of the signals
       multiplicities=signals_introduce[,6]
       roof_effect=signals_introduce[,7]
@@ -50,7 +51,7 @@ fitting_type=ROI_profile[1,3]
 
       program_parameters$freq=imported_data$freq
       fitted_signals = signal_fitting(signals_parameters,
-                                         Xdata_2,multiplicities,roof_effect,Ydata,program_parameters$freq)
+                                         Xdata_2,multiplicities,roof_effect,program_parameters$freq)
 
       dim(signals_parameters) = c(5, length(signals_parameters)/5)
       rownames(signals_parameters) = c(
@@ -134,7 +135,7 @@ fitting_type=ROI_profile[1,3]
         colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
       } else {
         colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
-      }  
+      }
       provisional_data=list()
     provisional_data$signals_parameters=signals_parameters
     provisional_data$program_parameters=program_parameters

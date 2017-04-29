@@ -1,0 +1,51 @@
+{
+    "debugBreakpointsState" : {
+        "breakpoints" : [
+            {
+                "editor_line_number" : 605,
+                "editor_state" : 1,
+                "function_name" : "toplevel",
+                "function_steps" : "",
+                "id" : 1,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 605,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/GitHub/rDolphin/inst/app/server.R",
+                "state" : 1,
+                "type" : 1
+            },
+            {
+                "editor_line_number" : 53,
+                "editor_state" : 1,
+                "function_name" : "output_generator",
+                "function_steps" : "15",
+                "id" : 14,
+                "is_package_breakpoint" : true,
+                "is_pending_debug_completion" : false,
+                "line_number" : 53,
+                "needs_updated_steps" : false,
+                "package_name" : "rDolphin",
+                "path" : "~/GitHub/rDolphin/R/output_generator.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 52,
+                "editor_state" : 1,
+                "function_name" : "profile_model_spectrum",
+                "function_steps" : "15,4,6",
+                "id" : 22,
+                "is_package_breakpoint" : true,
+                "is_pending_debug_completion" : false,
+                "line_number" : 52,
+                "needs_updated_steps" : false,
+                "package_name" : "rDolphin",
+                "path" : "~/GitHub/rDolphin/R/profile_model_spectrum.R",
+                "state" : 1,
+                "type" : 0
+            }
+        ]
+    }
+}
