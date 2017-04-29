@@ -96,6 +96,7 @@ fitting_type=ROI_profile[1,3]
         output_data$fitted_sum,
         output_data$signals
       )
+      plot_data=plot_data[,ROI_buckets]
       rownames(plot_data) = c("signals_sum",
         "baseline_sum",
         "fitted_sum",

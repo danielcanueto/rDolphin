@@ -161,9 +161,10 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
         )
 
         #Generation of the figure data
-        plot_data = rbind(output_data$signals_sum,output_data$baseline_sum,output_data$fitted_sum,output_data$signals
-        )
-        rownames(plot_data) = c("signals_sum","baseline_sum","fitted_sum",as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
+        plot_data = rbind(output_data$signals_sum,output_data$baseline_sum,output_data$fitted_sum,output_data$signal)
+        plot_data = plot_data[,ROI_buckets]
+        
+         rownames(plot_data) = c("signals_sum","baseline_sum","fitted_sum",as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
         #Generation of useful variables specific of every quantification
         for (i in seq_along(signals_codes)) {
