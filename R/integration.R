@@ -39,9 +39,17 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   # so=(1+max(abs(d$lag[which.max(d$acf)]))):(length(Ydata)-max(abs(d$lag[which.max(d$acf)])))
   # results_to_save$fitting_error=summary(lm(Ydatamedian[so]~Ydata [so]))$sigma/max(Ydatamedian[so])
   results_to_save$half_band_width = NaN
-
-  peaks = peakdet(integrated_signal, 0.2*max(0.000001,max(integrated_signal)))
-  results_to_save$shift = mean(Xdata[peaks$maxtab$pos])
+#
+#   peaks = peakdet(integrated_signal, 0.2*max(0.000001,max(integrated_signal)))
+#   results_to_save$shift = mean(Xdata[peaks$maxtab$pos])
+  wer=which.min(abs(cumulative_area-0.5))
+  if (cumulative_area[wer]>0.5) {
+    wer=c(wer-1,wer)
+  } else {
+    wer=c(wer,wer+1)
+  }
+  wer2=(0.5-cumulative_area[wer[1]])/diff(cumulative_area[wer])
+  results_to_save$shift = Xdata[wer[1]]-wer2*diff(Xdata[wer])
 
 p=''
 if (interface=='T') {

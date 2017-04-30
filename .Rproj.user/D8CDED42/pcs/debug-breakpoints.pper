@@ -15,36 +15,6 @@
                 "path" : "~/GitHub/rDolphin/inst/app/server.R",
                 "state" : 1,
                 "type" : 1
-            },
-            {
-                "editor_line_number" : 44,
-                "editor_state" : 2,
-                "function_name" : "autorun",
-                "function_steps" : "",
-                "id" : 24,
-                "is_package_breakpoint" : true,
-                "is_pending_debug_completion" : false,
-                "line_number" : 44,
-                "needs_updated_steps" : false,
-                "package_name" : "rDolphin",
-                "path" : "~/GitHub/rDolphin/R/autorun.R",
-                "state" : 2,
-                "type" : 0
-            },
-            {
-                "editor_line_number" : 25,
-                "editor_state" : 2,
-                "function_name" : "autorun",
-                "function_steps" : "",
-                "id" : 25,
-                "is_package_breakpoint" : true,
-                "is_pending_debug_completion" : false,
-                "line_number" : 25,
-                "needs_updated_steps" : false,
-                "package_name" : "rDolphin",
-                "path" : "~/GitHub/rDolphin/R/autorun.R",
-                "state" : 2,
-                "type" : 0
             }
         ]
     }

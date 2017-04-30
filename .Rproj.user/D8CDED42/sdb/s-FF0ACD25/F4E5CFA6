@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n#' Saving of results in interface in individual quantification\n#'\n#' @param provisional_data List with elements to save.\n#' @param final_output List with quantifications and indicators of quality of quantification.\n#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.\n#' @param imported_data List with typical elements necessary to perform quantification of ROIs.\n#'\n#' @return List with updated final_output and useful_data variables.\n#' @export save_roi_testing\n\nsave_roi_testing=function(provisional_data,imported_data,final_output,useful_data) {\n\n\nif (provisional_data$fitting_type == \"Clean Sum\" ||\n    provisional_data$fitting_type == \"Baseline Sum\") {\n\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$ROI_profile=ROI_profile\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$plot_data=dummy$plot_data\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$Xdata=Xdata\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$Ydata=Ydata\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$results_to_save=results_to_save\n  provisional_data$useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes]]$error1=results_to_save$fitting_error\n\n\n\n} else if (provisional_data$fitting_type == \"Clean Fitting\" || provisional_data$fitting_type ==\n    \"Baseline Fitting\") {\n\n\n\n  provisional_data$program_parameters$signals_to_quantify=NULL\n\n  for (i in seq_along(provisional_data$signals_codes)) {\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$ROI_profile=provisional_data$ROI_profile\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$program_parameters=provisional_data$program_parameters\n    # useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$fitted_signals=provisional_data$fitted_signals\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$plot_data=provisional_data$plot_data\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$Xdata=provisional_data$Xdata\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$Ydata=provisional_data$Ydata\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$results_to_save=provisional_data$results_to_save\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$signals_parameters=provisional_data$signals_parameters\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$FeaturesMatrix=provisional_data$FeaturesMatrix\n    useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$error1=provisional_data$error1\n\n\n  }\n  final_output = save_output(\n    provisional_data$spectrum_index,\n    provisional_data$signals_codes,\n    provisional_data$results_to_save,\n    imported_data$buck_step,\n    final_output)\n\n}\n\n\n\n  # tryCatch({write_info(imported_data$export_path, final_output)}, error = function(err) {\n  #   print('Not possible to overwrite a csv file open with Microsoft Excel')\n  # })\n\n    dummy=list(final_output=final_output,useful_data=useful_data)\n    return(dummy)\n\n  }\n",
+    "created" : 1493567203616.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "146493651",
+    "id" : "F4E5CFA6",
+    "lastKnownWriteTime" : 1493293899,
+    "last_content_update" : 1493293899,
+    "path" : "~/GitHub/rDolphin/R/save_roi_testing.R",
+    "project_path" : "R/save_roi_testing.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

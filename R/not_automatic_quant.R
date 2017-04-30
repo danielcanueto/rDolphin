@@ -234,28 +234,28 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         output_data$fitted_sum,
         output_data$signals
       )
-      
+
       plot_data = plot_data[,ROI_buckets]
       rownames(plot_data) = c("signals_sum",
         "baseline_sum",
         "fitted_sum",
         as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
-      plotdata2 = data.frame(Xdata=Xdata_2,
-        Ydata=Ydata_2,
+      plotdata2 = data.frame(Xdata,
+        Ydata,
         plot_data[3, ],
         plot_data[2, ] )
       plotdata3 <- melt(plotdata2, id = "Xdata")
       plotdata3$variable = c(
-        rep('Original Spectrum', length(Ydata_2)),
-        rep('Generated Spectrum', length(Ydata_2)),
-        rep('Generated Background', length(Ydata_2))
+        rep('Original Spectrum', length(Ydata)),
+        rep('Generated Spectrum', length(Ydata)),
+        rep('Generated Background', length(Ydata))
       )
       plot_title = paste(imported_data$Experiments[spectrum_index],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
 colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow'))
       p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
         for (i in 4:nrow(plot_data)) {
-          plotdata5 =  data.frame(Xdata=Xdata_2, variable=rownames(plot_data)[i] ,value=plot_data[i,])
+          plotdata5 =  data.frame(Xdata=Xdata, variable=rownames(plot_data)[i] ,value=plot_data[i,])
 
         p=p %>%add_trace(data=plotdata5,x=~Xdata,y=~value,name=~variable,type='scatter',mode='lines',fill='tozeroy',fillcolor=colors[i-3])
 }
@@ -276,7 +276,7 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
       for (i in seq_along(signals_codes)) {
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data[,ROI_buckets]
+        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
         resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
@@ -297,7 +297,7 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
     resulting_data$results_to_save=results_to_save
     resulting_data$ROI_profile=ROI_profile
     resulting_data$Ydata=Ydata
-    resulting_data$plot_data=plot_data[,ROI_buckets]
+    resulting_data$plot_data=plot_data
     resulting_data$FeaturesMatrix=FeaturesMatrix
     resulting_data$error1=error1
     resulting_data$signals_parameters=signals_parameters

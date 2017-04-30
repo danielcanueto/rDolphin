@@ -152,7 +152,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
   p=plot_ly()%>%
     add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),name='Model spectrum')%>%
     add_lines(x=~imported_data$ppm,y = ~fitted_data,name='Fitted spectrum',fill='tozeroy')%>%
-  add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2")%>%
+  add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2",line = list(color = 'rgba(255, 0, 0, 1)'))%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
   dummy=list(p=p,total_signals_parameters=round(total_signals_parameters,4),ROI_data=ROI_data)
   return(dummy)

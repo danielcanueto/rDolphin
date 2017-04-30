@@ -102,15 +102,15 @@ fitting_type=ROI_profile[1,3]
         "fitted_sum",
         as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
-      plotdata2 = data.frame(Xdata=Xdata_2,
-        Ydata=Ydata_2,
+      plotdata2 = data.frame(Xdata,
+        Ydata,
         plot_data[3, ],
         plot_data[2, ] )
       plotdata3 <- melt(plotdata2, id = "Xdata")
       plotdata3$variable = c(
-        rep('Original Spectrum', length(Ydata_2)),
-        rep('Generated Spectrum', length(Ydata_2)),
-        rep('Generated Background', length(Ydata_2))
+        rep('Original Spectrum', length(Ydata)),
+        rep('Generated Spectrum', length(Ydata)),
+        rep('Generated Background', length(Ydata))
       )
       # plotdata4 = data.frame(Xdata=Xdata_2, (t(plot_data[-c(1, 2, 3), , drop = F]) ))
       # plotdata5 = melt(plotdata4, id = "Xdata")
@@ -119,7 +119,7 @@ fitting_type=ROI_profile[1,3]
       # plotdata = data.frame(Xdata=Xdata_2, signals = plot_data[1, ] )
       p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
       for (i in 4:nrow(plot_data)) {
-        plotdata5 =  data.frame(Xdata=Xdata_2, variable=rownames(plot_data)[i] ,value=plot_data[i,])
+        plotdata5 =  data.frame(Xdata=Xdata, variable=rownames(plot_data)[i] ,value=plot_data[i,])
 
         p=p %>%add_trace(data=plotdata5,x=~Xdata,y=~value,name=~variable,type='scatter',mode='lines',fill='tozeroy',fillcolor=colors[i-3])
       }
@@ -157,7 +157,7 @@ fitting_type=ROI_profile[1,3]
     provisional_data$fitting_type=fitting_type
     provisional_data$ROI_profile=ROI_profile
     provisional_data$final_output=final_output
-    provisional_data$plot_data=plot_data[,ROI_buckets]
+    provisional_data$plot_data=plot_data
 
 
   return(provisional_data)

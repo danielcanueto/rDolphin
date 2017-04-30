@@ -252,7 +252,9 @@ observeEvent(input$folder, {
   observeEvent(input$select, {
     if (reactiveprogramdata$beginning==FALSE) return()
 	#Splitting of ROI data into individual ROIs to be quantified
-	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
+    tryCatch({
+
+    dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
     lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
@@ -261,6 +263,7 @@ observeEvent(input$folder, {
     reactiveROItestingdata$signpar <- rbind(rep(NA,7),rep(NA,7))
     colnames(reactiveROItestingdata$signpar)=c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect")
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
+    rownames(reactiveROItestingdata$qualitypar)=NULL
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
 
     # Plot is prepared
@@ -268,7 +271,10 @@ observeEvent(input$folder, {
     ind=ifelse(is.null(input$x1_rows_selected),1,input$x1_rows_selected)
     dummy=type_plot(reactiveprogramdata$imported_data,ROI_limits,ind,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
     if (!is.null(dummy)) reactiveprogramdata$plot=dummy
-
+    }, error = function(e) {
+      print('Error. Please explain the issue on Github website.')
+      return()
+    })
 	#Setting of reactivity to edition of parameters prepared. Probably improvable, but it is a delicate matter. Now that I can debug it easily, it can be 'cleaned' in the future.
     reactiveprogramdata$change=reactiveprogramdata$change2=1
     reactiveprogramdata$stop=reactiveprogramdata$stop2=0
@@ -372,6 +378,8 @@ observeEvent(input$folder, {
     reactiveROItestingdata$signpar <- rbind(rep(NA,7),rep(NA,7))
     colnames(reactiveROItestingdata$signpar)=c("intensity",	"shift",	"half_band_width",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
+    rownames(reactiveROItestingdata$qualitypar)=NULL
+
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
     ROI_limits=c(reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,1]))],reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,2]))])
 
@@ -574,7 +582,7 @@ observeEvent(input$folder, {
     reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
     colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
-    ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
+    # ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
     # reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
     if (!is.null(reactivequantdata$method1$signals_parameters)) reactiveROItestingdata$signpar <- t(reactivequantdata$method1$signals_parameters)
   },error=function(e) {
