@@ -75,7 +75,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
 
       # resulting_data$integration_parameters=integration_parameters
       #Generation of output variables specific of every quantification
-	if (identical(ind,seq(nrow(imported_data$dataset)))) {
+	if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F) {
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
         # resulting_data$useful_data[[spectrum_index]][[signals_codes]]$integration_parameters=integration_parameters
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data

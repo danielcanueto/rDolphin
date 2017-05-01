@@ -17,11 +17,11 @@ type_plot = function(imported_data,ROI_limits,rows_selected,medianplot,clusterpl
   if (length(rows_selected)>1&any(rows_selected<3)) {
     print('Not possible to combine cluster or median spectra with individual spectra.')
     return(NULL)
-  } else if (rows_selected==1) {
+  } else if (suppressWarnings(rows_selected==1)) {
     # range=c(0,max(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2]))])+10)
     range=c(0,max(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2]))],2,median)))
     p=clusterplot %>% layout(xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))
-  }else if (rows_selected==2) {
+  }else if (suppressWarnings(rows_selected==2)) {
     range=c(0,max(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2]))],2,median)))
     p=medianplot %>% layout(xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))
   }else if (all(rows_selected>2)){

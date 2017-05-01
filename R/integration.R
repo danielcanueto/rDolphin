@@ -28,8 +28,8 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
     p1=1
     p2=length(cumulative_area)
   } else {
-	  p1 = which(cumulative_area< 0.05)[length(which(cumulative_area< 0.05))]
-	  p2 = which(cumulative_area > 0.95)[1]
+	  p1 = max(1,which(cumulative_area< 0.05)[length(which(cumulative_area< 0.05))])
+	  p2 = min(which(cumulative_area > 0.95)[1],length(cumulative_area))
   }
 
   results_to_save$signal_area_ratio = tryCatch((sum(integrated_signal[p1:p2]) / sum(Ydata[p1:p2])) *
@@ -44,11 +44,12 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
 #   results_to_save$shift = mean(Xdata[peaks$maxtab$pos])
   wer=which.min(abs(cumulative_area-0.5))
   if (cumulative_area[wer]>0.5) {
-    wer=c(wer-1,wer)
+    wer=c(max(1,wer-1),wer)
   } else {
-    wer=c(wer,wer+1)
+    wer=c(wer,min(wer+1,length(Xdata)))
   }
   wer2=(0.5-cumulative_area[wer[1]])/diff(cumulative_area[wer])
+  if (wer[1]==wer[2]) wer2=0
   results_to_save$shift = Xdata[wer[1]]-wer2*diff(Xdata[wer])
 
 p=''

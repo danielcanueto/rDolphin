@@ -36,6 +36,7 @@ server = function(input, output,session) {
 	reactiveprogramdata$useful_data=reactiveprogramdata$imported_data$useful_data
 	reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=reactiveprogramdata$imported_data$ROI_data
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
+	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect","Relative intensity")
 
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
 	print('Automatic quantification of model spectrum not possible.')
@@ -116,6 +117,7 @@ server = function(input, output,session) {
       print('Not possible to load the session. Please revise your choice.')
       return(NULL)
     })
+    colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect","Relative intensity")
 
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
     #Names of ROIS are prepared
@@ -171,7 +173,7 @@ observeEvent(input$folder, {
   #Appearance of autorun and aligment buttons only after beginning or loading session
   output$varselect <- renderUI({
     if(reactiveprogramdata$beginning==FALSE){return()}
-    actionButton('autorun', 'Autorun all spectra')
+    actionButton('autorun', 'Autorun all spectra', class = "btn-primary")
   })
   output$align_button <- renderUI({
     if(reactiveprogramdata$beginning==FALSE){return()}
@@ -514,13 +516,13 @@ observeEvent(input$folder, {
 
   #Repository table
   observe({
-    if (!is.na(reactiveprogramdata$imported_data))  {
+    if (!suppressWarnings(is.na(reactiveprogramdata$imported_data)))  {
   output$repository = DT::renderDataTable(
     reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>reactiveROItestingdata$ROIpar[1,2]&reactiveprogramdata$imported_data$repository[,3]<reactiveROItestingdata$ROIpar[1,1]),] , server = TRUE)
     }
   })
   observe({
-    if (!is.na(reactiveprogramdata$imported_data))  {
+    if (!suppressWarnings(is.na(reactiveprogramdata$imported_data)))  {
       output$repository2 = DT::renderDataTable(
         # reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]-0.05)&reactiveprogramdata$imported_data$repository[,3]<(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]+0.05)),] , server = TRUE)
       reactiveprogramdata$imported_data$repository , selection = list(mode = 'single', selected = NULL),filter='top', server = TRUE)
@@ -531,6 +533,8 @@ observeEvent(input$folder, {
 
   #Direct edition of parameters before quantification
   output$directedition <- renderD3tf({
+    if(reactiveprogramdata$beginning==F) return(NULL)
+
     observe({
       if(is.null(input$directedition_edit)|(reactiveprogramdata$stop2==1)) {
         reactiveprogramdata$change2=0
@@ -839,8 +843,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     right_ppm <- renderText({ input$right_ppm })
       output$stocsy_plot=renderPlotly({
         if (input$stocsy==1) {
-          type_plot(reactiveprogramdata$imported_data,rev(range(reactiveprogramdata$imported_data$ppm)),1,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
-        } else {
+          reactiveprogramdata$clusterplot
+          } else {
         STOCSY(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,c(input$left_ppm,input$right_ppm),input$correlation_method)
           }
         })

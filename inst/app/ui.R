@@ -125,7 +125,10 @@ shinyUI(fluidPage(
     #Sixth tab
     ,tabPanel("STOCSY and dendrogram heatmaps",
       fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals."))),
-      numericInput("left_ppm", "Left edge of region", NA),numericInput("right_ppm", "Right edge of region", NA),selectInput("correlation_method",label=NULL,choices=c('Pearson'='pearson','Spearman'='spearman'),selected='pearson'),selectInput("stocsy",label="Select a possibility",choices=c('Exemplars'=1,'Run STOCSY'=2),selected=1),
+      div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("left_ppm", "Left edge of region", NA)),
+          div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("right_ppm", "Right edge of region", NA)),
+              div(style="display: inline-block;vertical-align:top; width: 150px;",selectInput("correlation_method",label="Select corr method",choices=c('Pearson'='pearson','Spearman'='spearman'),selected='pearson')),
+                  div(style="display: inline-block;vertical-align:top; width: 150px;",selectInput("stocsy",label="Select a possibility",choices=c('Exemplars'=1,'Run STOCSY'=2),selected=1)),
       plotlyOutput(outputId = "stocsy_plot"),
       fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapareadata"),
