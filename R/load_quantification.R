@@ -57,6 +57,6 @@ if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantificatio
 
 	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
 	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
-
+	rownames(loaded_quantification$qualitypar)=imported_data$signals_names[col]
 return(loaded_quantification)
 }

@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1493632462138.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CAC08C48",
+    "lastKnownWriteTime" : 30962681237012597,
+    "last_content_update" : 1493632462138,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "388AA91D",
+        "caption" : "signal_area_ratio",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=signal_area_ratio&cache_key=388AA91D",
+        "displayedObservations" : "113",
+        "environment" : "",
+        "object" : "signal_area_ratio",
+        "preview" : "0",
+        "totalObservations" : "113",
+        "variables" : "46"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

@@ -428,7 +428,6 @@ observeEvent(input$folder, {
 
   #Quantification of all spectra in the ROI:
   observeEvent(input$autorun_signal, {
-    is_autorun='Y'
     tryCatch({
     dummy <- not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)
     reactiveprogramdata$final_output=dummy$final_output

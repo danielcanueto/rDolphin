@@ -84,12 +84,12 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
         resulting_data$useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
-        final_output = save_output(
+        resulting_data$final_output = save_output(
           spectrum_index,
           signals_codes,
           results_to_save,
           imported_data$buck_step,
-          final_output
+          resulting_data$final_output
         )
 
       }

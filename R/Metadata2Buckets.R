@@ -170,9 +170,9 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
     } else {
       normvalue=1
     }
-      if (k2 == 1) dataset = matrix(NA, maxspec, RAW$len_bucks)
+      if (k2 == 1) dataset = matrix(NA, 0, RAW$len_bucks)
       
-      dataset[k2,] = tmp_buck[1:RAW$len_bucks]
+      dataset=rbind(dataset,tmp_buck[1:RAW$len_bucks])
       norm_factor = append(norm_factor,normvalue)
          read_spectra = append(read_spectra, as.character(Experiments[k]))
          k2 = k2 + 1

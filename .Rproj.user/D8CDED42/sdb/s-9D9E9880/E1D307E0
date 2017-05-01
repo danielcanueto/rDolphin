@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1493629170720.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E1D307E0",
+    "lastKnownWriteTime" : 7308604914264011873,
+    "last_content_update" : 1493629170720,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "C83C7639",
+        "caption" : "miss2",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=miss2&cache_key=C83C7639",
+        "displayedObservations" : 116,
+        "environment" : "",
+        "object" : "miss2",
+        "preview" : 0,
+        "totalObservations" : 116,
+        "variables" : 35
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

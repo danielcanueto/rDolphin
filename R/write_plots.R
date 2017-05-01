@@ -48,6 +48,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
       colnames(plotdata4)=c('Xdata',rownames(plot_data)[-c(1, 2, 3)])
       plotdata5 = melt(plotdata4, id = "Xdata")
       r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[ind2])
+      if (length(r)==0) next
       plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )
 
 

@@ -39,7 +39,7 @@ import_data = function(parameters_path) {
     header = T,
     stringsAsFactors = F
   )
-  Experiments=dummy[,1]
+  Experiments=as.character(dummy[,1])
   Experiments = as.vector(Experiments[Experiments != ''])
   Metadata=dummy[,-1,drop=F]
 
@@ -200,6 +200,8 @@ import_data = function(parameters_path) {
     params$processingno = processingno
     params$buck_step = as.numeric(as.character(import_profile[11,2]))
     imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
+    Metadata=Metadata[!Experiments %in% imported_data$not_loaded_experiments,]
+    Experiments=Experiments[!Experiments %in% imported_data$not_loaded_experiments]
     norm_factor=imported_data$norm_factor
     notnormalizeddataset=imported_data$dataset*norm_factor
 
@@ -271,7 +273,7 @@ import_data = function(parameters_path) {
   imported_data$parameters_path = parameters_path
   imported_data$signals_names = signals_names
   imported_data$signals_codes = signals_codes
-  imported_data$Experiments = rownames(imported_data$dataset)
+  imported_data$Experiments = Experiments
   imported_data$ROI_data = ROI_data
   imported_data$freq = freq
   imported_data$Metadata=Metadata
