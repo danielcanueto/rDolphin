@@ -1,4 +1,4 @@
-ROI.left,ROI.right,Q.Mode,Metabolite,Q.Signal,Shift,Shift.tolerance,Halfwidth,Multiplicity,J.coupling,Roof.effect,Relative.intensity
+"ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect","Relative intensity"
 0.04,-0.07,Clean Fitting,TSP,1,-0.026,0.015,8.4,1,0,0,1
 0.705,0.675,Baseline Sum,U0_7,1,0.7,0.002,1.4,1,0,0,1
 1.06,0.915,Baseline Fitting,Isoleucine,1,1.003,0.002,1.4,2,7.001,0,1
