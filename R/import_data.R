@@ -279,7 +279,6 @@ import_data = function(parameters_path) {
   imported_data$repository=repository
   imported_data$jres_path=jres_path
   imported_data$program_parameters=program_parameters
-  imported_data$export_path=export_path
 
 
   #creation of list with the different final outputs
