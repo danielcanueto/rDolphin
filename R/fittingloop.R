@@ -8,6 +8,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
   iterrep = 0
   fitting_maxiterrep = program_parameters$fitting_maxiterrep
   signals_to_quantify = which(FeaturesMatrix[, 11] != 0)
+  paramprov=rep(0,nrow(FeaturesMatrix)*5)
 
 
   #Necessary information to incorporate additional signals if necessary

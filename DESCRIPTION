@@ -11,6 +11,7 @@ License: GPL-2 | file LICENSE
 ByteCompile: TRUE
 URL: http://github.com/danielcanueto/rDolphin
 BugReports: http://github.com/danielcanueto/rDolphin/issues
+Depends:	R (≥ 3.3.0)
 Imports:
 	minpack.lm,
 	reshape2,
