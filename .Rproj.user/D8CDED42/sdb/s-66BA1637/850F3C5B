@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical shift tolerance...).\n#'\n#' @param imported_data List with typical elements necessary to perform quantification of ROIs.\n#'\n#' @return Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical shift, half bandwidth, etc.\n#' @export clustspectraplot\n#' @import apcluster\n#'\n#' @examples\n#' setwd(paste(system.file(package = \"rDolphin\"),\"extdata\",sep='/'))\n#' imported_data=import_data(\"Parameters_MTBLS242_15spectra_5groups.csv\")\n#' clusterplot=clustspectraplot(imported_data)\n\n\n\n\nclustspectraplot = function(imported_data) {\n\n  if (nrow(imported_data$dataset)>10) {\n  scaled_roi=scale(imported_data$dataset[ , sort(colMeans(imported_data$dataset),decreasing=T,index.return=T)$ix[1:(ncol(imported_data$dataset)/3)],drop=F])\n  updated_scaled_roi=scaled_roi\n  rm_ind=c()\n  stop=0\nind=seq(nrow(imported_data$dataset))\n  while ((!is.null(rm_ind)|stop==0)&(nrow(scaled_roi)>15)) {\n    stop=1\n    if (length(rm_ind)>0) scaled_roi=scaled_roi[-rm_ind,]\n    rm_ind=c()\n    apres <- suppressWarnings(apcluster::apclusterK(apcluster::negDistMat(r=2), scaled_roi, K=min(c(dim(scaled_roi)[1]-1,10)),verbose=F))\n    for (i in 1:length(apres@clusters)) {\n      if (length(apres@clusters[[i]])==1) rm_ind=c(rm_ind,apres@clusters[[i]][1])\n    }\n    ind=apres@exemplars\n  }\n    updated_scaled_roi=scaled_roi[ind,,drop=F]\n  spectra_lag=rep(NA,nrow(updated_scaled_roi))\n  dummy=apply(updated_scaled_roi, 2, function(x)  median(x,na.rm=T))\n\n  for (i in 1:nrow(updated_scaled_roi)) {\n    d <-ccf(updated_scaled_roi[i,],dummy,type = 'covariance',plot = FALSE)\n    spectra_lag[i]=d$lag[which.max(d$acf)]\n  }\n  visual_roi=original_roi=imported_data$dataset[ind[sort(spectra_lag,index.return=T)$ix],,drop=F]\n\n  } else {\n    visual_roi=original_roi=imported_data$dataset\n    ind=seq(nrow(imported_data$dataset))\n}\n  # for (i in 1:nrow(original_roi))   visual_roi[i,]=original_roi[i,]+(i-1)*mean(original_roi)\n\n  p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))\n\n  ay <- list(tickfont = list(color = \"red\"),overlaying = \"y\",side = \"right\",title = \"p value\",range = c(0,max(visual_roi)))\n  az = list(title = \"Intensity\",range = c(-1, max(visual_roi)-1))\n\n  p=plot_ly(x=~imported_data$ppm)\n  shade=as.character(seq(0.2,1,length.out = nrow(visual_roi)))\n  for (i in seq(nrow(visual_roi))){\n        p=p%>%add_lines(y = visual_roi[i,],name=imported_data$Experiments[ ind[i]],line = list(color = paste('rgba(0, 0, 255,',shade[i],')',sep='')))\n    }\n  p=p%>%add_lines(y = ~p_value_bucketing,name='p value', yaxis = \"y2\",line = list(color = 'rgba(255, 0, 0, 1)'))%>%\n    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)\n\n\n\n  return(p)\n}\n",
+    "created" : 1494003879338.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4006989882",
+    "id" : "850F3C5B",
+    "lastKnownWriteTime" : 1493372174,
+    "last_content_update" : 1493372174,
+    "path" : "~/GitHub/rDolphin/R/clustspectraplot.R",
+    "project_path" : "R/clustspectraplot.R",
+    "properties" : {
+    },
+    "relative_order" : 24,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
