@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "shift_clean2=cbind(shift_clean,rep(0,114))\n\nmatr=matrix(NA,24,24)\nfor (i in 1:24) {\n  cvb=shift_clean2-replicate(24,shift_clean2[,i])\n  matr[i,]=apply(cvb,2,function(x)summary(lm(cvb[,1]~x))$sigma)\n\n  }",
+    "created" : 1493825081240.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3653548991",
+    "id" : "375CDF8D",
+    "lastKnownWriteTime" : 328257936,
+    "last_content_update" : 1493827866551,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

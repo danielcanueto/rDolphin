@@ -50,7 +50,6 @@ import_data = function(parameters_path) {
 
 
 #Other necessary variables
-  export_path = dirname(parameters_path)
   freq = as.numeric(as.character(import_profile[10, 2]))
   biofluid=import_profile[12, 2]
   jres_path=as.character(import_profile[13, 2])
@@ -299,15 +298,15 @@ import_data = function(parameters_path) {
     # if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
     # lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
     # imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
-
+  export_path=file.path(dirname(as.character(import_profile[6, 2])),"input_data")
   #Useful data about conditions of import of data. TO BE REARRANGED
-  dir.create(imported_data$export_path, showWarnings = FALSE)
+  dir.create(export_path,showWarnings = FALSE)
   # fwrite(as.data.frame(imported_data$params),file=file.path(imported_data$export_path, 'initial_params.csv'))
-  fwrite(as.data.frame(imported_data$dataset),file=file.path(imported_data$export_path, 'initial_dataset.csv'))
-  fwrite(as.data.frame(notnormalizeddataset),file=file.path(imported_data$export_path, 'notnormalizeddataset.csv'))
-  fwrite(as.data.frame(norm_factor),file=file.path(imported_data$export_path, 'norm_factor.csv'))
+  fwrite(as.data.frame(imported_data$dataset),file=file.path(export_path, 'initial_dataset.csv'))
+  fwrite(as.data.frame(notnormalizeddataset),file=file.path(export_path, 'notnormalizeddataset.csv'))
+  fwrite(as.data.frame(norm_factor),file=file.path(export_path, 'norm_factor.csv'))
   if ("not_loaded_experiments" %in% names(imported_data)&&length(imported_data$not_loaded_experiments)>0)
-    fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(imported_data$export_path, 'not_loaded_experiments.csv'),col.names = F)
+    fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(export_path, 'not_loaded_experiments.csv'),col.names = F)
   print('Done!')
   return(imported_data)
 

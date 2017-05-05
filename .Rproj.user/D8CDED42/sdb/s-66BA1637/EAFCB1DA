@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "areacor=cor(shift_clean,use='pairwise.complete.obs')",
+    "created" : 1493907958657.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3441838600",
+    "id" : "EAFCB1DA",
+    "lastKnownWriteTime" : 5292976843906638626,
+    "last_content_update" : 1493907993128,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled3"
+    },
+    "relative_order" : 15,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
