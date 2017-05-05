@@ -1,8 +1,13 @@
 # rDolphin
 
+## Note: it seems R 3.4.0 is experimenting problems to install several packages in some computers (example here: https://github.com/tidyverse/dplyr/issues/1433). Problem will be patched in next 3.4 release: https://www.mail-archive.com/r-help@r-project.org/msg243256.html. Use of 3.3 releases is recommended until 3.4 bugs are solved.
+
+
+
+
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages(c("devtools","rprojroot","evaluate","yaml","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","DEoptimR"))`               #installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github 
+1. `install.packages(c("curl","devtools","rprojroot","evaluate","yaml","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","DEoptimR"))`               #installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github 
 2. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             #installs D3TableFilter 
 3. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
 4. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin

@@ -78,17 +78,17 @@
             },
             {
                 "editor_line_number" : 21,
-                "editor_state" : 1,
-                "function_name" : "import_data",
-                "function_steps" : "3",
-                "id" : 11,
+                "editor_state" : 2,
+                "function_name" : "clustspectraplot",
+                "function_steps" : "",
+                "id" : 12,
                 "is_package_breakpoint" : true,
                 "is_pending_debug_completion" : false,
                 "line_number" : 21,
                 "needs_updated_steps" : false,
                 "package_name" : "rDolphin",
-                "path" : "~/GitHub/rDolphin/R/import_data.R",
-                "state" : 1,
+                "path" : "~/GitHub/rDolphin/R/clustspectraplot.R",
+                "state" : 2,
                 "type" : 0
             }
         ]
