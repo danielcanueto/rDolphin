@@ -2,27 +2,29 @@ library(shiny)
 library(plotly)
 library(DT)
 library(D3TableFilter)
-
+library(shinyjs)
 
 shinyUI(fluidPage(
-  #Tabs are disabled until data is not laoded
-  tags$head(tags$script("
-    window.onload = function() {
-    $('#mynavlist a:contains(\"Individual Quantification\")').parent().addClass('disabled')
-    $('#mynavlist a:contains(\"Quantification Validation\")').parent().addClass('disabled')
-    $('#mynavlist a:contains(\"Uni and multivariate analysis\")').parent().addClass('disabled')
-    $('#mynavlist a:contains(\"ROI Profiles\")').parent().addClass('disabled')
-    $('#mynavlist a:contains(\"STOCSY and dendrogram heatmaps\")').parent().addClass('disabled')
-    }
-    Shiny.addCustomMessageHandler('activeNavs', function(nav_label) {
-    $('#mynavlist a:contains(\"' + nav_label + '\")').parent().removeClass('disabled')
-    })
-    ")),
+  shinyjs::useShinyjs(),
+
+  # #Tabs are disabled until data is not laoded
+  # tags$head(tags$script("
+  #   window.onload = function() {
+  #   $('#mynavlist a:contains(\"Individual Quantification\")').parent().addClass('disabled')
+  #   $('#mynavlist a:contains(\"Quantification Validation\")').parent().addClass('disabled')
+  #   $('#mynavlist a:contains(\"Uni and multivariate analysis\")').parent().addClass('disabled')
+  #   $('#mynavlist a:contains(\"ROI Profiles\")').parent().addClass('disabled')
+  #   $('#mynavlist a:contains(\"STOCSY and dendrogram heatmaps\")').parent().addClass('disabled')
+  #   }
+  #   Shiny.addCustomMessageHandler('activeNavs', function(nav_label) {
+  #   $('#mynavlist a:contains(\"' + nav_label + '\")').parent().removeClass('disabled')
+  #   })
+  #   ")),
 
   titlePanel("rDolphin GUI"),
   #First tab
-  tabsetPanel(selected="Data Upload", id='mynavlist',
-       tabPanel("Data Upload",
+  tabsetPanel(selected="tab1", id='mynavlist',
+       tabPanel("Main Tab",value = "tab1",
                        fluidRow(column(width = 12, h4("Here you can import spectra datasets and save and load profiling sessions. After importing data, profiling results on a model spectrum will appear on the right panel."))),
                                 sidebarLayout(
                                   sidebarPanel(
@@ -45,9 +47,11 @@ shinyUI(fluidPage(
 
                                   ),
                                   mainPanel(
-                                    div(style="display:inline-block",uiOutput('varselect')),
-                                    div(style="display:inline-block",uiOutput('align_button')),
-                                    div(style="display:inline-block",uiOutput('model_button')),
+                                    shinyjs::hidden(actionButton('autorun', 'Autorun all spectra', class = "btn-primary")),
+                                    shinyjs::hidden(actionButton('alignment', 'Alignment of signals')),
+                                    shinyjs::hidden(actionButton('model_spectrum', 'Profile model spectrum again')),
+
+
                                     fluidRow(column(width = 12, h4())),
                                     plotlyOutput("autorun_plot"),
                                     div(dataTableOutput("sp"), style = "font-size:80%")
@@ -56,7 +60,7 @@ shinyUI(fluidPage(
 
                                   ))),
                        #Second tab
-                       tabPanel("ROI Profiles",
+                       tabPanel("ROI Profiles",value = "tab2",
                                 fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
 
                                          selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
@@ -71,7 +75,7 @@ shinyUI(fluidPage(
                                                            div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
                                                   ),
     #Third tab
-    tabPanel("Individual Quantification",
+    tabPanel("Individual Quantification",value = "tab3",
       fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary."))),
       sidebarLayout(
 
@@ -82,7 +86,7 @@ shinyUI(fluidPage(
           actionButton("autorun_signal", label = "ROI autorun"),
           actionButton("save_profile", label = "Save ROI profile"),
           fluidRow(column(width = 12, h4("Select ROI"))),
-          selectInput("select",label=NULL,choices=""),
+          uiOutput("moreControls"),
           fluidRow(column(width = 12, h4("Select spectrum"))),
           div(dataTableOutput('x1'), style = "font-size:80%")
         ),
@@ -107,7 +111,7 @@ shinyUI(fluidPage(
     ),
 
     #Fourth tab
-    tabPanel("Quantification Validation",
+    tabPanel("Quantification Validation",value = "tab4",
       fluidRow(column(width = 12, h4("Here you have some indicators of quality for every quantification. Press one cell to analyze the quantification."))),
       selectInput("select_validation",label=NULL,choices=c('Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Outliers'=5,'Relative Intensity'=6),selected=NULL),
       div(dataTableOutput("fit_selection"), style = "font-size:80%")
@@ -116,14 +120,14 @@ shinyUI(fluidPage(
 
 
     #Fifth tab
-    tabPanel("Uni and multivariate analysis",
+    tabPanel("Uni and multivariate analysis",value = "tab5",
       fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
       plotlyOutput(outputId = "plot_p_value_2"),
       fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
       plotlyOutput(outputId = "pcascores"))
 
     #Sixth tab
-    ,tabPanel("STOCSY and dendrogram heatmaps",
+    ,tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",
       fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals."))),
       div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("left_ppm", "Left edge of region", NA)),
           div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("right_ppm", "Right edge of region", NA)),

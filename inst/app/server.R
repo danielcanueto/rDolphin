@@ -1,5 +1,3 @@
-
-
 server = function(input, output,session) {
 
   #Increase of maximum memory size that can be uploaded
@@ -11,7 +9,19 @@ server = function(input, output,session) {
  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=FALSE,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
 
   ## FIRST TAB REACTIVE OUTPUTS
+ observe({
+   dummy=ifelse(reactiveprogramdata$beginning ==F,0,1)
 
+      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab2]")
+      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab3]")
+      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab4]")
+      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab5]")
+      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab6]")
+ })
+
+ output$moreControls <- renderUI({
+   if (reactiveprogramdata$beginning==T) selectInput("select",choices = reactiveprogramdata$select_options,selected = 1)
+ })
   #Read of input provided by user
   observeEvent(input$file1, {
     reactiveprogramdata$inFile <- input$file1
@@ -78,17 +88,19 @@ server = function(input, output,session) {
 
 	 #Variables that can change during the use of the GUI are separated from 'imported_data'.
 
-
+	shinyjs::show('autorun')
+	shinyjs::show('alignment')
+	shinyjs::show('model_spectrum')
 	#When the session is prepared, the tabs and some inputs become active
 	print('Done!')
 
-    updateSelectInput(session, "select",choices = reactiveprogramdata$select_options,selected = 1)
+    # updateSelectInput(session, "select",choices = reactiveprogramdata$select_options,selected = 1)
     updateSelectInput(session, "select_validation",selected = 1)
-    session$sendCustomMessage('activeNavs', 'Individual Quantification')
-    session$sendCustomMessage('activeNavs', 'Quantification Validation')
-    session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
-    session$sendCustomMessage('activeNavs', 'ROI Profiles')
-    session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
+    # session$sendCustomMessage('activeNavs', 'Individual Quantification')
+    # session$sendCustomMessage('activeNavs', 'Quantification Validation')
+    # session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
+    # session$sendCustomMessage('activeNavs', 'ROI Profiles')
+    # session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
 	}}, error = function(e) {
 	  print('Error. Please explain the issue in the Github page.')
 	  reactiveprogramdata$imported_data=NA
@@ -131,17 +143,19 @@ server = function(input, output,session) {
 	reactiveprogramdata$select_options=dummy$select_options
 	reactiveprogramdata$spectra=dummy$spectra
 	reactiveprogramdata$beginning =TRUE
-	print("Done!")
+	shinyjs::show('autorun')
+	shinyjs::show('alignment')
+	shinyjs::show('model_spectrum')
 
     #When the session is loaded the tabs and some inputs become active
-    updateSelectInput(session, "select",choices = reactiveprogramdata$select_options,selected = 1)
     updateSelectInput(session, "select_validation",selected = 1)
-    session$sendCustomMessage('activeNavs', 'Individual Quantification')
-    session$sendCustomMessage('activeNavs', 'Quantification Validation')
-    session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
-    session$sendCustomMessage('activeNavs', 'ROI Profiles')
-    session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
-    updateTabsetPanel(session, "mynavlist",selected = "Individual Quantification")
+    # session$sendCustomMessage('activeNavs', 'Individual Quantification')
+    # session$sendCustomMessage('activeNavs', 'Quantification Validation')
+    # session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
+    # session$sendCustomMessage('activeNavs', 'ROI Profiles')
+    # session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
+    updateTabsetPanel(session, "mynavlist",selected = "tab3")
+    print("Done!")
 
 	}
   })
@@ -171,18 +185,18 @@ observeEvent(input$folder, {
 
 
   #Appearance of autorun and aligment buttons only after beginning or loading session
-  output$varselect <- renderUI({
-    if(reactiveprogramdata$beginning==FALSE){return()}
-    actionButton('autorun', 'Autorun all spectra', class = "btn-primary")
-  })
-  output$align_button <- renderUI({
-    if(reactiveprogramdata$beginning==FALSE){return()}
-    actionButton('alignment', 'Alignment of signals')
-  })
-  output$model_button <- renderUI({
-    if(reactiveprogramdata$beginning==FALSE){return()}
-    actionButton('model_spectrum', 'Profile model spectrum again')
-  })
+  # output$varselect <- renderUI({
+  #   if(reactiveprogramdata$beginning==FALSE){return()}
+  #   actionButton('autorun', 'Autorun all spectra', class = "btn-primary")
+  # })
+  # output$align_button <- renderUI({
+  #   if(reactiveprogramdata$beginning==FALSE){return()}
+  #   actionButton('alignment', 'Alignment of signals')
+  # })
+  # output$model_button <- renderUI({
+  #   if(reactiveprogramdata$beginning==FALSE){return()}
+  #   actionButton('model_spectrum', 'Profile model spectrum again')
+  # })
   output$sp = DT::renderDataTable(
     reactiveprogramdata$total_signals_parameters , selection = list(selected = NULL),server = TRUE)
 
@@ -365,7 +379,12 @@ observeEvent(input$folder, {
     lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(reactiveprogramdata$ROI_data[-dummy,])[1]))
 
-      reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
+      if (input$select=="") {
+       print("Please load the session again and wait until all the loading process is finished")
+        return()
+        }
+
+  reactiveprogramdata$ROIdata_subset=reactiveprogramdata$ROI_data[ROI_separator[as.numeric(input$select), 1]:ROI_separator[as.numeric(input$select), 2],]
     }
 	#Reset of parameters
     # reactiveprogramdata$change=reactiveprogramdata$change2=1
@@ -645,7 +664,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       reactiveROItestingdata$qualitypar=dummy$qualitypar
 
     #Redirect to quantification tab
-    updateTabsetPanel(session, "mynavlist",selected = "Individual Quantification")
+    updateTabsetPanel(session, "mynavlist",selected = "tab3")
     },error=function(e) {
       print("Select a valid quantification.")
     })

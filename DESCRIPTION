@@ -17,6 +17,7 @@ Suggests:
   R (== 3.3.3)
 Imports:
 	minpack.lm,
+	shinyjs,
 	reshape2,
 	robust,
 	data.table,

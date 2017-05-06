@@ -23,7 +23,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
   ind3=which(apply(final_output$shift,2, function(x) all(is.na(x)))==F)
   print('Be patient. This could take a while. Take another cup of coffee, meanwhile')
   p <- vector(mode = "list", length = nrow(imported_data$dataset))
-  pb   <- txtProgressBar(1, length(ind3), style=3)
+  pb   <- txtProgressBar(1, max(ind3), style=3)
 
   for (ind2 in ind3) {
     for (ind in 1:nrow(imported_data$dataset)) {
@@ -78,9 +78,9 @@ write_plots = function(path,final_output,imported_data,useful_data) {
         ) + theme(legend.position = "none", text = element_text(size=5)) + ggtitle(paste(imported_data$Experiments[ind]," - fitting error ",round(final_output$fitting_error[ind,ind2],3)," - signal/area ratio ",round(final_output$signal_area_ratio[ind,ind2],3),sep=''))+
         scale_x_reverse() + labs(x='ppm',y='Intensity')
     }
-    grid.arrange(rectGrob(), rectGrob())
-    ml <- marrangeGrob(p, top = imported_data$signals_names[ind2],nrow=3, ncol=1)
-    ggsave(file.path(path,paste(imported_data$signals_names[ind2],".pdf",sep='')),  ml)
+    gridExtra::grid.arrange(grid::rectGrob(), grid::rectGrob())
+    ml <- gridExtra::marrangeGrob(p, top = imported_data$signals_names[ind2],nrow=3, ncol=1)
+    ggplot2::ggsave(file.path(path,paste(imported_data$signals_names[ind2],".pdf",sep='')),  ml)
     setTxtProgressBar(pb, ind2)
 
   }

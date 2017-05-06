@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# shift <- read_csv(\"C:/Bruker/TopSpin3.2/data/SATIN_Beta-glucan/data_analysis_r/session_2_associated_data/shift.csv\")\nshift=savedreactivedata$final_output$shift\n# shift=shift[,-which(is.na(shift[1,]))]\n# shift=data.matrix(shift[,-1])\nmatr=matr3=matrix(NA,nrow(shift),ncol(shift))\nfor (i in seq(ncol(shift))) {\n  \n  mm=rep(NA,ncol(shift))\n  for (j in 1:ncol(shift)) mm[j]=tryCatch(summary(lmrob(shift[,i]~shift[,j]))$sigma,error=function(e)NaN)\n  \n  # sen=sapply(2:20,function(x)summary(lmrob(shift[,i]~apply(shift[,order(mm)[1:x]],1,mean)))$sigma)\n  sen2=rep(NA,ncol(shift))\n  for (j in 2:ncol(shift)) sen2[j]=tryCatch(summary(lmrob(shift[,i]~apply(shift[,order(mm)[1:j]],1,median)))$sigma,error=function(e)NaN)\n  # sen2=sapply(2:20,function(x)summary(lmrob(shift[,i]~apply(shift[,order(mm)[1:x]],1,median)))$sigma)\n  if (all(is.na(sen2))) next\n  \n  def=predict(lmrob(shift[,i]~apply(shift[,order(mm)[1:which.min(sen2)]],1,median)),as.data.frame(shift[,i]))\n  \n  matr[,i]=shift[,i]-def\n  matr3[,i]=def\n}\n\n\n# matr2=matr/apply(abs(matr),2,median)\nll=apply(abs(matr),2,function(x)quantile(x,0.9,na.rm=T))\nind=is.na(ll)\n\nll[ind]=savedreactivedata$ROI_data[ind,7]\nmatr3[,ind]=t(replicate(nrow(shift),so))\n\n\n\n\n\nlibrary(robustbase)\n\nhalf_band_width=savedreactivedata$final_output$half_band_width\n# half_band_width=half_band_width[,-which(is.na(half_band_width[1,]))]\n# half_band_width=data.matrix(half_band_width[,-1])\nmatr=matr3=matrix(NA,nrow(half_band_width),ncol(half_band_width))\nfor (i in seq(nrow(half_band_width))) {\n  \n  mm=rep(NA,nrow(half_band_width))\n  for (j in 1:nrow(half_band_width)) mm[j]=tryCatch(summary(lmrob(half_band_width[i,]~half_band_width[j,]))$sigma,error=function(e)NaN)\n  \n  # sen=sapply(2:20,function(x)summary(lmrob(half_band_width[,i]~apply(half_band_width[,order(mm)[1:x]],1,mean)))$sigma)\n  sen2=rep(NA,nrow(half_band_width))\n  for (j in 2:nrow(half_band_width)) sen2[j]=tryCatch(summary(lmrob(half_band_width[i,]~apply(half_band_width[order(mm)[1:j],],1,median)))$sigma,error=function(e)NaN)\n  # sen2=sapply(2:20,function(x)summary(lmrob(half_band_width[,i]~apply(half_band_width[,order(mm)[1:x]],1,median)))$sigma)\n  if (all(is.na(sen2))) next\n  \n  def=predict(lmrob(half_band_width[i,]~apply(half_band_width[order(mm)[1:which.min(sen2)],],1,median)),as.data.frame(half_band_width[i,]))\n  \n  matr[i,]=half_band_width[i,]-def\n  matr3[i,]=def\n}\n\n\n# matr2=matr/apply(abs(matr),2,median)\nll=apply(abs(matr),2,function(x)quantile(x,0.9,na.rm=T))\nind=is.na(ll)\n\nll[ind]=savedreactivedata$ROI_data[ind,7]\nmatr3[,ind]=t(replicate(nrow(half_band_width),so))\n\n# half_band_width2=half_band_width[1:20,]\n# matr=matr3=matrix(NA,nrow(half_band_width2),ncol(half_band_width2))\n# for (i in seq(ncol(half_band_width2))) {\n#   \n#   mm=rep(NA,ncol(half_band_width2))\n#   for (j in 1:ncol(half_band_width2)) mm[j]=tryCatch(summary(lmrob(half_band_width2[,i]~half_band_width2[,j]))$sigma,error=function(e)NaN)\n#   \n#   # sen=sapply(2:20,function(x)summary(lmrob(half_band_width2[,i]~apply(half_band_width2[,order(mm)[1:x]],1,mean)))$sigma)\n#   sen2=rep(NA,ncol(half_band_width2))\n#   for (j in 2:ncol(half_band_width2)) sen2[j]=tryCatch(summary(lmrob(half_band_width2[,i]~apply(half_band_width2[,order(mm)[1:j]],1,median)))$sigma,error=function(e)NaN)\n#   # sen2=sapply(2:20,function(x)summary(lmrob(half_band_width2[,i]~apply(half_band_width2[,order(mm)[1:x]],1,median)))$sigma)\n#   \n#   def=predict(lmrob(half_band_width2[,i]~apply(half_band_width2[,order(mm)[1:which.min(sen2)]],1,median)),as.data.frame(half_band_width2[,i]))\n#   \n#   matr[,i]=half_band_width2[,i]-def\n#   matr3=def\n# }\n# \n# \n# matr2=matr/apply(abs(matr),2,median)\n# \n# ll2=apply(abs(matr),2,function(x)quantile(x,0.9))",
+    "created" : 1493907958657.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "4279200856",
+    "id" : "EAFCB1DA",
+    "lastKnownWriteTime" : 5292976843906638626,
+    "last_content_update" : 1494050849677,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled3"
+    },
+    "relative_order" : 15,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
