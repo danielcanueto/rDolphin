@@ -20,7 +20,7 @@ server = function(input, output,session) {
  })
 
  output$moreControls <- renderUI({
-   if (reactiveprogramdata$beginning==T) selectInput("select",choices = reactiveprogramdata$select_options,selected = 1)
+   if (reactiveprogramdata$beginning==T) selectInput("select",label=NULL,choices = reactiveprogramdata$select_options,selected = 1)
  })
   #Read of input provided by user
   observeEvent(input$file1, {
