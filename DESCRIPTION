@@ -37,8 +37,6 @@ Imports:
 	D3TableFilter,
 	MassSpecWavelet,
 	SparseM,
-	speaq,
-	knitr,
-	rmarkdown
+	speaq
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown
