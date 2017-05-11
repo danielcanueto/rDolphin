@@ -31,11 +31,11 @@ ROI_profile=useful_data[[row]][[col]]$ROI_profile
 #Preparation of figure to be plotted
 plotdata2 = data.frame(Xdata=Xdata,Ydata=Ydata,plot_data[3, ],plot_data[2, ])
 colnames(plotdata2)=c('Xdata','Ydata',"fitted_sum","baseline_sum")
-plotdata2 <- melt(plotdata2, id = "Xdata")
+plotdata2 <- reshape2::melt(plotdata2, id = "Xdata")
 plotdata2$variable = c(rep('Original Spectrum', length(Ydata)),rep('Generated Spectrum', length(Ydata)),rep('Generated Background', length(Ydata)))
 plotdata3 = data.frame(Xdata, (t(plot_data[-c(1, 2, 3), , drop = F])))
 colnames(plotdata3)=c('Xdata',rownames(plot_data)[-c(1, 2, 3)])
-plotdata3 = melt(plotdata3, id = "Xdata")
+plotdata3 = reshape2::melt(plotdata3, id = "Xdata")
 r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[col])
 plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )
 plot_title = paste(imported_data$Experiments[row],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")

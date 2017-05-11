@@ -20,9 +20,9 @@ fitting_variables = function(parameter_change =list()) {
 
   program_parameters$BGdensity=70 #Density of signals to prepare abaseline below the signals to fit
 program_parameters$widthtolerance=0.25 #Allowed Variability of halfwidth
-program_parameters$gaussian=0 #Allowed Variability of gaussian percentage
+program_parameters$gaussian=0.2 #Allowed Variability of gaussian percentage
 program_parameters$j_coupling_variation=0.2 #Allowed Variability of j-coupling
-program_parameters$BG_gaussian_percentage=0 #Allowed gaussian percentage of baseline signals
+program_parameters$BG_gaussian_percentage=0.2 #Allowed gaussian percentage of baseline signals
 program_parameters$BG_width=8 #Halfwidth of baseline signals
 program_parameters$BG_width_tolerance=0.25 #Allowed Variability of halfwidth of baseline signals
 

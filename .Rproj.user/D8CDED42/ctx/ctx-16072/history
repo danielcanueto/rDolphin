@@ -1,109 +1,3 @@
-t.test(Area_clean[metadata=='Smoker'],Area_clean[metadata=='Never Smoker'])
-t.test(Area_clean[metadata=='Smoker',1],Area_clean[metadata=='Never Smoker',1])
-mean(Area_clean[metadata=='Smoker',1])
-mean(Area_clean[metadata=='Smoker',1],na.rm=T)
-View(shift_clean)
-colnames(shift_clean)
-t.test(shift_clean[metadata=='Smoker',32],shift_clean[metadata=='Never Smoker',32])
-install.packages("Hmisc")
-library(Hmisc)
-set.seed(1)
-x1 <- rnorm(200)
-x2 <- rnorm(200)
-x3 <- x1 + x2 + rnorm(200)
-x4 <- x2 + rnorm(200)
-x <- cbind(x1,x2,x3,x4)
-v <- varclus(x, similarity="spear")  # spearman is the default anyway
-v    # invokes print.varclus
-print(round(v$sim,2))
-plot(v)
-library(apcluster)
-apres=apcluster(negDistMat(r=2),t(miss2),q=0.5)
-show(apres)
-miss3=miss2[,apres@exemplars]
-vif(results)
-library(MASS)
-vif(results)
-install.packages("car")
-library(car)
-vif(results)
-library(rDolphin)
-rDolphin_GUI()
-library(readr)
-library(data.table)
-library(mlbench)
-library(caret)
-# load the data
-control <- rfeControl(functions=rfFuncs,  method = "repeatedcv",repeats = 5)
-library(readxl)
-# combined_mtbls374 <- as.data.frame(read_excel("~/combined_mtbls374.xlsx"))
-library(missForest)
-shift <- data.matrix(read_csv("C:/Bruker/TopSpin3.2/data/MTBLS374/data_analysis/MTBLS374_session_5_associated_data/shift.csv")[,-1])
-fitting_error <- data.matrix(read_csv("C:/Bruker/TopSpin3.2/data/MTBLS374/data_analysis/MTBLS374_session_5_associated_data/fitting_error.csv")[,-1])
-signal_area_ratio <- data.matrix(read_csv("C:/Bruker/TopSpin3.2/data/MTBLS374/data_analysis/MTBLS374_session_5_associated_data/signal_area_ratio.csv")[,-1])
-Area=data.matrix(read_csv("C:/Bruker/TopSpin3.2/data/MTBLS374/data_analysis/MTBLS374_session_5_associated_data/quantification.csv")[,-1])
-ind=which(is.na(colSums(fitting_error)))
-Area[signal_area_ratio<5]=NA
-Area[,-ind][fitting_error[,-ind]>0.08]=NA
-shift[signal_area_ratio<5]=NA
-shift[,-ind][fitting_error[,-ind]>0.08]=NA
-# shift=shift[,-ind]
-aa=fread("C:/Bruker/TopSpin3.2/data/MTBLS374/s_BoEfRTP2 Serum NMR.txt")
-aa=aa[which(!is.na(aa$`Factor Value[smoking status]`)),]
-metadata=factor(aa$`Factor Value[smoking status]`)
-for (j in unique(metadata)) {
-for (i in seq(ncol(Area))) {
-Area[(Area[which(metadata==j),i] %in% boxplot.stats(Area[which(metadata==j),i])$out),i]=NA
-}
-for (i in seq(ncol(shift))) {
-shift[(shift[which(metadata==j),i] %in% boxplot.stats(shift[which(metadata==j),i])$out),i]=NA
-}
-}
-ind=apply(Area,2,function(x)length(which(is.na(x))))
-Area_clean=Area[,ind<30]
-ind=apply(shift,2,function(x)length(which(is.na(x))))
-shift_clean=shift[,ind<30]
-ind=c()
-def=sapply(colnames(Area_clean),function(x)substr(x,1,nchar(x)-2))
-def2=which(duplicated(def)==F)
-def4=apply(Area_clean,2,function(x)length(which(is.na(x))))
-for (i in def2) {
-def3=which(def==def[i])
-ind=c(ind,def3[which.min(def4[def3])])
-}
-Area_clean=Area_clean[,ind]
-Area_clean=Area_clean[,-1]
-shift=Area_clean
-# shift=shift[,-which(is.na(shift[1,]))]
-# shift=data.matrix(shift[,-1])
-matr=matr3=matrix(NA,nrow(shift),ncol(shift))
-sen3=sen4=sen5=rep(NA,ncol(shift))
-for (i in seq(ncol(shift))) {
-mm=rep(NA,ncol(shift))
-for (j in 1:ncol(shift)) mm[j]=tryCatch(summary(lmrob(shift[,i]~shift[,j]))$sigma,error=function(e)NaN)
-if (all(is.na(mm))) next
-def=predict(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))
-sen5[i]=tryCatch(summary(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))$sigma,error=function(e)NaN)
-matr[,i]=shift[,i]-def
-matr3[,i]=def
-}
-library(robustbase)
-shift=Area_clean
-# shift=shift[,-which(is.na(shift[1,]))]
-# shift=data.matrix(shift[,-1])
-matr=matr3=matrix(NA,nrow(shift),ncol(shift))
-sen3=sen4=sen5=rep(NA,ncol(shift))
-for (i in seq(ncol(shift))) {
-mm=rep(NA,ncol(shift))
-for (j in 1:ncol(shift)) mm[j]=tryCatch(summary(lmrob(shift[,i]~shift[,j]))$sigma,error=function(e)NaN)
-if (all(is.na(mm))) next
-def=predict(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))
-sen5[i]=tryCatch(summary(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))$sigma,error=function(e)NaN)
-matr[,i]=shift[,i]-def
-matr3[,i]=def
-}
-mm=rep(NA,ncol(shift))
-for (j in 1:ncol(shift)) mm[j]=tryCatch(summary(lmrob(shift[,i]~shift[,j]))$sigma,error=function(e)NaN)
 def=predict(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))
 lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000)
 summary(lmrob(shift[,i]~shift[,order(mm)[2:20]],max.it = 1000))
@@ -508,5 +402,111 @@ shiny::runApp('inst/app')
 runApp('R')
 devtools::install_github("danielcanueto/rDolphin")
 library(rDolphin)
+library(rDolphin)
+rDolphin_GUI()
+library(rDolphin)
+rDolphin_GUI()
+load("C:/Users/Usuario/Downloads/dataprediction.RData")
+load("C:/Bruker/TopSpin3.2/data/SATIN_Beta-glucan/data_analysis_r/session_optimized.RData")
+load("C:/Users/Usuario/Downloads/dataprediction.RData")
+savedreactivedata$useful_data=lal2$useful_data
+savedreactivedata$final_output=lal2$final_output
+save(savedreactivedata,file="C:/Bruker/TopSpin3.2/data/SATIN_Beta-glucan/data_analysis_r/session_optimized.RData")
+library(rDolphin)
+rDolphin_GUI()
+lal2$useful_data[[1]][[1]]
+library(rDolphin)
+rDolphin_GUI()
+row=info$row
+col=info$col
+Xdata=useful_data[[row]][[col]]$Xdata
+Ydata=useful_data[[row]][[col]]$Ydata
+plot_data=useful_data[[row]][[col]]$plot_data
+ROI_profile=useful_data[[row]][[col]]$ROI_profile
+#Preparation of figure to be plotted
+plotdata2 = data.frame(Xdata=Xdata,Ydata=Ydata,plot_data[3, ],plot_data[2, ])
+colnames(plotdata2)=c('Xdata','Ydata',"fitted_sum","baseline_sum")
+plotdata2 <- melt(plotdata2, id = "Xdata")
+plotdata2$variable = c(rep('Original Spectrum', length(Ydata)),rep('Generated Spectrum', length(Ydata)),rep('Generated Background', length(Ydata)))
+plotdata3 = data.frame(Xdata, (t(plot_data[-c(1, 2, 3), , drop = F])))
+colnames(plotdata3)=c('Xdata',rownames(plot_data)[-c(1, 2, 3)])
+plotdata3 = melt(plotdata3, id = "Xdata")
+r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[col])
+plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )
+plot_title = paste(imported_data$Experiments[row],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
+loaded_quantification$plot=suppressWarnings(plot_ly(plotdata3,x = ~Xdata, y = ~value,name="Surrounding signals",type='scatter',mode='lines',fill='tozeroy',fillcolor='rgb(127, 166, 238)') %>% add_trace(data=plotdata2,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',name=plotdata2$variable,fill=NULL)  %>% add_trace(data=plotdata,x = ~Xdata, y = ~signals, type = 'scatter', color= imported_data$signals_names[col],mode = 'lines', fill = 'tozeroy',name=plotdata$variable,fillcolor='rgb(60, 60, 60)')   %>%layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(title = 'Intensity')))
+#Preparation of ROI parameters and of indicators of quality of quantification
+loaded_quantification$ROIpar=ROI_profile
+loaded_quantification$signpar=matrix(NA,2,7)
+colnames(loaded_quantification$signpar)=c("intensity",	"shift",	"half bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
+if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantification$signpar=t(useful_data[[row]][[col]]$signals_parameters)
+dummy = which(is.na(ROI_data[, 1]))
+if (length(dummy)==0) dummy=dim(ROI_data)[1]+1
+lal=which(duplicated(ROI_data[-dummy,1:2])==F)
+ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
+ind=which(ROI_separator[,2]-col>=0)[1]
+loaded_quantification$ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
+loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
+colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
+rownames(loaded_quantification$qualitypar)=imported_data$signals_names[col]
+ROI_separator
+ROI_data
+ROI_data
+ROI_data[,1]
+dummy = which(is.na(ROI_data[, 1]))
+if (length(dummy)==0) dummy=dim(ROI_data)[1]+1
+length(dummy)==0
+dim(ROI_data)[1]+1
+dummy=dim(ROI_data)[1]+1
+lal=which(duplicated(ROI_data[-dummy,1:2])==F)
+ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
+ind=which(ROI_separator[,2]-col>=0)[1]
+loaded_quantification$ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
+loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
+colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
+rownames(loaded_quantification$qualitypar)=imported_data$signals_names[col]
+loaded_quantification
+loaded_quantification$qualitypar
+loaded_quantification$plot
+plotdata3
+plotdata2
+plotdata2 = data.frame(Xdata=Xdata,Ydata=Ydata,plot_data[3, ],plot_data[2, ])
+colnames(plotdata2)=c('Xdata','Ydata',"fitted_sum","baseline_sum")
+plotdata2 <- reshape2::melt(plotdata2, id = "Xdata")
+Q
+library(rDolphin)
+rDolphin_GUI()
+row=1
+col=1
+Xdata=savedreactivedata$useful_data[[row]][[col]]$Xdata
+Ydata=savedreactivedata$useful_data[[row]][[col]]$Ydata
+plot_data=savedreactivedata$useful_data[[row]][[col]]$plot_data
+ROI_profile=savedreactivedata$useful_data[[row]][[col]]$ROI_profile
+#Preparation of figure to be plotted
+plotdata2 = data.frame(Xdata=Xdata,Ydata=Ydata,plot_data[3, ],plot_data[2, ])
+colnames(plotdata2)=c('Xdata','Ydata',"fitted_sum","baseline_sum")
+plotdata2 <- reshape2::melt(plotdata2, id = "Xdata")
+plotdata2$variable = c(rep('Original Spectrum', length(Ydata)),rep('Generated Spectrum', length(Ydata)),rep('Generated Background', length(Ydata)))
+plotdata3 = data.frame(Xdata, (t(plot_data[-c(1, 2, 3), , drop = F])))
+colnames(plotdata3)=c('Xdata',rownames(plot_data)[-c(1, 2, 3)])
+plotdata3 = reshape2::melt(plotdata3, id = "Xdata")
+library(rDolphin)
+library(rDolphin)
+rDolphin_GUI()
+row=info$row
+col=info$col
+Xdata=useful_data[[row]][[col]]$Xdata
+Ydata=useful_data[[row]][[col]]$Ydata
+plot_data=useful_data[[row]][[col]]$plot_data
+ROI_profile=useful_data[[row]][[col]]$ROI_profile
+library(rDolphin)
+rDolphin_GUI()
+runApp('inst/app')
+source('~/autorun_correction.R')
+library(rDolphin)
+library(rDolphin)
+rDolphin_GUI()
+library(rDolphin)
+rDolphin_GUI()
 library(rDolphin)
 rDolphin_GUI()
