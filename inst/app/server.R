@@ -29,6 +29,10 @@ server = function(input, output,session) {
       return(NULL)
     }
 
+    session$onSessionEnded(stopApp)
+
+
+
 	#Imported data is loaded to 'dummy'. Only after the check that the parameters are correct, they are stored in 'reactiveprogramdata'.
 	# dummy=list(imported_data=NA,autorun_plot=NA,select_options=NA,spectra=NA,clusterplot=NA,medianplot=NA,beginning=FALSE,jres_plot=NA)
 	# Import of data
@@ -146,15 +150,18 @@ server = function(input, output,session) {
 	shinyjs::show('autorun')
 	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
+	reactiveprogramdata$autorun_plot$dependencies[[1]]$src$file=reactiveprogramdata$clusterplot$dependencies[[1]]$src$file=reactiveprogramdata$medianplot$dependencies[[1]]$src$file=file.path(system.file(package = "crosstalk"),"lib","jquery")
+	reactiveprogramdata$autorun_plot$dependencies[[2]]$src$file=reactiveprogramdata$clusterplot$dependencies[[2]]$src$file=reactiveprogramdata$medianplot$dependencies[[2]]$src$file=file.path(system.file(package = "crosstalk"),"www")
+	reactiveprogramdata$autorun_plot$dependencies[[3]]$src$file=reactiveprogramdata$clusterplot$dependencies[[3]]$src$file=reactiveprogramdata$medianplot$dependencies[[3]]$src$file=file.path(system.file(package = "plotly"),"htmlwidgets/lib/typedarray")
 
-    #When the session is loaded the tabs and some inputs become active
+	  #When the session is loaded the tabs and some inputs become active
     updateSelectInput(session, "select_validation",selected = 1)
     # session$sendCustomMessage('activeNavs', 'Individual Quantification')
     # session$sendCustomMessage('activeNavs', 'Quantification Validation')
     # session$sendCustomMessage('activeNavs', 'Uni and multivariate analysis')
     # session$sendCustomMessage('activeNavs', 'ROI Profiles')
     # session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
-    updateTabsetPanel(session, "mynavlist",selected = "tab3")
+    # updateTabsetPanel(session, "mynavlist",selected = "tab3")
     print("Done!")
 
 	}
@@ -431,8 +438,11 @@ observeEvent(input$folder, {
       #reactivequantdata$stop3=1
       reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
-      rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
-      ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
+      ind=which(reactiveROItestingdata$ROI_par[,5]==1)+3
+
+      rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[ind]
+      # ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
+
       # reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))
       if (!is.null(reactivequantdata$method1$signals_parameters)) reactiveROItestingdata$signpar <- t(reactivequantdata$method1$signals_parameters)
       reactiveprogramdata$stop=0
@@ -552,9 +562,8 @@ observeEvent(input$folder, {
   #Direct edition of parameters before quantification
   output$directedition <- renderD3tf({
     if(reactiveprogramdata$beginning==F) return(NULL)
-
     observe({
-      if(is.null(input$directedition_edit)|(reactiveprogramdata$stop2==1)) {
+      if(is.null(input$directedition_edit)||is.null(reactiveprogramdata$stop2)|| (reactiveprogramdata$stop2==1)) {
         reactiveprogramdata$change2=0
         return(NULL)
       }

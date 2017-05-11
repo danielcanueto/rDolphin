@@ -67,7 +67,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       #During the first two iterations, find the peaks on the region of the spectrum. If the number of peaks is the same that the expected on the ROI and the location is similar, the signals are located where there are the peaks with minimum shift tolerance.
       peaks_xdata = peakdet(c(Ydata[1],diff(Ydata)), program_parameters$peakdet_minimum*0.1*max(1e-10,max(Ydata)),Xdata)
 
-      if (iter<2&length(peaks_xdata$maxtab$val)>0) {
+      if (iter<4&length(peaks_xdata$maxtab$val)>0) {
         peaks_bindata = peakdet(c(Ydata[1],diff(Ydata)), program_parameters$peakdet_minimum*0.1*max(1e-10,max(Ydata)))
         peaks=peaks_xdata$maxtab$pos[sort(peaks_xdata$maxtab$val,decreasing=T,index.return=T)$ix[1:sum(multiplicities[signals_to_quantify])]]
         peaks_compare=rowMeans(FeaturesMatrix[signals_to_quantify ,3:4,drop=F])
@@ -156,10 +156,10 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
     error2=error1
     errorprov = error1=3000
     #Only half_band_width and j-coupling will have different lower und upper bounds.
-    change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=0)
+    change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
     lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
     #With ony one iteration is enough
-    while (iter < 1) {
+    while (iter < 3) {
       s0 = lb + (ub - lb) * runif(length(ub))
 
       nls.out <-

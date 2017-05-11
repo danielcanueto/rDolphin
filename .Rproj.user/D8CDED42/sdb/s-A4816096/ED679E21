@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n#Calculation of output variables (quantification, fitting_error,shift,signal_area_ratio,intensity, half bandwidth) and plot variables\n\n\noutput_generator = function(signals_to_quantify,\n                            fitted_signals,\n                            Ydata,\n                            Xdata,\n                            signals_parameters,multiplicities,ROI_buckets=seq_along(Ydata)) {\n\n  fitted_signals[is.na(fitted_signals)]=0 #to be sure that there are no NA values on the fitted signals\n  BGsignals = (multiplicities == 0) #finds baseline signals\n\n  output_data = list()\n\n  #Storage of signals and sum of baseline and metabolite signals\n  output_data$signals = fitted_signals[!BGsignals, , drop =F]\n  output_data$signals_sum = colSums(fitted_signals[!BGsignals, , drop =F], na.rm = T)\n  output_data$baseline_sum = colSums(fitted_signals[BGsignals, , drop =F], na.rm = T)\n  output_data$fitted_sum = output_data$signals_sum + output_data$baseline_sum\n  #For every signal I locate in which bins where most of the signal is located and I calculate the fitting error and the signal to area ratio\n  for (ind in signals_to_quantify) {\n    #I sort bins according to intensity of signal in each bin.\n     sorted_bins=sort(fitted_signals[ind,ROI_buckets]/sum(fitted_signals[ind,ROI_buckets ]),decreasing=T,index.return=T)\n    if(length(sorted_bins$x)>0) {\n      #I select bins that make a cumulative sum of 90% of total area of the signal\n      bins= sorted_bins$ix[1:which.min(abs(cumsum(sorted_bins$x)-0.9))]\n    } else {\n      bins=seq_along(ROI_buckets)\n    }\n\n\n    subregion_fitted = output_data$fitted_sum[ROI_buckets[bins]] #fitted spectrum\n    subregion_signals = fitted_signals[ind, ROI_buckets[bins]] #fitted signals\n    subregion_spectrum = Ydata[ROI_buckets[bins]] #original spectrum\n    #I calculate how much the quantified signal represents the total spectrum in the region where the region is located.\n    output_data$signal_area_ratio = append(output_data$signal_area_ratio, 100 -((abs(sum(subregion_spectrum) - sum(subregion_signals)) / sum(subregion_spectrum)) * 100))\n    # normalized_rmse=cor(subregion_spectrum, subregion_fitted)\n    normalized_rmse=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)\n\n    output_data$fitting_error = append(output_data$fitting_error,normalized_rmse)\n  }\n  sorted_bins=sort(output_data$fitted_sum[ROI_buckets]/sum(output_data$fitted_sum[ROI_buckets]),decreasing=T,index.return=T)\n  if(length(sorted_bins$x)>0) {\n    bins= sorted_bins$ix[1:which.min(abs(cumsum(sorted_bins$x)-0.9))]\n  } else {\n    bins=seq_along(ROI_buckets)\n  }\n\n  subregion_fitted = output_data$fitted_sum[ROI_buckets[bins]]\n  subregion_spectrum = Ydata[ROI_buckets[bins]]\n  error1=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)\n  output_data$quantification = rowSums(fitted_signals[signals_to_quantify, , drop =\n                                              F])\n  output_data$shift = signals_parameters[2, signals_to_quantify]\n  output_data$intensity=signals_parameters[1, signals_to_quantify]\n  output_data$half_band_width=signals_parameters[3, signals_to_quantify]\n  dummy=list(output_data=output_data,error1=error1)\n  return(dummy)\n}\n",
+    "created" : 1494248034930.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1458155420",
+    "id" : "ED679E21",
+    "lastKnownWriteTime" : 1493293899,
+    "last_content_update" : 1493293899,
+    "path" : "~/GitHub/rDolphin/R/output_generator.R",
+    "project_path" : "R/output_generator.R",
+    "properties" : {
+    },
+    "relative_order" : 16,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

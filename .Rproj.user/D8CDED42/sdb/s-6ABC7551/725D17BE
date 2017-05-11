@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1494079971862.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "725D17BE",
+    "lastKnownWriteTime" : 3180141808686473843,
+    "last_content_update" : 1494079971862,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "6AE7DC3F",
+        "caption" : "asx2",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=asx2&cache_key=6AE7DC3F",
+        "displayedObservations" : 60,
+        "environment" : "",
+        "object" : "asx2",
+        "preview" : 0,
+        "totalObservations" : 60,
+        "variables" : 60
+    },
+    "relative_order" : 14,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
