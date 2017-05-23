@@ -170,7 +170,7 @@ for (i in signals_to_quantify)    {
       function(par, observed, xx,multiplicities,roof_effect,freq)
         observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
 
-    Correction of half_band_width and j-coupling
+    #Correction of half_band_width and j-coupling
     iter = 0
     error22=error2=error1
     errorprov = error1=3000

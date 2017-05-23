@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "ae=rbind((ac[seq(1,58,3),]-ac[seq(2,59,3),]),(ac[seq(1,58,3),]-ac[seq(3,60,3),]))\np_values(ae,cbind(c(1:20,1:20),rep(c(1,2),c(20,20))))\n\n\ndf=matr3/ac\ndg=replicate(67,apply(df,1,function(x)median(x,na.rm=T)))\ndh=ac/dg\napply(ac[21:60,],2,function(x)sd(x)/mean(x))\napply(dh[21:60,],2,function(x)sd(x)/mean(x))\nae=rbind((dh[seq(1,58,3),]-dh[seq(2,59,3),]),(dh[seq(1,58,3),]-dh[seq(3,60,3),]))\n\np_values(ae,cbind(c(1:20,1:20),rep(c(1,2),c(20,20))))\n\n\n",
+    "created" : 1495525756245.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "4269774729",
+    "id" : "A617EECB",
+    "lastKnownWriteTime" : 0,
+    "last_content_update" : 1495526126462,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled6"
+    },
+    "relative_order" : 23,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
