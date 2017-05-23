@@ -24,10 +24,9 @@ signals_int = function(imported_data, final_output,spectrum_index,signals_introd
 
 
       signals_to_quantify = which(ROI_profile[, 5] >0)
-      signals_codes = replicate(length(signals_to_quantify), NA)
-      signals_names = replicate(length(signals_to_quantify), NA)
+      signals_codes = signals_names = rep(NA,nrow(ROI_profile))
       j = 1
-      for (i in signals_to_quantify) {
+      for (i in seq(nrow(ROI_profile))) {
         k = which(imported_data$signals_names == paste(ROI_profile[i,
           4],ROI_profile[i,5],sep='_'))
 
@@ -74,8 +73,6 @@ fitting_type=ROI_profile[1,3]
       )
       output_data=dummy$output_data
       error1=dummy$error1
-      output_data$intensity=signals_parameters[1, signals_to_quantify]
-      output_data$half_band_width=signals_parameters[3, signals_to_quantify]
 
       #Generation of the dataframe with the final output variables
       results_to_save = data.frame(

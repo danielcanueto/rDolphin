@@ -1,11 +1,3 @@
-#' Helper function to generate ROI data. Not to be used in console.
-#'
-#' @param ROI_data ROIs data
-#' @param Metadata Metadata
-#' @param Experiments Experiments
-#' @return dummy
-#' @export roifunc
-
 roifunc <- function(ROI_data,Metadata,Experiments) {
 	dummy = which(is.na(ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(ROI_data)[1]+1

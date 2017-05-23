@@ -27,7 +27,8 @@ write_plots = function(path,final_output,imported_data,useful_data) {
 
   for (ind2 in ind3) {
     for (ind in 1:nrow(imported_data$dataset)) {
-      Xdata=try(useful_data[[ind]][[ind2]]$Xdata,silent=T)
+      Xdata=useful_data[[ind]][[ind2]]$Xdata
+      if(is.null(Xdata)) next
       Ydata=useful_data[[ind]][[ind2]]$Ydata
       plot_data=useful_data[[ind]][[ind2]]$plot_data
       ROI_profile=useful_data[[ind]][[ind2]]$ROI_profile

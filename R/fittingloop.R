@@ -10,7 +10,6 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
   signals_to_quantify = which(FeaturesMatrix[, 11] != 0)
   paramprov=rep(0,nrow(FeaturesMatrix)*5)
 
-
   #Necessary information to incorporate additional signals if necessary
   range_ind = round(program_parameters$additional_signal_ppm_distance / program_parameters$buck_step)
 
@@ -82,7 +81,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
       #Main optimization
       nls.out <-
-        nls.lm(
+        minpack.lm::nls.lm(
           par = s0,
           fn = residFun,
           observed = Ydata,
@@ -92,7 +91,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
           freq=program_parameters$freq,
           lower = lb,
           upper = ub,
-          control = nls.lm.control(
+          control = minpack.lm::nls.lm.control(
             factor = program_parameters$factor,
             maxiter = program_parameters$nls_lm_maxiter,
             ftol = program_parameters$ftol,
@@ -116,7 +115,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       } else {
 #If in the first two iterations the procedure of finding peaks is not effective enough, the irignal chemical shift and chemical shift tolerance of every signal is maintained
       nls.out <-
-        nls.lm(
+        minpack.lm::nls.lm(
           par = s0,
           fn = residFun,
           observed = Ydata,
@@ -126,7 +125,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
         freq=program_parameters$freq,
           lower = lb,
           upper = ub,
-          control = nls.lm.control(
+          control = minpack.lm::nls.lm.control(
             factor = program_parameters$factor,
             maxiter = program_parameters$nls_lm_maxiter,
             ftol = program_parameters$ftol,
@@ -151,62 +150,82 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
     }}
     signals_parameters = paramprov
 
-    #Correction of half_band_width and j-coupling
-    iter = 0
-    error2=error1
-    errorprov = error1=3000
-    #Only half_band_width and j-coupling will have different lower und upper bounds.
-    change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
-    lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
-    #With ony one iteration is enough
-    while (iter < 3) {
-      s0 = lb + (ub - lb) * runif(length(ub))
+    fitted_signals = signal_fitting(signals_parameters,
+                                    Xdata,multiplicities,roof_effect,program_parameters$freq)
+for (i in signals_to_quantify)    {
+  aa=peakdet(fitted_signals[i,],0.00001)$maxtab$pos
+  if (length(aa)==0) next
+  bb=min(Ydata[aa]-colSums(fitted_signals[,aa,drop=F]))
+  if (bb<0) signals_parameters[which(seq_along(lb)%%5==1)[i]]=max(signals_parameters[which(seq_along(lb)%%5==1)[i]]+bb,0)
+}
 
-      nls.out <-
-        nls.lm(
-          par = s0,
-          fn = residFun,
-          observed = Ydata,
-          xx = Xdata,
-          multiplicities=multiplicities,
-          roof_effect=roof_effect,
-          freq=program_parameters$freq,
-          lower = lb,
-          upper = ub,
-          control = nls.lm.control(
-            factor = program_parameters$factor,
-            maxiter = program_parameters$nls_lm_maxiter,
-            ftol = program_parameters$ftol,
-            ptol = program_parameters$ptol
-          )
+  bins=c()
+    for (ind in signals_to_quantify) {
+      sorted_bins=sort(fitted_signals[ind,]/sum(fitted_signals[ind, ]),decreasing=T,index.return=T)
+    if(length(sorted_bins$x)>0) bins= sorted_bins$ix[1:which.min(abs(cumsum(sorted_bins$x)-0.75))]
 
-        )
-      iter = iter + 1
-      # #Procedure to calculate the fititng error in all the ROI
-      #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
-      errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -
-          min(Ydata))
-      if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
-      if (errorprov < error1) {
-        error1 = errorprov
-        paramprov=coef(nls.out)
-      } else if (errorprov > worsterror) {
-        worsterror = errorprov
-      }
-      if (error1 < error2) {
-        error2 = error1
-        signals_parameters = paramprov
-      }
     }
+      if (length(bins)==0) bins=seq_along(Ydata)
+    residFun <-
+      function(par, observed, xx,multiplicities,roof_effect,freq)
+        observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
+
+    #Correction of half_band_width and j-coupling
+    # iter = 0
+    error22=error2=error1
+    # errorprov = error1=3000
+    # #Only half_band_width and j-coupling will have different lower und upper bounds.
+    # change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
+    # lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
+    # while (iter < 3) {
+    #   s0 = lb + (ub - lb) * runif(length(ub))
+    #   nls.out <-
+    #     minpack.lm::nls.lm(
+    #       par = s0,
+    #       fn = residFun,
+    #       observed = Ydata,
+    #       xx = Xdata,
+    #       multiplicities=multiplicities,
+    #       roof_effect=roof_effect,
+    #       freq=program_parameters$freq,
+    #       lower = lb,
+    #       upper = ub,
+    #       control = minpack.lm::nls.lm.control(
+    #         factor = program_parameters$factor,
+    #         maxiter = program_parameters$nls_lm_maxiter,
+    #         ftol = program_parameters$ftol,
+    #         ptol = program_parameters$ptol
+    #       )
+    #
+    #     )
+    #   iter = iter + 1
+    #   # #Procedure to calculate the fititng error in all the ROI
+    #   #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
+    #   errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -
+    #       min(Ydata))
+    #   if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
+    #   if (errorprov < error1) {
+    #     error1 = errorprov
+    #     paramprov=coef(nls.out)
+    #   } else if (errorprov > worsterror) {
+    #     worsterror = errorprov
+    #   }
+    #   if (error1 < error2) {
+    #     error2 = error1
+    #     signals_parameters = paramprov
+    #   }
+    # }
 
     #If half_band_width and j-coup change improves fitting
 
 
     iterrep = iterrep + 1
 
+
+
     #If the fitting seems to be still clearly improvable through the addition of signals
-    if (iterrep <= fitting_maxiterrep& error2 < (program_parameters$additional_signal_improvement * dummy) &
-        (error2 > program_parameters$additional_signal_percentage_limit)&length(peaks_xdata$maxtab$pos)>sum(multiplicities[signals_to_quantify])) {
+    if (iterrep <= fitting_maxiterrep& error22 < (program_parameters$additional_signal_improvement * dummy) &
+        (error22 > program_parameters$additional_signal_percentage_limit)&length(peaks_xdata$maxtab$pos)>sum(multiplicities[signals_to_quantify])) {
       # print('Trying to improve initial fit adding peaks')
 
       #I find peaks on the residuals

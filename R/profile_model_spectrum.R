@@ -46,7 +46,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     ROI_profile = ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
     signals_to_quantify = which(ROI_profile[, 5] >= 1)
-    signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])[signals_to_quantify]
+    signals_codes = (ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2])
 
     #Preparation of necessary parameters
     program_parameters=imported_data$program_parameters
