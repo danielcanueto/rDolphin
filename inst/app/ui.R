@@ -5,22 +5,8 @@ library(D3TableFilter)
 library(shinyjs)
 
 shinyUI(fluidPage(
+
   shinyjs::useShinyjs(),
-
-  # #Tabs are disabled until data is not laoded
-  # tags$head(tags$script("
-  #   window.onload = function() {
-  #   $('#mynavlist a:contains(\"Individual Quantification\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"Quantification Validation\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"Uni and multivariate analysis\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"ROI Profiles\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"STOCSY and dendrogram heatmaps\")').parent().addClass('disabled')
-  #   }
-  #   Shiny.addCustomMessageHandler('activeNavs', function(nav_label) {
-  #   $('#mynavlist a:contains(\"' + nav_label + '\")').parent().removeClass('disabled')
-  #   })
-  #   ")),
-
   titlePanel("rDolphin GUI"),
   #First tab
   tabsetPanel(selected="tab1", id='mynavlist',
@@ -38,12 +24,10 @@ shinyUI(fluidPage(
                                     br(),
                                     br(),
 
-                                    textInput("caption", "Specify the path of the session to save (e.g. C:/session.RData) or of the folder where to generate the plots folder (e.g. C:/session)", '')
+                                    textInput("caption", "Specify the path of the session or of the quantification figures to save ", '')
                                     # ,
                                     # fileInput("file3", "Combine data of other sessions",
                                     #   accept = c("text/RData"))
-
-
 
                                   ),
                                   mainPanel(
@@ -51,14 +35,10 @@ shinyUI(fluidPage(
                                     shinyjs::hidden(actionButton('alignment', 'Alignment of signals')),
                                     shinyjs::hidden(actionButton('model_spectrum', 'Profile model spectrum again')),
 
-
                                     fluidRow(column(width = 12, h4())),
                                     plotlyOutput("autorun_plot"),
                                     div(dataTableOutput("sp"), style = "font-size:80%")
-                                    # div(dataTableOutput("indicators"), style = "font-size:80%")
-
-
-                                  ))),
+  ))),
                        #Second tab
                        tabPanel("ROI Profiles",value = "tab2",
                                 fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
@@ -70,7 +50,7 @@ shinyUI(fluidPage(
                                                   div(dataTableOutput("repository2"), style = "font-size:80%"),
                                                   fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
 
-                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("open_hmdb_url", label = "Open signal HMDB website"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Save changes"),
+                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("open_hmdb_url", label = "Open signal HMDB website"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Confirm changes"),
 
                                                            div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
                                                   ),
@@ -90,9 +70,7 @@ shinyUI(fluidPage(
           fluidRow(column(width = 12, h4("Select spectrum"))),
           div(dataTableOutput('x1'), style = "font-size:80%")
         ),
-
-
-        mainPanel(
+       mainPanel(
           plotlyOutput("plot",height = "250px"),
 		  fluidRow(column(width = 12, h4("Here you have some indicators of the quantification."))),
           div(d3tfOutput('qualitypar',width = "100%", height = "auto"), style = "font-size:80%"),
@@ -119,15 +97,15 @@ shinyUI(fluidPage(
 
 
 
-    #Fifth tab
-    tabPanel("Uni and multivariate analysis",value = "tab5",
-      fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
-      plotlyOutput(outputId = "plot_p_value_2"),
-      fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
-      plotlyOutput(outputId = "pcascores"))
+    # #Fifth tab
+    # tabPanel("Uni and multivariate analysis",value = "tab5",
+    #   fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
+    #   plotlyOutput(outputId = "plot_p_value_2"),
+    #   fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
+    #   plotlyOutput(outputId = "pcascores"))
 
     #Sixth tab
-    ,tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",
+    tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",
       fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals."))),
       div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("left_ppm", "Left edge of region", NA)),
           div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("right_ppm", "Right edge of region", NA)),

@@ -37,9 +37,9 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
     program_parameters$clean_fit="N"
   }
   signals_to_quantify = which(ROI_profile[, 5] >0)
-  signals_codes = signals_names = rep(NA,length(signals_to_quantify))
+      signals_codes = signals_names = rep(NA,nrow(ROI_profile))
   j = 1
-  for (i in signals_to_quantify) {
+  for (i in seq(nrow(ROI_profile))) {
     k = which(imported_data$signals_names == paste(ROI_profile[i,
       4],ROI_profile[i,5],sep='_'))
 
@@ -50,7 +50,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
 
   for (spectrum_index in ind) {
     dummy=imported_data$dataset[spectrum_index,(ROI_buckets[1]-5):(ROI_buckets[length(ROI_buckets)]+5)]
-    baseline=baseline.rollingBall(rbind(dummy,dummy),5,5)$baseline[1,]
+    baseline=baseline::baseline.rollingBall(rbind(dummy,dummy),5,5)$baseline[1,]
     baseline=baseline[6:(5+length(ROI_buckets))]
     # print(paste("Spectrum ",spectrum_index))
 
@@ -323,5 +323,6 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
 		# resulting_data$signals_names=signals_names
 	}
   # }
+  print('Done!')
   return(resulting_data)
 }

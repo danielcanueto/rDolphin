@@ -2,7 +2,7 @@ server = function(input, output,session) {
 
   #Increase of maximum memory size that can be uploaded
   options(shiny.maxRequestSize=1000*1024^2)
-
+  options(warn =-1)
   #Setting of reactive parameters in the Shiny GUI
   reactiveROItestingdata <- reactiveValues(signpar = matrix(NA,2,7,dimnames = list(seq(2),c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect"))),qualitypar = matrix(NA,2,3,dimnames=list(seq(2),c('Quantification','fitting_error','signal/total area ratio'))))
   reactivequantdata <- reactiveValues(method1=NA)
@@ -15,13 +15,11 @@ server = function(input, output,session) {
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab2]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab3]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab4]")
-      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab5]")
+      # toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab5]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab6]")
  })
 
- output$moreControls <- renderUI({
-   if (reactiveprogramdata$beginning==T) selectInput("select",label=NULL,choices = reactiveprogramdata$select_options,selected = 1)
- })
+
   #Read of input provided by user
   observeEvent(input$file1, {
     reactiveprogramdata$inFile <- input$file1
@@ -46,6 +44,8 @@ server = function(input, output,session) {
 	  print('Import of data not posible with current input')
 	  return(NULL)
 	})
+	reset("file1")
+
   reactiveprogramdata$final_output=reactiveprogramdata$imported_data$final_output
 	reactiveprogramdata$useful_data=reactiveprogramdata$imported_data$useful_data
 	reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=reactiveprogramdata$imported_data$ROI_data
@@ -91,7 +91,9 @@ server = function(input, output,session) {
 	  # for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=dummy[[plo[i]]]
 
 	 #Variables that can change during the use of the GUI are separated from 'imported_data'.
-
+	output$moreControls <- renderUI({
+	  if (reactiveprogramdata$beginning==T) selectInput("select",label=NULL,choices = reactiveprogramdata$select_options,selected = 1)
+	})
 	shinyjs::show('autorun')
 	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
@@ -122,14 +124,16 @@ server = function(input, output,session) {
     reactiveprogramdata$inFile2 <- input$file2
     if (is.null(reactiveprogramdata$inFile2))
       return(NULL)
-
+    print("Uploading saved session.")
     #Session is loaded in 'savedreactiveddata' variable and passed to 'reactiveprogramdata'.
-    tryCatch({load(reactiveprogramdata$inFile2$datapath)
-      print("Uploading saved session.")
+    tryCatch({
+
+      load(reactiveprogramdata$inFile2$datapath)
       plo=names(sapply(savedreactivedata, names))
       for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=savedreactivedata[[plo[i]]]
       rm(savedreactivedata)
-    }, error = function(e) {
+reset("file2")
+}, error = function(e) {
       print('Not possible to load the session. Please revise your choice.')
       return(NULL)
     })
@@ -137,12 +141,14 @@ server = function(input, output,session) {
 
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
     #Names of ROIS are prepared
-	dummy=NULL
-	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
-  }, error = function(e) {
-	print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
-	return(NULL)
-	})
+# 	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
+#   }, error = function(e) {
+# 	print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
+# 	return(dummy=NULL)
+# 	})
+    dummy=NULL
+	dummy=roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
+
 	if (!is.null(dummy)) {
 	reactiveprogramdata$select_options=dummy$select_options
 	reactiveprogramdata$spectra=dummy$spectra
@@ -151,9 +157,15 @@ server = function(input, output,session) {
 	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
 	reactiveprogramdata$autorun_plot$dependencies[[1]]$src$file=reactiveprogramdata$clusterplot$dependencies[[1]]$src$file=reactiveprogramdata$medianplot$dependencies[[1]]$src$file=file.path(system.file(package = "crosstalk"),"lib","jquery")
-	reactiveprogramdata$autorun_plot$dependencies[[2]]$src$file=reactiveprogramdata$clusterplot$dependencies[[2]]$src$file=reactiveprogramdata$medianplot$dependencies[[2]]$src$file=file.path(system.file(package = "crosstalk"),"www")
-	reactiveprogramdata$autorun_plot$dependencies[[3]]$src$file=reactiveprogramdata$clusterplot$dependencies[[3]]$src$file=reactiveprogramdata$medianplot$dependencies[[3]]$src$file=file.path(system.file(package = "plotly"),"htmlwidgets/lib/typedarray")
+	tryCatch({reactiveprogramdata$autorun_plot$dependencies[[2]]$src$file=reactiveprogramdata$clusterplot$dependencies[[2]]$src$file=reactiveprogramdata$medianplot$dependencies[[2]]$src$file=file.path(system.file(package = "crosstalk"),"www")})
+	tryCatch({reactiveprogramdata$autorun_plot$dependencies[[3]]$src$file=reactiveprogramdata$clusterplot$dependencies[[3]]$src$file=reactiveprogramdata$medianplot$dependencies[[3]]$src$file=file.path(system.file(package = "plotly"),"htmlwidgets/lib/typedarray")})
+	output$moreControls <- renderUI({
+	  if (reactiveprogramdata$beginning==T)  {
+	    print("Done!")
 
+	    selectInput("select",label=NULL,choices = reactiveprogramdata$select_options,selected = 1)
+	  }
+	})
 	  #When the session is loaded the tabs and some inputs become active
     updateSelectInput(session, "select_validation",selected = 1)
     # session$sendCustomMessage('activeNavs', 'Individual Quantification')
@@ -162,7 +174,6 @@ server = function(input, output,session) {
     # session$sendCustomMessage('activeNavs', 'ROI Profiles')
     # session$sendCustomMessage('activeNavs', 'STOCSY and dendrogram heatmaps')
     # updateTabsetPanel(session, "mynavlist",selected = "tab3")
-    print("Done!")
 
 	}
   })
@@ -175,9 +186,8 @@ server = function(input, output,session) {
     tryCatch({
       print('Saving information...')
     savedreactivedata=isolate(reactiveValuesToList(reactiveprogramdata))
-    save(savedreactivedata, file=input$caption)
-      export_path=paste(gsub(".RData","",input$caption),'associated_data',sep='_')
-      write_info(export_path, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data)
+    save(savedreactivedata, file=paste(input$caption,".RData",sep=''))
+      write_info(input$caption, reactiveprogramdata$final_output, reactiveprogramdata$ROI_data)
       print('Done!')
     },error=function(e) {print('Not possible to generate the output the session files. Please revise the path given.')})
   })
@@ -276,6 +286,7 @@ observeEvent(input$folder, {
     if (reactiveprogramdata$beginning==FALSE) return()
 	#Splitting of ROI data into individual ROIs to be quantified
     tryCatch({
+      reset("fit_selection_cell_clicked")
 
     dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
@@ -326,10 +337,8 @@ observeEvent(input$folder, {
 
     })
     observe({
-      # if(is.null(input$ROIdata_edit)|(reactiveprogramdata$stop==1)) {
-      #   reactiveprogramdata$change=0
-      #   return(NULL)
-      # }
+      # if(is.null(input$fit_selection_cell_clicked)) {
+
 
       edit <- input$ROIdata_edit
       isolate({
@@ -380,6 +389,9 @@ observeEvent(input$folder, {
   #Selection of spectra, or of cluster or median plots
   observeEvent(input$x1_rows_selected, {
     if (reactiveprogramdata$beginning==FALSE) return()
+    tryCatch({
+      reset("fit_selection_cell_clicked")
+
     if (reactiveprogramdata$beginning ==TRUE) {
 	dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
@@ -414,7 +426,11 @@ observeEvent(input$folder, {
 	#Generation of plot
     dummy=type_plot(reactiveprogramdata$imported_data,ROI_limits,input$x1_rows_selected,reactiveprogramdata$medianplot,reactiveprogramdata$clusterplot)
     if (!is.null(dummy)) reactiveprogramdata$plot=dummy
-  })
+    },error=function(e) {
+      print("Problem. Please explain the issue in the Github page")
+    })
+
+     })
 
   #Individual quantification
   observeEvent(input$action, {
@@ -427,7 +443,7 @@ observeEvent(input$folder, {
     }
 
 	#The automatic quantification
-    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)},error=function(e) {
+    reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveROItestingdata$ROIpar,reactiveprogramdata$useful_data,interface=TRUE)}, warning = function(w) {},error=function(e) {
       print("There was a problem.")
       return(NULL)
       })
@@ -523,7 +539,7 @@ observeEvent(input$folder, {
 	#Plotly figure where to analyze peak shape fitting
   output$plot <- renderPlotly({
     if (reactiveprogramdata$beginning==FALSE) return()
-      reactiveprogramdata$plot
+     reactiveprogramdata$plot
   })
 
 
@@ -544,18 +560,18 @@ observeEvent(input$folder, {
 
   #Repository table
   observe({
-    if (!suppressWarnings(is.na(reactiveprogramdata$imported_data)))  {
+    suppressWarnings(
+    if (!is.na(reactiveprogramdata$imported_data))  {
   output$repository = DT::renderDataTable(
     reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>reactiveROItestingdata$ROIpar[1,2]&reactiveprogramdata$imported_data$repository[,3]<reactiveROItestingdata$ROIpar[1,1]),] , server = TRUE)
-    }
+    })
   })
   observe({
-    if (!suppressWarnings(is.na(reactiveprogramdata$imported_data)))  {
-      output$repository2 = DT::renderDataTable(
-        # reactiveprogramdata$imported_data$repository[which(reactiveprogramdata$imported_data$repository[,3]>(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]-0.05)&reactiveprogramdata$imported_data$repository[,3]<(reactiveprogramdata$ROI_data_check[input$roi_profiles_select,6]+0.05)),] , server = TRUE)
+    suppressWarnings(
+      if (!is.na(reactiveprogramdata$imported_data))  {
+        output$repository2 = DT::renderDataTable(
       reactiveprogramdata$imported_data$repository , selection = list(mode = 'single', selected = NULL),filter='top', server = TRUE)
-
-      }
+      })
   })
 
 
@@ -665,7 +681,6 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     # if (length(reactiveprogramdata$info$row)!=1) return(NULL)
 
     dummy=load_quantification(reactiveprogramdata$useful_data,reactiveprogramdata$imported_data,reactiveprogramdata$final_output,reactiveprogramdata$info,reactiveprogramdata$ROI_data)
-    #updateSelectInput(session, "select",choices = reactiveprogramdata$select_options,selected = dummy$ind)
 
       reactiveprogramdata$plot=dummy$plot
       reactiveROItestingdata$signpar=dummy$signpar
@@ -842,28 +857,28 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       tableStyle = "table table-bordered")
 
   })
-
-  ## FIFTH TAB REACTIVE OUTPUTS
-
-  #Boxplot plot
-  output$plot_p_value_2 <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
-    }, error = function(e) {
-      print('Error. Please explain the issue in the Github page.')
-      return(NULL)
-    })
-  })
-  #PCA plot
-  output$pcascores <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
-  }, error = function(e) {
-    print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
-    return(NULL)
-  })
-  })
+#
+#   ## FIFTH TAB REACTIVE OUTPUTS
+#
+#   #Boxplot plot
+#   output$plot_p_value_2 <- renderPlotly({
+#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
+#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
+#     }, error = function(e) {
+#       print('Error. Please explain the issue in the Github page.')
+#       return(NULL)
+#     })
+#   })
+#   #PCA plot
+#   output$pcascores <- renderPlotly({
+#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
+#
+#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
+#   }, error = function(e) {
+#     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
+#     return(NULL)
+#   })
+#   })
 
   ## SIXTH TAB REACTIVE OUTPUTS
 

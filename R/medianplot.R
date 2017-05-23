@@ -21,7 +21,6 @@ medianplot = function(imported_data) {
   az = list(title = "Intensity",range = c(-1, max(mediandataset)-1))
 
   p=plot_ly(x=~imported_data$ppm)
-  shade=as.character(seq(0.2,1,length.out = nrow(mediandataset)))
   for (i in seq(nrow(mediandataset))){
     p=p%>%add_lines(y = mediandataset[i,],name=types[i])
   }

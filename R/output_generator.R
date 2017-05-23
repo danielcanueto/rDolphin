@@ -10,7 +10,6 @@ output_generator = function(signals_to_quantify,
 
   fitted_signals[is.na(fitted_signals)]=0 #to be sure that there are no NA values on the fitted signals
   BGsignals = (multiplicities == 0) #finds baseline signals
-
   output_data = list()
 
   #Storage of signals and sum of baseline and metabolite signals
@@ -19,7 +18,7 @@ output_generator = function(signals_to_quantify,
   output_data$baseline_sum = colSums(fitted_signals[BGsignals, , drop =F], na.rm = T)
   output_data$fitted_sum = output_data$signals_sum + output_data$baseline_sum
   #For every signal I locate in which bins where most of the signal is located and I calculate the fitting error and the signal to area ratio
-  for (ind in signals_to_quantify) {
+  for (ind in which(BGsignals==F)) {
     #I sort bins according to intensity of signal in each bin.
      sorted_bins=sort(fitted_signals[ind,ROI_buckets]/sum(fitted_signals[ind,ROI_buckets ]),decreasing=T,index.return=T)
     if(length(sorted_bins$x)>0) {
@@ -50,11 +49,11 @@ output_generator = function(signals_to_quantify,
   subregion_fitted = output_data$fitted_sum[ROI_buckets[bins]]
   subregion_spectrum = Ydata[ROI_buckets[bins]]
   error1=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)
-  output_data$quantification = rowSums(fitted_signals[signals_to_quantify, , drop =
+  output_data$quantification = rowSums(fitted_signals[!BGsignals, , drop =
                                               F])
-  output_data$shift = signals_parameters[2, signals_to_quantify]
-  output_data$intensity=signals_parameters[1, signals_to_quantify]
-  output_data$half_band_width=signals_parameters[3, signals_to_quantify]
+  output_data$shift = signals_parameters[2, !BGsignals]
+  output_data$intensity=signals_parameters[1, !BGsignals]
+  output_data$half_band_width=signals_parameters[3,!BGsignals ]
   dummy=list(output_data=output_data,error1=error1)
   return(dummy)
 }
