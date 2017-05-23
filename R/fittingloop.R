@@ -170,51 +170,51 @@ for (i in signals_to_quantify)    {
       function(par, observed, xx,multiplicities,roof_effect,freq)
         observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
 
-    #Correction of half_band_width and j-coupling
-    # iter = 0
+    Correction of half_band_width and j-coupling
+    iter = 0
     error22=error2=error1
-    # errorprov = error1=3000
-    # #Only half_band_width and j-coupling will have different lower und upper bounds.
-    # change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
-    # lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
-    # while (iter < 3) {
-    #   s0 = lb + (ub - lb) * runif(length(ub))
-    #   nls.out <-
-    #     minpack.lm::nls.lm(
-    #       par = s0,
-    #       fn = residFun,
-    #       observed = Ydata,
-    #       xx = Xdata,
-    #       multiplicities=multiplicities,
-    #       roof_effect=roof_effect,
-    #       freq=program_parameters$freq,
-    #       lower = lb,
-    #       upper = ub,
-    #       control = minpack.lm::nls.lm.control(
-    #         factor = program_parameters$factor,
-    #         maxiter = program_parameters$nls_lm_maxiter,
-    #         ftol = program_parameters$ftol,
-    #         ptol = program_parameters$ptol
-    #       )
-    #
-    #     )
-    #   iter = iter + 1
-    #   # #Procedure to calculate the fititng error in all the ROI
-    #   #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
-    #   errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -
-    #       min(Ydata))
-    #   if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
-    #   if (errorprov < error1) {
-    #     error1 = errorprov
-    #     paramprov=coef(nls.out)
-    #   } else if (errorprov > worsterror) {
-    #     worsterror = errorprov
-    #   }
-    #   if (error1 < error2) {
-    #     error2 = error1
-    #     signals_parameters = paramprov
-    #   }
-    # }
+    errorprov = error1=3000
+    #Only half_band_width and j-coupling will have different lower und upper bounds.
+    change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
+    lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
+    while (iter < 3) {
+      s0 = lb + (ub - lb) * runif(length(ub))
+      nls.out <-
+        minpack.lm::nls.lm(
+          par = s0,
+          fn = residFun,
+          observed = Ydata,
+          xx = Xdata,
+          multiplicities=multiplicities,
+          roof_effect=roof_effect,
+          freq=program_parameters$freq,
+          lower = lb,
+          upper = ub,
+          control = minpack.lm::nls.lm.control(
+            factor = program_parameters$factor,
+            maxiter = program_parameters$nls_lm_maxiter,
+            ftol = program_parameters$ftol,
+            ptol = program_parameters$ptol
+          )
+
+        )
+      iter = iter + 1
+      # #Procedure to calculate the fititng error in all the ROI
+      #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
+      errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -
+          min(Ydata))
+      if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
+      if (errorprov < error1) {
+        error1 = errorprov
+        paramprov=coef(nls.out)
+      } else if (errorprov > worsterror) {
+        worsterror = errorprov
+      }
+      if (error1 < error2) {
+        error2 = error1
+        signals_parameters = paramprov
+      }
+    }
 
     #If half_band_width and j-coup change improves fitting
 
