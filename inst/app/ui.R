@@ -10,22 +10,6 @@ shinyUI(fluidPage(
              ".shiny-output-error:before { visibility: hidden; }"
   ),
   shinyjs::useShinyjs(),
-
-  # #Tabs are disabled until data is not laoded
-  # tags$head(tags$script("
-  #   window.onload = function() {
-  #   $('#mynavlist a:contains(\"Individual Quantification\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"Quantification Validation\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"Uni and multivariate analysis\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"ROI Profiles\")').parent().addClass('disabled')
-  #   $('#mynavlist a:contains(\"STOCSY and dendrogram heatmaps\")').parent().addClass('disabled')
-  #   }
-  #   Shiny.addCustomMessageHandler('activeNavs', function(nav_label) {
-  #   $('#mynavlist a:contains(\"' + nav_label + '\")').parent().removeClass('disabled')
-  #   })
-  #   ")),
-
-
   titlePanel("rDolphin GUI"),
   #First tab
   tabsetPanel(selected="tab1", id='mynavlist',
@@ -116,12 +100,12 @@ shinyUI(fluidPage(
 
 
 
-    #Fifth tab
-    tabPanel("Uni and multivariate analysis",value = "tab5",
-      fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
-      plotlyOutput(outputId = "plot_p_value_2"),
-      fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
-      plotlyOutput(outputId = "pcascores"))
+    # #Fifth tab
+    # tabPanel("Uni and multivariate analysis",value = "tab5",
+    #   fluidRow(column(width = 12, h4("Here you have boxplots for every quantified signal, with p values on the x axis labels."))),
+    #   plotlyOutput(outputId = "plot_p_value_2"),
+    #   fluidRow(column(width = 12, h4("PCA with loadings and scores"))),
+    #   plotlyOutput(outputId = "pcascores"))
 
     #Sixth tab
     ,tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",

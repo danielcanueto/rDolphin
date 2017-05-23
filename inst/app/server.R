@@ -2,7 +2,7 @@ server = function(input, output,session) {
 
   #Increase of maximum memory size that can be uploaded
   options(shiny.maxRequestSize=1000*1024^2)
-  # options(warn =-1)
+  options(warn =-1)
   #Setting of reactive parameters in the Shiny GUI
   reactiveROItestingdata <- reactiveValues(signpar = matrix(NA,2,7,dimnames = list(seq(2),c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect"))),qualitypar = matrix(NA,2,3,dimnames=list(seq(2),c('Quantification','fitting_error','signal/total area ratio'))))
   reactivequantdata <- reactiveValues(method1=NA)
@@ -15,7 +15,7 @@ server = function(input, output,session) {
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab2]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab3]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab4]")
-      toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab5]")
+      # toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab5]")
       toggle(condition = dummy, selector = "#mynavlist li a[data-value=tab6]")
  })
 
@@ -857,28 +857,28 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       tableStyle = "table table-bordered")
 
   })
-
-  ## FIFTH TAB REACTIVE OUTPUTS
-
-  #Boxplot plot
-  output$plot_p_value_2 <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
-    }, error = function(e) {
-      print('Error. Please explain the issue in the Github page.')
-      return(NULL)
-    })
-  })
-  #PCA plot
-  output$pcascores <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-
-    tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
-  }, error = function(e) {
-    print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
-    return(NULL)
-  })
-  })
+#
+#   ## FIFTH TAB REACTIVE OUTPUTS
+#
+#   #Boxplot plot
+#   output$plot_p_value_2 <- renderPlotly({
+#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
+#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
+#     }, error = function(e) {
+#       print('Error. Please explain the issue in the Github page.')
+#       return(NULL)
+#     })
+#   })
+#   #PCA plot
+#   output$pcascores <- renderPlotly({
+#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
+#
+#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
+#   }, error = function(e) {
+#     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
+#     return(NULL)
+#   })
+#   })
 
   ## SIXTH TAB REACTIVE OUTPUTS
 
