@@ -337,7 +337,7 @@ observeEvent(input$folder, {
 
     })
     observe({
-      if(is.null(input$fit_selection_cell_clicked)) {
+      # if(is.null(input$fit_selection_cell_clicked)) {
 
 
       edit <- input$ROIdata_edit
@@ -380,7 +380,7 @@ observeEvent(input$folder, {
           confirmEdit(session, tbl = "ROIdata", row = row, col = col, id = id, value = val)
         # }
       })
-    }})
+    })
     })
 
 

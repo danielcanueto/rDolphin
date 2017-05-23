@@ -5,10 +5,7 @@ library(D3TableFilter)
 library(shinyjs)
 
 shinyUI(fluidPage(
-  tags$style(type="text/css",
-             ".shiny-output-error { visibility: hidden; }",
-             ".shiny-output-error:before { visibility: hidden; }"
-  ),
+
   shinyjs::useShinyjs(),
   titlePanel("rDolphin GUI"),
   #First tab
@@ -108,7 +105,7 @@ shinyUI(fluidPage(
     #   plotlyOutput(outputId = "pcascores"))
 
     #Sixth tab
-    ,tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",
+    tabPanel("STOCSY and dendrogram heatmaps",value = "tab6",
       fluidRow(column(width = 12, h4("Here you can perform STOCSY to identify unknown signals."))),
       div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("left_ppm", "Left edge of region", NA)),
           div(style="display: inline-block;vertical-align:top; width: 150px;",numericInput("right_ppm", "Right edge of region", NA)),

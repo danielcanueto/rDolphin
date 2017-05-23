@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Type of analysis plot\n#'\n#' @param rows_selected Rows selected in GUi table.\n#' @param imported_data List with typical elements necessary to perform quantification of ROIs.\n#' @param ROI_limits Range of plot\n#' @param medianplot Meidan plot\n#' @param clusterplot Cluster plot\n#'\n#' @return Plot\n#' @export type_plot\n#' @import plotly\n#' @import reshape2\n#'\ntype_plot = function(imported_data,ROI_limits,rows_selected,medianplot,clusterplot) {\n\n\n  if (length(rows_selected)>1&any(rows_selected<3)) {\n    print('Not possible to combine cluster or median spectra with individual spectra.')\n    return(NULL)\n  } else if (suppressWarnings(rows_selected==1)) {\n    # range=c(0,max(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2]))])+10)\n    range=c(0,max(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F]))\n    p=clusterplot %>% layout(xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))\n  }else if (suppressWarnings(rows_selected==2)) {\n    range=c(0,max(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F],2,median)))\n    p=medianplot %>% layout(showlegend=T,xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))\n  }else if (all(rows_selected>2)){\n    range=c(0,max(imported_data$dataset[rows_selected-2,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F]))\n    plotdata = data.frame(Xdata=imported_data$ppm, t(imported_data$dataset[rows_selected-2,,drop=F]))\n    plotdata <- melt(plotdata, id = \"Xdata\")\n    p=plot_ly(data=plotdata,x=~Xdata,y=~ value,color=~variable,type='scatter',mode='lines')%>% layout(showlegend=T,xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))\n  }\n\nreturn(p)\n}\n",
+    "created" : 1495538367863.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "970532905",
+    "id" : "DA22C6AE",
+    "lastKnownWriteTime" : 1495538452,
+    "last_content_update" : 1495538452418,
+    "path" : "~/GitHub/rDolphin/R/type_plot.R",
+    "project_path" : "R/type_plot.R",
+    "properties" : {
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

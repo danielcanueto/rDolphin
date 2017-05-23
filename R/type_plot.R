@@ -19,7 +19,7 @@ type_plot = function(imported_data,ROI_limits,rows_selected,medianplot,clusterpl
     return(NULL)
   } else if (suppressWarnings(rows_selected==1)) {
     # range=c(0,max(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2]))])+10)
-    range=c(0,max(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F],2,median)))
+    range=c(0,max(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F]))
     p=clusterplot %>% layout(xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))
   }else if (suppressWarnings(rows_selected==2)) {
     range=c(0,max(apply(imported_data$dataset[,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F],2,median)))
