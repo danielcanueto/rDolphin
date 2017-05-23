@@ -167,7 +167,7 @@ for (i in signals_to_quantify)    {
     }
       if (length(bins)==0) bins=seq_along(Ydata)
     residFun <-
-      function(par, observed, xx,multiplicities,roof_effect,freq)
+      function(par, observed, xx,multiplicities,roof_effect,freq,bins)
         observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
 
     #Correction of half_band_width and j-coupling
