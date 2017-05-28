@@ -57,7 +57,7 @@ colnames(newmat)=seq(storedpars$OFFSET[1],storedpars$OFFSET[1]-storedpars$SW[1],
 
 rownames(newmat)=paste('j =', rownames(newmat))
 colnames(newmat)=paste('ppm =', colnames(newmat))
-mtrx.melt <- melt(newmat, id.vars = c('j', 'ppm'), measure.vars = 'qsec')
+mtrx.melt <- reshape2::melt(newmat, id.vars = c('j', 'ppm'), measure.vars = 'qsec')
 names(mtrx.melt) <- c('j', 'ppm', 'value')
 # Return data to numeric form
 mtrx.melt$j <- as.numeric(str_sub(mtrx.melt$j, str_locate(mtrx.melt$j, '=')[1,1] + 1))

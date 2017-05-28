@@ -6,12 +6,12 @@ output_generator = function(signals_to_quantify,
                             fitted_signals,
                             Ydata,
                             Xdata,
-                            signals_parameters,multiplicities,ROI_buckets=seq_along(Ydata)) {
+                            signals_parameters,multiplicities,buck_step) {
 
   fitted_signals[is.na(fitted_signals)]=0 #to be sure that there are no NA values on the fitted signals
   BGsignals = (multiplicities == 0) #finds baseline signals
   output_data = list()
-
+ROI_buckets=seq_along(Ydata)
   #Storage of signals and sum of baseline and metabolite signals
   output_data$signals = fitted_signals[!BGsignals, , drop =F]
   output_data$signals_sum = colSums(fitted_signals[!BGsignals, , drop =F], na.rm = T)
@@ -36,7 +36,7 @@ output_generator = function(signals_to_quantify,
     output_data$signal_area_ratio = append(output_data$signal_area_ratio, 100 -((abs(sum(subregion_spectrum) - sum(subregion_signals)) / sum(subregion_spectrum)) * 100))
     # normalized_rmse=cor(subregion_spectrum, subregion_fitted)
     normalized_rmse=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)
-
+if (sum(subregion_signals)==0) normalized_rmse=100
     output_data$fitting_error = append(output_data$fitting_error,normalized_rmse)
   }
   sorted_bins=sort(output_data$fitted_sum[ROI_buckets]/sum(output_data$fitted_sum[ROI_buckets]),decreasing=T,index.return=T)
@@ -50,7 +50,9 @@ output_generator = function(signals_to_quantify,
   subregion_spectrum = Ydata[ROI_buckets[bins]]
   error1=summary(lm(subregion_spectrum~subregion_fitted))$sigma/max(subregion_spectrum)
   output_data$quantification = rowSums(fitted_signals[!BGsignals, , drop =
-                                              F])
+                                              F])*buck_step
+  output_data$quantification[-signals_to_quantify]=NA
+
   output_data$shift = signals_parameters[2, !BGsignals]
   output_data$intensity=signals_parameters[1, !BGsignals]
   output_data$half_band_width=signals_parameters[3,!BGsignals ]

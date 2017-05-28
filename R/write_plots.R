@@ -38,7 +38,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
         plot_data[2, ])
       colnames(plotdata2)=c('Xdata','Ydata',"fitted_sum","baseline_sum")
 
-      plotdata3 <- melt(plotdata2, id = "Xdata")
+      plotdata3 <- reshape2::melt(plotdata2, id = "Xdata")
       plotdata3$variable = c(
         rep('Original Spectrum', length(Ydata)),
         rep('Generated Spectrum', length(Ydata)),
@@ -47,7 +47,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
       plotdata4 = data.frame(Xdata, (t(plot_data[-c(1, 2, 3), , drop = F])))
 
       colnames(plotdata4)=c('Xdata',rownames(plot_data)[-c(1, 2, 3)])
-      plotdata5 = melt(plotdata4, id = "Xdata")
+      plotdata5 = reshape2::melt(plotdata4, id = "Xdata")
       r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[ind2])
       if (length(r)==0) next
       plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )

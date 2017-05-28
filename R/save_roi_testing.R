@@ -29,12 +29,10 @@ if (provisional_data$fitting_type == "Clean Sum" ||
 
 
 
-  provisional_data$program_parameters$signals_to_quantify=NULL
 
   for (i in seq_along(provisional_data$signals_codes)) {
     useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$ROI_profile=provisional_data$ROI_profile
     useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$program_parameters=provisional_data$program_parameters
-    # useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$fitted_signals=provisional_data$fitted_signals
     useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$plot_data=provisional_data$plot_data
     useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$Xdata=provisional_data$Xdata
     useful_data[[provisional_data$spectrum_index]][[provisional_data$signals_codes[i]]]$Ydata=provisional_data$Ydata

@@ -35,7 +35,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
   spectrum_index = which.min(apply(imported_data$dataset, 1, function(x)
     sqrt(mean((x - quartile_spectrum) ^ 2
       ,na.rm=T))))
-  baseline=baseline.rollingBall(rbind(imported_data$dataset[spectrum_index,],imported_data$dataset[spectrum_index,]),5,5)$baseline[1,]
+  baseline=baseline::baseline.rollingBall(rbind(imported_data$dataset[spectrum_index,],imported_data$dataset[spectrum_index,]),5,5)$baseline[1,]
 
   plotdata = data.frame(Xdata=as.numeric(imported_data$ppm),Ydata = as.numeric(imported_data$dataset[spectrum_index,]))
   fitted_data=rep(0,length(imported_data$ppm))
@@ -61,8 +61,6 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     } else {
       program_parameters$clean_fit="N"
     }
-    signals_to_quantify = which(ROI_profile[, 5] >= 1)
-    ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
     if (length(ROI_buckets)<5) next
     if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
 
@@ -82,7 +80,7 @@ profile_model_spectrum = function(imported_data, ROI_data) {
       # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
       # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata)
+      integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,program_parameters$buck_step)
 
       total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
@@ -133,12 +131,12 @@ profile_model_spectrum = function(imported_data, ROI_data) {
         fitted_signals,
         Ydata,
         Xdata,
-        signals_parameters,multiplicities
+        signals_parameters,multiplicities,program_parameters$buck_step
       )
       output_data=dummy$output_data
 
       fitted_data[ROI_buckets]=output_data$fitted_sum
-    total_signals_parameters[signals_codes,]=cbind(t(signals_parameters[,signals_to_quantify]),output_data$fitting_error[signals_to_quantify],output_data$signal_area_ratio[signals_to_quantify])
+    total_signals_parameters[signals_codes,]=cbind(t(signals_parameters[,seq(nrow(ROI_profile))]),output_data$fitting_error,output_data$signal_area_ratio)
 
 
     }

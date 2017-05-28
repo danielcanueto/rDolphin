@@ -1,5 +1,5 @@
 
-integration = function(clean_fit, Xdata, Ydata,interface='F') {
+integration = function(clean_fit, Xdata, Ydata,buck_step,interface='F') {
 
   #preallocation of results_to_save
   results_to_save = list(
@@ -19,7 +19,7 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   integrated_signal = Ydata - baseline
     integrated_signal[integrated_signal<0]=0
   #preparation of results_to_save
-  results_to_save$quantification = sum(integrated_signal)
+  results_to_save$quantification = sum(integrated_signal)*buck_step
   results_to_save$intensity = max(integrated_signal)
 
   cumulative_area = cumsum(integrated_signal) / sum(integrated_signal)
@@ -56,10 +56,10 @@ p=''
 if (interface=='T') {
 plotdata = data.frame(Xdata, signal = integrated_signal)
   plotdata2 = data.frame(Xdata, Ydata)
-  plotdata3 <- melt(plotdata2, id = "Xdata")
+  plotdata3 = reshape2::melt(plotdata2, id = "Xdata")
   plotdata3$variable = rep('Original Spectrum', length(Ydata))
   plotdata4 = data.frame(Xdata, integrated_signal)
-  plotdata5 = melt(plotdata4, id = "Xdata")
+  plotdata5 = reshape2::melt(plotdata4, id = "Xdata")
   p=plot_ly(plotdata,x = ~Xdata, y = ~signal, type = 'scatter', color= 'Signal',mode = 'lines', fill = 'tozeroy') %>% add_trace(data=plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>%
     layout(xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'),
       yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))

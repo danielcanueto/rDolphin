@@ -7,17 +7,22 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
   signals_parameters=rep(0,length(as.vector(t(FeaturesMatrix[, seq(1, 9, 2), drop = F]))))
   iterrep = 0
   fitting_maxiterrep = program_parameters$fitting_maxiterrep
-  signals_to_quantify = which(FeaturesMatrix[, 11] != 0)
+  signals_to_fit = which(FeaturesMatrix[, 11] != 0)
   paramprov=rep(0,nrow(FeaturesMatrix)*5)
+
+
+
+
 
   #Necessary information to incorporate additional signals if necessary
   range_ind = round(program_parameters$additional_signal_ppm_distance / program_parameters$buck_step)
 
 
+
   #Function where to find a minimum
   residFun <-
-    function(par, observed, xx,multiplicities,roof_effect,freq)
-      observed - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))
+    function(par, observed, xx,multiplicities,roof_effect,freq,bins)
+      observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
 
 
   # Loop to control if additional signals are incorporated, until a maximum of iterations specified bt fitting_maxiterrep.
@@ -31,6 +36,29 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
     dummy = error2 = 3000
     multiplicities=FeaturesMatrix[,11]
     roof_effect=FeaturesMatrix[,12]
+    fitted_signals = signal_fitting(as.vector(t(FeaturesMatrix[,c(2,3,6,7,9)])),
+                                    Xdata,multiplicities,roof_effect,program_parameters$freq)
+    bins=c()
+    for (i in signals_to_fit) {
+      sorted_bins=sort(fitted_signals[i,]/sum(fitted_signals[i,]),decreasing=T,index.return=T)
+     if(length(sorted_bins$x)>0) {
+       bins2= sorted_bins$ix[1:which.min(abs(cumsum(sorted_bins$x)-0.9))]
+       distance=diff(FeaturesMatrix[i,3:4])/program_parameters$buck_step
+       distance2=round(diff(FeaturesMatrix[i,9:10])/program_parameters$buck_step/program_parameters$freq)
+
+       bins2=unique(as.vector(sapply(seq(distance),function(x)bins2-x)))
+       bins2=unique(bins2,min(bins2)-distance2,max(bins2)+distance2)
+       bins2=bins2[bins2>0&bins2<length(Xdata)]
+
+       # aa=peakdet(fitted_signals[i,],0.00001)$maxtab$pos
+       # aa=as.vector(sapply(seq(distance),function(x)aa-x))
+       # #
+       #  lol=sapply(seq(distance),function(x)min(Ydata[bins2]-fitted_signals[i,(bins2-x)]))
+       # FeaturesMatrix[i,2]=FeaturesMatrix[i,2]+lol
+
+
+       bins=unique(c(bins,bins2))
+    }}
 
     #Depending on the complexity of the ROI, more or less iterations are performed
     if (is.numeric(program_parameters$fitting_maxiter)) {
@@ -57,7 +85,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       lb = as.vector(t(FeaturesMatrix[, seq(1, 9, 2), drop = F]))
       ub = as.vector(t(FeaturesMatrix[, seq(2, 10, 2), drop = F]))
       s0 = lb + (ub - lb) * runif(length(ub))
-      order1=order(rowMeans(FeaturesMatrix[signals_to_quantify ,3:4,drop=F])[signals_to_quantify])
+      order1=order(rowMeans(FeaturesMatrix[signals_to_fit ,3:4,drop=F])[signals_to_fit])
 
       # aaa=iter%%3/3
       # bbb=ifelse((iter+1)%%3/3==0,1,(iter+1)%%3/3)
@@ -68,8 +96,8 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
       if (iter<4&length(peaks_xdata$maxtab$val)>0) {
         peaks_bindata = peakdet(c(Ydata[1],diff(Ydata)), program_parameters$peakdet_minimum*0.1*max(1e-10,max(Ydata)))
-        peaks=peaks_xdata$maxtab$pos[sort(peaks_xdata$maxtab$val,decreasing=T,index.return=T)$ix[1:sum(multiplicities[signals_to_quantify])]]
-        peaks_compare=rowMeans(FeaturesMatrix[signals_to_quantify ,3:4,drop=F])
+        peaks=peaks_xdata$maxtab$pos[sort(peaks_xdata$maxtab$val,decreasing=T,index.return=T)$ix[1:sum(multiplicities[signals_to_fit])]]
+        peaks_compare=rowMeans(FeaturesMatrix[signals_to_fit ,3:4,drop=F])
       for (i in 1:length(peaks_compare)) {
             ind=sort(abs(peaks-peaks_compare[i]),index.return=T)$ix[1:multiplicities[i]]
             if (!is.na(mean(peaks[ind]))&&mean(peaks[ind])>FeaturesMatrix[i,3]&&mean(peaks[ind])<FeaturesMatrix[i,4]) {
@@ -102,7 +130,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       # #Procedure to calculate the fititng error in all the ROI
       #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
         iter = iter + 1
-        order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_quantify])
+        order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_fit])
 
         errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -min(Ydata))
         if (is.nan(errorprov) || is.na(errorprov)) errorprov = error1
@@ -136,7 +164,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
       iter = iter + 1
 
-      order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_quantify])
+      order2=order(coef(nls.out)[which(seq_along(coef(nls.out))%%5==2)][signals_to_fit])
       # #Procedure to calculate the fititng error in all the ROI
       #An adapted MSE error is calculated, and the parameters of the optimization with less MSE are stored
       errorprov = (sqrt(nls.out$deviance / length(Ydata))) * 100 / (max(Ydata) -min(Ydata))
@@ -152,7 +180,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
     fitted_signals = signal_fitting(signals_parameters,
                                     Xdata,multiplicities,roof_effect,program_parameters$freq)
-for (i in signals_to_quantify)    {
+for (i in signals_to_fit)    {
   aa=peakdet(fitted_signals[i,],0.00001)$maxtab$pos
   if (length(aa)==0) next
   bb=min(Ydata[aa]-colSums(fitted_signals[,aa,drop=F]))
@@ -160,15 +188,12 @@ for (i in signals_to_quantify)    {
 }
 
   bins=c()
-    for (ind in signals_to_quantify) {
+    for (ind in signals_to_fit) {
       sorted_bins=sort(fitted_signals[ind,]/sum(fitted_signals[ind, ]),decreasing=T,index.return=T)
     if(length(sorted_bins$x)>0) bins= sorted_bins$ix[1:which.min(abs(cumsum(sorted_bins$x)-0.75))]
 
     }
       if (length(bins)==0) bins=seq_along(Ydata)
-    residFun <-
-      function(par, observed, xx,multiplicities,roof_effect,freq,bins)
-        observed[bins] - colSums(signal_fitting(par, xx,multiplicities,roof_effect,freq))[bins]
 
     #Correction of half_band_width and j-coupling
     iter = 0
@@ -176,7 +201,7 @@ for (i in signals_to_quantify)    {
     errorprov = error1=3000
     #Only half_band_width and j-coupling will have different lower und upper bounds.
     change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
-    lb[change_indexes]=ub[change_indexes]=paramprov[change_indexes]
+    lb[change_indexes]=ub[change_indexes]=signals_parameters[change_indexes]
     while (iter < 3) {
       s0 = lb + (ub - lb) * runif(length(ub))
       nls.out <-
@@ -225,7 +250,7 @@ for (i in signals_to_quantify)    {
 
     #If the fitting seems to be still clearly improvable through the addition of signals
     if (iterrep <= fitting_maxiterrep& error22 < (program_parameters$additional_signal_improvement * dummy) &
-        (error22 > program_parameters$additional_signal_percentage_limit)&length(peaks_xdata$maxtab$pos)>sum(multiplicities[signals_to_quantify])) {
+        (error22 > program_parameters$additional_signal_percentage_limit)&length(peaks_xdata$maxtab$pos)>sum(multiplicities[signals_to_fit])) {
       # print('Trying to improve initial fit adding peaks')
 
       #I find peaks on the residuals
@@ -236,12 +261,12 @@ for (i in signals_to_quantify)    {
 
       if (is.null(residual_peaks$maxtab) == F) {
         #Preparation of information of where signals of interest are located
-        dummy=multiplicities[signals_to_quantify]%%2
+        dummy=multiplicities[signals_to_fit]%%2
         dummy[dummy==0]=2
         additional_signal_matrix = matrix(paramprov,nrow(FeaturesMatrix),5,byrow = TRUE)
-        points_to_avoid = abs(rbind(matrix(Xdata,length(signals_to_quantify),length(Xdata),byrow = TRUE) - matrix(
-            additional_signal_matrix[signals_to_quantify, 2] - (additional_signal_matrix[signals_to_quantify, 5]/dummy)/program_parameters$freq,length(signals_to_quantify),length(Xdata)),
-          matrix(Xdata,length(signals_to_quantify),length(Xdata),byrow = TRUE) - matrix(additional_signal_matrix[signals_to_quantify, 2] + (additional_signal_matrix[signals_to_quantify, 5]/dummy)/program_parameters$freq,length(signals_to_quantify),length(Xdata))))
+        points_to_avoid = abs(rbind(matrix(Xdata,length(signals_to_fit),length(Xdata),byrow = TRUE) - matrix(
+            additional_signal_matrix[signals_to_fit, 2] - (additional_signal_matrix[signals_to_fit, 5]/dummy)/program_parameters$freq,length(signals_to_fit),length(Xdata)),
+          matrix(Xdata,length(signals_to_fit),length(Xdata),byrow = TRUE) - matrix(additional_signal_matrix[signals_to_fit, 2] + (additional_signal_matrix[signals_to_fit, 5]/dummy)/program_parameters$freq,length(signals_to_fit),length(Xdata))))
         points_to_avoid = apply(points_to_avoid, 1, which.min)
         seq_range = c()
         for (i in (-range_ind):range_ind) seq_range = append(seq_range, points_to_avoid - i)

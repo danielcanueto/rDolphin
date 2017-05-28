@@ -15,7 +15,7 @@ fittingloop_bg = function(FeaturesMatrix, Xdata, Ydata, program_parameters) {
   s0 = lb + (ub - lb) * runif(length(ub))
 
   nls.out <-
-    nls.lm(
+    minpack.lm::nls.lm(
       par = s0,
       fn = residFun,
       observed = Ydata,
@@ -25,7 +25,7 @@ fittingloop_bg = function(FeaturesMatrix, Xdata, Ydata, program_parameters) {
       lower = lb,
       upper = ub,
       freq=program_parameters$freq,
-      control = nls.lm.control(
+      control = minpack.lm::nls.lm.control(
         factor = program_parameters$factor,
         maxiter = program_parameters$nls_lm_maxiter,
         ftol = program_parameters$ftol,

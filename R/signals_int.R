@@ -61,7 +61,6 @@ fitting_type=ROI_profile[1,3]
         'J_coupling'
          )
 
-      program_parameters$signals_to_quantify=signals_to_quantify
 
       #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
       dummy = output_generator(
@@ -69,7 +68,7 @@ fitting_type=ROI_profile[1,3]
         fitted_signals,
         Ydata_2,
         Xdata_2,
-        signals_parameters,multiplicities
+        signals_parameters,multiplicities,program_parameters$buck_step
       )
       output_data=dummy$output_data
       error1=dummy$error1
@@ -103,17 +102,14 @@ fitting_type=ROI_profile[1,3]
         Ydata,
         plot_data[3, ],
         plot_data[2, ] )
-      plotdata3 <- melt(plotdata2, id = "Xdata")
+      plotdata3 <- reshape2::melt(plotdata2, id = "Xdata")
       plotdata3$variable = c(
         rep('Original Spectrum', length(Ydata)),
         rep('Generated Spectrum', length(Ydata)),
         rep('Generated Background', length(Ydata))
       )
-      # plotdata4 = data.frame(Xdata=Xdata_2, (t(plot_data[-c(1, 2, 3), , drop = F]) ))
-      # plotdata5 = melt(plotdata4, id = "Xdata")
 
       colors=c('red','blue','black','brown','cyan','green','yellow')
-      # plotdata = data.frame(Xdata=Xdata_2, signals = plot_data[1, ] )
       p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
       for (i in 4:nrow(plot_data)) {
         plotdata5 =  data.frame(Xdata=Xdata, variable=rownames(plot_data)[i] ,value=plot_data[i,])
@@ -122,12 +118,6 @@ fitting_type=ROI_profile[1,3]
       }
 
 
-    # final_output = save_output(
-    #   spectrum_index,
-    #   signals_codes,
-    #   results_to_save,
-    #   imported_data$buck_step,
-    #   final_output)
       signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
       if (fitting_type == "Clean Fitting") {
         colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')

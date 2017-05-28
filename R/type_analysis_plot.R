@@ -34,7 +34,7 @@ p_value_final=p_values(data,imported_data$Metadata)
 boxplotdata=as.data.frame(data)
 colnames(boxplotdata)=paste(colnames(boxplotdata),'(p= ',p_value_final,')',sep='')
 boxplotdata=cbind(boxplotdata,factor(imported_data$Metadata[,2]))
-boxplotdata=melt(boxplotdata)
+boxplotdata=reshape2::melt(boxplotdata)
 colnames(boxplotdata)=c('Metadata','Signal','Value')
 plot_ly(boxplotdata, x = ~Signal, y = ~Value, color = ~Metadata, type = "box") %>%
   layout(boxmode='group',margin=m)

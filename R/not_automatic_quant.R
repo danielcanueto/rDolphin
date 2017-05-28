@@ -19,6 +19,7 @@
 
 
 not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,useful_data,interface=F) {
+  print('Performing the quantification...')
 
   resulting_data=list(final_output=final_output,useful_data=useful_data)
 
@@ -67,7 +68,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline)
       # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
-     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,interface='T')
+     dummy = integration(program_parameters$clean_fit, Xdata,Ydata,program_parameters$buck_step,interface='T')
 
       results_to_save=dummy$results_to_save
       p=dummy$p
@@ -127,7 +128,6 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       )
 
       Xdata_2=imported_data$ppm
-	   program_parameters$signals_to_quantify=signals_to_quantify
       Ydata_2 = as.numeric(imported_data$dataset[spectrum_index, ])
       # signals_parameters_2=unlist(signals_parameters_2)
       # multiplicities_2=unlist(multiplicities_2)
@@ -156,8 +156,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         fitted_signals,
         Ydata_2,
         Xdata_2,
-        signals_parameters,multiplicities,ROI_buckets
-      )
+        signals_parameters,multiplicities,program_parameters$buck_step)
       output_data=dummy$output_data
       error1=dummy$error1
 
@@ -209,12 +208,12 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
           fitted_signals,
           Ydata_2,
           Xdata_2,
-          signals_parameters,multiplicities,ROI_buckets
-        )
+          signals_parameters,multiplicities,program_parameters$buck_step)
+
 
         #If new deconvolution has improved previous one
-        if (dummy$error1<error1) {
-          output_data=dummy$output_data
+        if(mean(dummy$output_data$fitting_error[signals_to_quantify])<mean(output_data$fitting_error[signals_to_quantify])){
+        output_data=dummy$output_data
           error1=dummy$error1
         }}
 
@@ -245,7 +244,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         Ydata,
         plot_data[3, ],
         plot_data[2, ] )
-      plotdata3 <- melt(plotdata2, id = "Xdata")
+      plotdata3 <- reshape2::melt(plotdata2, id = "Xdata")
       plotdata3$variable = c(
         rep('Original Spectrum', length(Ydata)),
         rep('Generated Spectrum', length(Ydata)),

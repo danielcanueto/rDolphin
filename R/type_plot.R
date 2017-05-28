@@ -27,7 +27,7 @@ type_plot = function(imported_data,ROI_limits,rows_selected,medianplot,clusterpl
   }else if (all(rows_selected>2)){
     range=c(0,max(imported_data$dataset[rows_selected-2,which.min(abs(imported_data$ppm-ROI_limits[1])):which.min(abs(imported_data$ppm-ROI_limits[2])),drop=F]))
     plotdata = data.frame(Xdata=imported_data$ppm, t(imported_data$dataset[rows_selected-2,,drop=F]))
-    plotdata <- melt(plotdata, id = "Xdata")
+    plotdata <- reshape2::melt(plotdata, id = "Xdata")
     p=plot_ly(data=plotdata,x=~Xdata,y=~ value,color=~variable,type='scatter',mode='lines')%>% layout(showlegend=T,xaxis = list(range = c(ROI_limits[1], ROI_limits[2]),title='ppm'),yaxis = list(range = range,title='Intensity'))
   }
 

@@ -57,7 +57,7 @@ import_data = function(parameters_path) {
   if (!exists("program_parameters")) program_parameters=fitting_variables()
 
 #Creation of repository adapted to biofluid
-  repository=data.frame(fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
+  repository=data.frame(data.table::fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
   biofluid_column=which(colnames(repository)==biofluid)
   repository=repository[!is.na(repository[,biofluid_column]),]
   repository=repository[repository[,biofluid_column]>0,]
@@ -138,9 +138,9 @@ import_data = function(parameters_path) {
   #If data comes from csv dataset
   if (bruker_path == '' || expno == '' || processingno == '') {
     if (dataset_path != '') {
-      #Reading of dataset file (ideally with fread of data.table package, but seems that the package is not compatible with R 3.3.1). Maybe now it is possible.
+      #Reading of dataset file (ideally with data.table::fread of data.table package, but seems that the package is not compatible with R 3.3.1). Maybe now it is possible.
       imported_data = list()
-      dummy = data.matrix(fread(dataset_path, sep = ',',header=F))
+      dummy = data.matrix(data.table::fread(dataset_path, sep = ',',header=F))
       notnormalizeddataset=imported_data$dataset=dummy[-1,]
       imported_data$dataset[is.na(imported_data$dataset)]=0
 	  imported_data$ppm = round(dummy[1,],4)
@@ -279,6 +279,7 @@ import_data = function(parameters_path) {
   imported_data$repository=repository
   imported_data$jres_path=jres_path
   imported_data$program_parameters=program_parameters
+  imported_data$norm_factor=norm_factor
 
 
   #creation of list with the different final outputs
@@ -297,15 +298,15 @@ import_data = function(parameters_path) {
     # if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
     # lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
     # imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
-  export_path=file.path(dirname(as.character(import_profile[6, 2])),"input_data")
+  # export_path=file.path(dirname(as.character(import_profile[6, 2])),"input_data")
   #Useful data about conditions of import of data. TO BE REARRANGED
-  dir.create(export_path,showWarnings = FALSE)
+  # dir.create(export_path,showWarnings = FALSE)
   # fwrite(as.data.frame(imported_data$params),file=file.path(imported_data$export_path, 'initial_params.csv'))
-  fwrite(as.data.frame(imported_data$dataset),file=file.path(export_path, 'initial_dataset.csv'))
-  fwrite(as.data.frame(notnormalizeddataset),file=file.path(export_path, 'notnormalizeddataset.csv'))
-  fwrite(as.data.frame(norm_factor),file=file.path(export_path, 'norm_factor.csv'))
-  if ("not_loaded_experiments" %in% names(imported_data)&&length(imported_data$not_loaded_experiments)>0)
-    fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(export_path, 'not_loaded_experiments.csv'),col.names = F)
+  # fwrite(as.data.frame(imported_data$dataset),file=file.path(export_path, 'initial_dataset.csv'))
+  # fwrite(as.data.frame(notnormalizeddataset),file=file.path(export_path, 'notnormalizeddataset.csv'))
+  # fwrite(as.data.frame(norm_factor),file=file.path(export_path, 'norm_factor.csv'))
+  # if ("not_loaded_experiments" %in% names(imported_data)&&length(imported_data$not_loaded_experiments)>0)
+  #   fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(export_path, 'not_loaded_experiments.csv'),col.names = F)
   print('Done!')
   return(imported_data)
 
