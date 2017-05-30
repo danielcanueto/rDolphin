@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "shift2=aaa$final_output$intensity\nser=rDolphin::alignment(aa$dataset,aa$buck_step)\n\nsampled=sample(nrow(shift),0.75*nrow(shift))\ni=6\nshift=ser[,order(abs(cor(shift2[,i],aa$dataset,method='spearman')),decreasing=T)[1:100]]\nund=und2=c()\nlel=rep(NA,ncol(shift))\nfor (j in 1:ncol(shift)) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\nlel[i]=NA\nund=c(und,which.max(lel))\nund2=c(und2,max(lel,na.rm=T))\nlel=rep(NA,ncol(shift))\nfor (j in 1:ncol(shift)) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\nlel[i]=NA\nund=c(und,which.max(lel))\nund2=c(und2,max(lel,na.rm=T))\nwhile(round(und2[length(und2)],10)>round(und2[length(und2)-1],10)&length(und)<=5&length(unique(und))>1) {\n  lel=rep(NA,ncol(shift))\n  for (j in 1:ncol(shift)) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\n  lel[i]=NA\n  und=c(und,which.max(lel))\n  und2=c(und2,max(lel,na.rm=T))\n  tel=sapply(und,function(x)summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,setdiff(und,x)],max.it = 2000))$adj.r.squared)\n  if (max(tel,na.rm=T)>und2[length(und2)]) {\n    und2=und2[-which.max(tel)]\n    und=und[-which.max(tel)]\n    \n  }\n}\nund=und[duplicated(und)==F]\nfre=order(summary(robustbase::lmrob(shift2[,i]~shift[,und,drop=F],max.it = 5000))$coefficients[-1,4])\ndor=sapply(seq(length(und)),function(x)summary(robustbase::lmrob(shift2[setdiff(seq(nrow(shift2)),sampled),i]~shift[setdiff(seq(nrow(shift2)),sampled),und[fre[1:x]],drop=F],max.it = 2000))$adj.r.squared)\nund=und[fre[1:which.max(dor)]]\nmatr3[,i]=predict(robustbase::lmrob(shift2[,i]~shift[,und],max.it = 2000))\n\nmatr=matrix(NA,nrow(shift),ncol(shift))\nfor (j in 1:ncol(shift2)) {\n  matr[which(shift2[,j] %in% boxplot.stats(shift2[,j])$out),j]=1\n}\nmatrrr=matrix(NA,nrow(shift),ncol(shift))\nfor (j in 1:ncol(shift)) {\n  matrrr[which(shift[,j] %in% boxplot.stats(shift[,j])$out),j]=1\n}\n\nk=51\nind=which(is.na(matrrr[k,]))\nund=und2=c()\n\nfor (j in ind) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\nlel[i]=NA\nund=c(und,which.max(lel))\nund2=c(und2,max(lel,na.rm=T))\nlel=rep(NA,ncol(shift))\nfor (j in ind) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\nlel[i]=NA\nund=c(und,which.max(lel))\nund2=c(und2,max(lel,na.rm=T))\nwhile(round(und2[length(und2)],10)>round(und2[length(und2)-1],10)&length(und)<=5&length(unique(und))>1) {\n  lel=rep(NA,ncol(shift))\n  for (j in ind) lel[j]=tryCatch({summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,c(und,j),drop=F],max.it = 2000))$adj.r.squared},error=function(e)NA)\n  lel[i]=NA\n  und=c(und,which.max(lel))\n  und2=c(und2,max(lel,na.rm=T))\n  tel=sapply(und,function(x)summary(robustbase::lmrob(shift2[sampled,i]~shift[sampled,setdiff(und,x)],max.it = 2000))$adj.r.squared)\n  if (max(tel,na.rm=T)>und2[length(und2)]) {\n    und2=und2[-which.max(tel)]\n    und=und[-which.max(tel)]\n    \n  }\n}\nund=und[duplicated(und)==F]\nfre=order(summary(robustbase::lmrob(shift2[,i]~shift[,und,drop=F],max.it = 5000))$coefficients[-1,4])\ndor=sapply(seq(length(und)),function(x)summary(robustbase::lmrob(shift2[setdiff(seq(nrow(shift2)),sampled),i]~shift[setdiff(seq(nrow(shift2)),sampled),und[fre[1:x]],drop=F],max.it = 2000))$adj.r.squared)\nund=und[fre[1:which.max(dor)]]",
+    "created" : 1496067188707.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "17|105|29|0|\n",
+    "hash" : "632620194",
+    "id" : "D1588960",
+    "lastKnownWriteTime" : 7953767545716372848,
+    "last_content_update" : 1496070780175,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

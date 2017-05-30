@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# peakdet\n#\n# A peak detection algorithm for R; finds local maxima and minima. Based on an\n# algorithm for MATLAB by Eli Billauer (http://www.billauer.co.il/peakdet.html).\n#\n# This function is released to the public domain; any use is allowed.\n#\n# Parameters:\n# v:     a numeric vector where to search peaks.\n# delta: numeric of length one; defining the local threshold for peak detection.\n# x:     a numeric vector the same length as v containing corresponding x-values\n#        for v.\n#\n# Value:\n# A list containing two data frames maxtab and mintab containing maxima and\n# minima. Data frames contain two columns with indices in v (or corresponding\n# values in x if provided) and values in v.\n#\n# Example:\n# x <- seq(0, 20, .05)\n# vals <- sin(x)\n# peakdet(vals, .5, x)\n\npeakdet <- function(v, delta, x = NULL)\n{\n  maxtab <- NULL\n  mintab <- NULL\n  \n  if (is.null(x))\n  {\n    x <- seq_along(v)\n  }\n  \n  if (length(v) != length(x))\n  {\n    stop(\"Input vectors v and x must have the same length\")\n  }\n  \n  if (!is.numeric(delta))\n  {\n    stop(\"Input argument delta must be numeric\")\n  }\n  \n  if (delta <= 0)\n  {\n    stop(\"Input argument delta must be positive\")\n  }\n  \n  mn <- Inf\n  mx <- -Inf\n  \n  mnpos <- NA\n  mxpos <- NA\n  \n  lookformax <- TRUE\n  \n  for(i in seq_along(v))\n  {\n    this <- v[i]\n    \n    if (this > mx)\n    {\n      mx <- this\n      mxpos <- x[i]\n    }\n    \n    if (this < mn)\n    {\n      mn <- this\n      mnpos <- x[i]\n    }\n    \n    if (lookformax)\n    {\n      if (this < mx - delta)\n      {\n        maxtab <- rbind(maxtab, data.frame(pos = mxpos, val = mx))\n        \n        mn <- this\n        mnpos <- x[i]\n        \n        lookformax <- FALSE\n      }\n    }\n    else\n    {\n      if (this > mn + delta)\n      {\n        mintab <- rbind(mintab, data.frame(pos = mnpos, val = mn))\n        \n        mx <- this\n        mxpos <- x[i]\n        \n        lookformax <- TRUE\n      }\n    }\n  }\n  \n  list(maxtab = maxtab, mintab = mintab)\n}",
+    "created" : 1495961237238.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3956805591",
+    "id" : "37D76A3A",
+    "lastKnownWriteTime" : 1493293899,
+    "last_content_update" : 1493293899,
+    "path" : "~/GitHub/rDolphin/R/peakdet.R",
+    "project_path" : "R/peakdet.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

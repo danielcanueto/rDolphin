@@ -8,7 +8,6 @@
 #' @return aligneddataset The dataset with the signals aligned
 #' @export alignment
 #' @import speaq
-#' @import MassSpecWavelet
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
@@ -19,18 +18,18 @@
 alignment=function(dataset,buck_step) {
     print('Be patient. Gonna take a while. You should be writing, meanwhile.')
 
-    peakList <- detectSpecPeaks(dataset,
+    peakList <- speaq::detectSpecPeaks(dataset,
       nDivRange = c(128),
       scales = seq(1, 16, 2),
       baselineThresh = quantile(dataset,0.60,na.rm=T),
       SNR.Th = -1,
       verbose=FALSE
     );
-    resFindRef<- findRef(peakList);
+    resFindRef<- speaq::findRef(peakList);
     refInd <- resFindRef$refInd;
 
     maxShift = 0.025/buck_step;
-    aligneddataset <- dohCluster(dataset,
+    aligneddataset <- speaq::dohCluster(dataset,
       peakList = peakList,
       refInd = refInd,
       maxShift = maxShift,

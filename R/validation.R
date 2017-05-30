@@ -42,13 +42,29 @@ if (is.null(final_output)) return(NULL)
 	#Analysis of which quantifications deviate too much from expected shift, according to prediction with linear model of signals with similar behavior
 
 } else if (validation_type==3) {
-  ind=which(apply(final_output$shift,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$shift))
-  for (i in ind) {
-    shift3=data.frame(y=final_output$shift[,i],d=final_output$shift[,setdiff(ind,i)])
-    alarmmatrix[,i]=predict(randomForest::randomForest(y~.,data=shift3, importance =TRUE),shift3)
-  }
- alarmmatrix=alarmmatrix-final_output$shift
+ #  ind=which(apply(final_output$shift,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$shift))
+ #  for (i in ind) {
+ #    shift3=data.frame(y=final_output$shift[,i],d=final_output$shift[,setdiff(ind,i)])
+ #    alarmmatrix[,i]=predict(randomForest::randomForest(y~.,data=shift3, importance =TRUE),shift3)
+ #  }
+ # alarmmatrix=alarmmatrix-final_output$shift
 
+  # brks <-c(-seq(max(abs(alarmmatrix),na.rm=T), 0, length.out=10),seq(0, max(abs(alarmmatrix),na.rm=T), length.out=10)[-1])
+  # clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
+  # {paste0("rgb(255,", ., ",", ., ")")}
+  ind=which(apply(final_output$shift,2, function(x) all(is.na(x)))==F) #find quantified signals
+  shift_corrmatrix=cor(final_output$shift,use='pairwise.complete.obs',method='spearman')
+
+  for (i in ind) {
+    similar_signals=final_output$shift[,unique(c(i,ind[sort(abs(shift_corrmatrix[,i]),decreasing=T,index.return=T)$ix][1:3]))]
+    j=is.na(rowMeans(similar_signals)) #find signals with similar behavior
+    #Create linear models with two most simila signals and predict shift
+    lm_similar_signals=tryCatch({lmrob(similar_signals[!j,1] ~ similar_signals[!j,2],control = lmrob.control(maxit.scale=5000))},error= function(e) {lm(similar_signals[!j,1] ~ similar_signals[!j,2])},warning= function(e) {lm(similar_signals[!j,1] ~ similar_signals[!j,2])})
+    prediction_similar_signal_1=suppressWarnings(predict(lm_similar_signals, interval='prediction'))
+    lm_similar_signals=tryCatch({lmrob(similar_signals[!j,1] ~ similar_signals[!j,3],control = lmrob.control(maxit.scale=5000))},error= function(e) {lm(similar_signals[!j,1] ~ similar_signals[!j,3])},warning= function(e) {lm(similar_signals[!j,1] ~ similar_signals[!j,3])})
+    prediction_similar_signal_2=suppressWarnings(predict(lm_similar_signals, interval='prediction'))
+    alarmmatrix[!j,i]=apply(rbind(final_output$shift[!j,i]-prediction_similar_signal_1[,1],final_output$shift[!j,i]-prediction_similar_signal_2[,1]),2,min)
+  }
   brks <-c(-seq(max(abs(alarmmatrix),na.rm=T), 0, length.out=10),seq(0, max(abs(alarmmatrix),na.rm=T), length.out=10)[-1])
   clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
   {paste0("rgb(255,", ., ",", ., ")")}
