@@ -72,20 +72,20 @@ if (is.null(final_output)) return(NULL)
   	#Analysis of which quantifications deviate too much from expected half_band_width, according to prediction with linear model of spectra with similar behavior
 
   } else if (validation_type==4) {
-  #   ind=which(apply(final_output$half_band_width,2, function(x) all(is.na(x)))==F)#find signals with quantified half_band_width
-  # medianwidth=apply(final_output$half_band_width,2,function(x)median(x,na.rm=T))
-  # for (i in 1:dim(final_output$half_band_width)[1]) {
-  #    #Create linear model with most similar half_band_width and predict them
-  #   lm_similar_spectrum=tryCatch({lmrob(as.numeric(final_output$half_band_width[i,]) ~ medianwidth,control = lmrob.control(maxit.scale=5000))},error= function(e) {lm(as.numeric(final_output$half_band_width[i,]) ~ medianwidth)},warning= function(e) {lm(as.numeric(final_output$half_band_width[i,]) ~ medianwidth)})
-  #   prediction_similar_spectrum=suppressWarnings(predict(lm_similar_spectrum, interval='prediction'))
-  #   alarmmatrix[i,ind][!is.na(final_output$half_band_width[i,ind])]=final_output$half_band_width[i,ind][!is.na(final_output$half_band_width[i,ind])]-prediction_similar_spectrum[,1]
-  # }
-    ind=which(apply(final_output$half_band_width,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$half_band_width))
-    for (i in ind) {
-      shift3=data.frame(y=final_output$half_band_width[,i],d=final_output$half_band_width[,setdiff(ind,i)])
-      alarmmatrix[,i]=predict(randomForest::randomForest(y ~.,data=shift3, importance =TRUE),shift3)
-    }
-    alarmmatrix=alarmmatrix-final_output$half_band_width
+    ind=which(apply(final_output$half_band_width,2, function(x) all(is.na(x)))==F)#find signals with quantified half_band_width
+  medianwidth=apply(final_output$half_band_width,2,function(x)median(x,na.rm=T))
+  for (i in 1:dim(final_output$half_band_width)[1]) {
+     #Create linear model with most similar half_band_width and predict them
+    lm_similar_spectrum=tryCatch({lmrob(as.numeric(final_output$half_band_width[i,]) ~ medianwidth,control = lmrob.control(maxit.scale=5000))},error= function(e) {lm(as.numeric(final_output$half_band_width[i,]) ~ medianwidth)},warning= function(e) {lm(as.numeric(final_output$half_band_width[i,]) ~ medianwidth)})
+    prediction_similar_spectrum=suppressWarnings(predict(lm_similar_spectrum, interval='prediction'))
+    alarmmatrix[i,ind][!is.na(final_output$half_band_width[i,ind])]=final_output$half_band_width[i,ind][!is.na(final_output$half_band_width[i,ind])]-prediction_similar_spectrum[,1]
+  }
+    # ind=which(apply(final_output$half_band_width,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$half_band_width))
+    # for (i in ind) {
+    #   shift3=data.frame(y=final_output$half_band_width[,i],d=final_output$half_band_width[,setdiff(ind,i)])
+    #   alarmmatrix[,i]=predict(randomForest::randomForest(y ~.,data=shift3, importance =TRUE),shift3)
+    # }
+    # alarmmatrix=alarmmatrix-final_output$half_band_width
 
   brks <-c(-seq(max(abs(alarmmatrix),na.rm=T), 0, length.out=10),seq(0, max(abs(alarmmatrix),na.rm=T), length.out=10)[-1])
   clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
@@ -94,48 +94,56 @@ if (is.null(final_output)) return(NULL)
   #Analysis of outliers for every class and of their magnitude
 
   } else if (validation_type==5) {
-    ind=which(apply(final_output$intensity,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$intensity))
-    for (i in ind) {
-      intensity3=data.frame(y=final_output$intensity[,i],d=final_output$intensity[,setdiff(ind,i)])
-      alarmmatrix[,i]=predict(randomForest::randomForest(y~.,data=intensity3, importance =TRUE),intensity3)
-    }
-    alarmmatrix=alarmmatrix/final_output$intensity
-
-    brks <-c(rev(1/1.1^seq(9)),1,1.1^seq(9))
-    clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
-  {paste0("rgb(255,", ., ",", ., ")")}
+    metadata_types=unique(metadata[,2])
+    for (k in 1:length(metadata_types)) {
+      iqr_data=apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) IQR(x,na.rm=T))
+      quartile_data=rbind(apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.25,na.rm=T)),apply(final_output$quantification[metadata[,2]==metadata_types[k],],2,function(x) quantile(x,0.75,na.rm=T)))
+      for (i in which(metadata[,2]==metadata_types[k])) {
+        for (j in which(!is.na(iqr_data))) {
+          if (!is.na(final_output$quantification[i,j]) && final_output$quantification[i,j]>quartile_data[1,j]&&final_output$quantification[i,j]<quartile_data[2,j]) {
+            alarmmatrix[i,j]=0
+          } else if (!is.na(final_output$quantification[i,j]) &&final_output$quantification[i,j]<quartile_data[1,j]) {
+            alarmmatrix[i,j]=abs(final_output$quantification[i,j]-quartile_data[1,j])/iqr_data[j]
+          } else if (!is.na(final_output$quantification[i,j]) &&final_output$quantification[i,j]>quartile_data[2,j]) {
+            alarmmatrix[i,j]=abs(final_output$quantification[i,j]-quartile_data[2,j])/iqr_data[j]
+          }
+        }
+      }}
+    brks <- seq(0.5,5,len=19)
+    clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
+    {paste0("rgb(255,", ., ",", ., ")")}
 
     #Analysis of difference with expected intensity comparing with another signal from the same metabolite
 
   } else if (validation_type==6) {
 
-  #   relative_intensity = ROI_data[,12]
-  #
-  #   alarmmatrix=final_output$intensity
-  #   alarmmatrix[,]=NA
-  #   ind=unique(ROI_data[,4][duplicated(ROI_data[,4])])
-  #   for (i in seq_along(ind)) {
-  #     ab=which(ROI_data[,4]==ind[i])
-  #     ab2=ab[which.min(colMeans(final_output$fitting_error[,ab],na.rm=T))]
-  #     if (length(ab2)>0) alarmmatrix[,ab]=(final_output$intensity[,ab]/final_output$intensity[,ab2])*relative_intensity[ab]
-  #
-  # }
-    shift=final_output$quantification
-    # shift=shift[,-which(is.na(shift[1,]))]
-    # shift=data.matrix(shift[,-1])
+    relative_intensity = ROI_data[,12]
 
-    for (i in seq(ncol(shift))) {
-      mm=rep(NA,ncol(shift))
-      for (j in 1:ncol(shift)) mm[j]=tryCatch(suppressWarnings(summary(lmrob(shift[,i]~shift[,j]))$sigma),error=function(e)NaN)
-      if (all(is.na(mm))) next
-      def=predict(lmrob(shift[,i]~shift[,order(mm)[1:20]],max.it = 1000))
-      alarmmatrix[,i]=shift[,i]-def
-    }
-    brks <-c(-seq(max(abs(alarmmatrix),na.rm=T), 0, length.out=10),seq(0, max(abs(alarmmatrix),na.rm=T), length.out=10)[-1])
+    alarmmatrix=final_output$intensity
+    alarmmatrix[,]=NA
+    ind=unique(ROI_data[,4][duplicated(ROI_data[,4])])
+    for (i in seq_along(ind)) {
+      ab=which(ROI_data[,4]==ind[i])
+      ab2=ab[which.min(colMeans(final_output$fitting_error[,ab],na.rm=T))]
+      if (length(ab2)>0) alarmmatrix[,ab]=(final_output$intensity[,ab]/final_output$intensity[,ab2])*relative_intensity[ab]
+  }
+    brks <- c(seq(0.25, 1,length.out = 10), seq(1, 4, length.out = 10)[-1])
     clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
     {paste0("rgb(255,", ., ",", ., ")")}
 
-    # brks <- c(seq(0.25, 1,length.out = 10), seq(1, 4, length.out = 10)[-1])
+
+    # shift=final_output$quantification
+    # # shift=shift[,-which(is.na(shift[1,]))]
+    # # shift=data.matrix(shift[,-1])
+    #
+    # for (i in seq(ncol(shift))) {
+    #   mm=rep(NA,ncol(shift))
+    #   for (j in 1:ncol(shift)) mm[j]=tryCatch(suppressWarnings(summary(lmrob(shift[,i]~shift[,j]))$sigma),error=function(e)NaN)
+    #   if (all(is.na(mm))) next
+    #   def=predict(lmrob(shift[,i]~shift[,order(mm)[1:20]],max.it = 1000))
+    #   alarmmatrix[,i]=shift[,i]-def
+    # }
+    # brks <-c(-seq(max(abs(alarmmatrix),na.rm=T), 0, length.out=10),seq(0, max(abs(alarmmatrix),na.rm=T), length.out=10)[-1])
     # clrs <- round(c(seq(40, 255, length.out = (length(brks) + 1)/2),seq(255, 40, length.out = (length(brks) + 1)/2)), 0) %>%
     # {paste0("rgb(255,", ., ",", ., ")")}
   }

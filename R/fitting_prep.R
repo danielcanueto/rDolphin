@@ -75,7 +75,7 @@ fitting_prep = function(Xdata,Ydata,initial_fit_parameters,program_parameters,cr
     for (ss in 1:BGSigNum)
       BGSig_maximums[ss] = min(Ydata[BGleftlimits[ss]:BGrightlimits[ss]])
 
-
+    program_parameters$BG_width=min(initial_fit_parameters$widths)*5
     #Parameters of background signals
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 1] = 0
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 2] = BGSig_maximums

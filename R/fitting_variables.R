@@ -23,8 +23,8 @@ program_parameters$widthtolerance=0.25 #Allowed Variability of halfwidth
 program_parameters$gaussian=0.2 #Allowed Variability of gaussian percentage
 program_parameters$j_coupling_variation=0.2 #Allowed Variability of j-coupling
 program_parameters$BG_gaussian_percentage=0.2 #Allowed gaussian percentage of baseline signals
-program_parameters$BG_width=8 #Halfwidth of baseline signals
-program_parameters$BG_width_tolerance=0.25 #Allowed Variability of halfwidth of baseline signals
+program_parameters$BG_width=8 #Multiplier of half bandwidth of baseline signals respect signals to fit
+program_parameters$BG_width_tolerance=0.1 #Allowed Variability of half bandwidth of baseline signals
 
 #Parameters related to the fitting loop
 program_parameters$errorprov=3 #Percentage limit of fitting error on the ROI. If a lower percentage is reached, the solution is considered optimized and the optimization ends

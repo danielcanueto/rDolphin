@@ -156,10 +156,19 @@ reset("file2")
 	shinyjs::show('autorun')
 	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
-	reactiveprogramdata$autorun_plot$dependencies[[1]]$src$file=reactiveprogramdata$clusterplot$dependencies[[1]]$src$file=reactiveprogramdata$medianplot$dependencies[[1]]$src$file=file.path(system.file(package = "crosstalk"),"lib","jquery")
-	tryCatch({reactiveprogramdata$autorun_plot$dependencies[[2]]$src$file=reactiveprogramdata$clusterplot$dependencies[[2]]$src$file=reactiveprogramdata$medianplot$dependencies[[2]]$src$file=file.path(system.file(package = "crosstalk"),"www")})
-	tryCatch({reactiveprogramdata$autorun_plot$dependencies[[3]]$src$file=reactiveprogramdata$clusterplot$dependencies[[3]]$src$file=reactiveprogramdata$medianplot$dependencies[[3]]$src$file=file.path(system.file(package = "plotly"),"htmlwidgets/lib/typedarray")})
-	output$moreControls <- renderUI({
+	p=plot_ly(x=reactiveprogramdata$imported_data$ppm,y=reactiveprogramdata$dataset)
+	# if (is.null(reactiveprogramdata$autorun_plot$dependencies))
+	  reactiveprogramdata$autorun_plot$dependencies=reactiveprogramdata$clusterplot$dependencies=reactiveprogramdata$medianplot$dependencies=p$dependencies
+# 	  reactiveprogramdata$autorun_plot$dependencies[[1]]=reactiveprogramdata$clusterplot$dependencies[[1]]=reactiveprogramdata$medianplot$dependencies[[1]]=list(version="1.11.3",src=list(file=file.path(system.file(package = "crosstalk"),"lib","jquery")))
+#
+#
+# 	   reactiveprogramdata$autorun_plot$dependencies[[2]]=reactiveprogramdata$clusterplot$dependencies[[2]]=reactiveprogramdata$medianplot$dependencies[[2]]=list(version="1.0.0",src=list(file=file.path(system.file(package = "crosstalk"),"www")))
+#
+# 	  }
+# 	   if (is.null(reactiveprogramdata$autorun_plot$dependencies[[3]])) {
+# 	     reactiveprogramdata$autorun_plot$dependencies[[3]]=reactiveprogramdata$clusterplot$dependencies[[3]]=reactiveprogramdata$medianplot$dependencies[[3]]=list(version="0.1",src=list(file=file.path(system.file(package = "plotly"),"htmlwidgets/lib/typedarray")))
+# }
+	 	output$moreControls <- renderUI({
 	  if (reactiveprogramdata$beginning==T)  {
 	    print("Done!")
 
