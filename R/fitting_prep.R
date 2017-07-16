@@ -75,7 +75,7 @@ fitting_prep = function(Xdata,Ydata,initial_fit_parameters,program_parameters,cr
     for (ss in 1:BGSigNum)
       BGSig_maximums[ss] = min(Ydata[BGleftlimits[ss]:BGrightlimits[ss]])
 
-    program_parameters$BG_width=min(initial_fit_parameters$widths)*5
+    BG_width=max(min(initial_fit_parameters$widths,na.rm=T)*program_parameters$BG_width_factor,program_parameters$BG_width)
     #Parameters of background signals
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 1] = 0
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 2] = BGSig_maximums
@@ -85,9 +85,8 @@ fitting_prep = function(Xdata,Ydata,initial_fit_parameters,program_parameters,cr
     #                                                                     program_parameters$freq) * 10
     # FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 6] = (1.5 /
     #                                                                      program_parameters$freq) * 15
-    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 5] = program_parameters$BG_width-program_parameters$BG_width*program_parameters$BG_width_tolerance
-    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 6] = program_parameters$BG_width+program_parameters$BG_width*program_parameters$BG_width_tolerance
-
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 5] = BG_width*(1-program_parameters$BG_width_tolerance)
+    FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 6] = BG_width*(1+program_parameters$BG_width_tolerance)
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 7] = 0
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 8] = program_parameters$BG_gaussian_percentage
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix), 9] = 0

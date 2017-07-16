@@ -51,6 +51,8 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   wer2=(0.5-cumulative_area[wer[1]])/diff(cumulative_area[wer])
   if (wer[1]==wer[2]) wer2=0
   results_to_save$shift = Xdata[wer[1]]-wer2*diff(Xdata[wer])
+  if(results_to_save$shift == Inf) results_to_save$shift=mean(Xdata)
+
 
 p=''
 if (interface=='T') {

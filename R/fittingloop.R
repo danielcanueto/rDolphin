@@ -180,12 +180,12 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
 
     fitted_signals = signal_fitting(signals_parameters,
                                     Xdata,multiplicities,roof_effect,program_parameters$freq)
-for (i in signals_to_fit)    {
-  aa=peakdet(fitted_signals[i,],0.00001)$maxtab$pos
-  if (length(aa)==0) next
-  bb=min(Ydata[aa]-colSums(fitted_signals[,aa,drop=F]))
-  if (bb<0) signals_parameters[which(seq_along(lb)%%5==1)[i]]=max(signals_parameters[which(seq_along(lb)%%5==1)[i]]+bb,0)
-}
+# for (i in signals_to_fit)    {
+#   aa=peakdet(fitted_signals[i,],0.00001)$maxtab$pos
+#   if (length(aa)==0) next
+#   bb=min(Ydata[aa]-colSums(fitted_signals[,aa,drop=F]))
+#   if (bb<0) signals_parameters[which(seq_along(lb)%%5==1)[i]]=max(signals_parameters[which(seq_along(lb)%%5==1)[i]]+bb,0)
+# }
 
   bins=c()
     for (ind in signals_to_fit) {
@@ -286,8 +286,8 @@ for (i in signals_to_fit)    {
         #Creation of rows to incorporate to FeaturesMatrix
          if (nrow(valid_residual_peaks)>0) {
            dummy = t(replicate(nrow(valid_residual_peaks),FeaturesMatrix[1,]))
-          dummy[, 1] = Ydata[valid_residual_peaks[, 1]]
-        dummy[, 3] = Xdata[valid_residual_peaks[, 1]] - 0.001
+           dummy[, 2] = Ydata[valid_residual_peaks[, 1]]
+           dummy[, 3] = Xdata[valid_residual_peaks[, 1]] - 0.001
         dummy[, 4] = Xdata[valid_residual_peaks[, 1]] + 0.001
         dummy[, 5]=min(FeaturesMatrix[,5])
         dummy[, 6]=min(FeaturesMatrix[,6])

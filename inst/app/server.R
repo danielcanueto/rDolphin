@@ -463,8 +463,8 @@ observeEvent(input$folder, {
       #reactivequantdata$stop3=1
       reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
-      ind=which(reactiveROItestingdata$ROI_par[,5]==1)+3
-
+      ind=which(reactiveROItestingdata$ROIpar[,5]==1)+3
+      
       rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[ind]
       # ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
 
