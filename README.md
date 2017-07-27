@@ -2,7 +2,7 @@
 
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages("devtools"))`    #installation of package necessary to install rDolphin from Github
+1. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
 2. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
 3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
 4. `library(rDolphin)`          #loads rDolphin
