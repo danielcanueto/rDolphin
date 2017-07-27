@@ -51,7 +51,7 @@ server = function(input, output,session) {
 	reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=reactiveprogramdata$imported_data$ROI_data
 	reactiveprogramdata$list=seq(nrow(reactiveprogramdata$ROI_data))
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
-	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect","Relative intensity")
+	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect")
 	reactiveprogramdata$validation_data=list(alarmmatrix=reactiveprogramdata$final_output)
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
 	print('Automatic quantification of model spectrum not possible.')
@@ -138,7 +138,7 @@ reset("file2")
       print('Not possible to load the session. Please revise your choice.')
       return(NULL)
     })
-    colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect","Relative intensity")
+    colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect")
 if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,input$select_validation)
 
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
@@ -663,7 +663,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
   observeEvent(input$add_signal, {
     tryCatch({
-      dummy=c(rep(NA,4),apply(reactiveprogramdata$ROI_data_check[,5:12],2,function(x)median(x,na.rm=T)))
+      dummy=c(rep(NA,4),apply(reactiveprogramdata$ROI_data_check[,5:11],2,function(x)median(x,na.rm=T)))
       reactiveprogramdata$ROI_data_check=rbind(reactiveprogramdata$ROI_data_check,dummy)
     }, error = function(e) {
       print('Error. Please explain the issue in the Github page.')
