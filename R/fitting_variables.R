@@ -15,7 +15,7 @@ fitting_variables = function(parameter_change =list()) {
 
   program_parameters=list()
 
-  program_parameters$spectrum_borders=c(12,-0.5)
+  program_parameters$spectrum_borders=c(10,-0.5)
 
 
   program_parameters$BGdensity=70 #Density of signals to prepare abaseline below the signals to fit

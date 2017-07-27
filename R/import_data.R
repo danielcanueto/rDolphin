@@ -58,10 +58,9 @@ import_data = function(parameters_path) {
 
 #Creation of repository adapted to biofluid
   repository=data.frame(data.table::fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
-  biofluid_column=which(colnames(repository)==biofluid)
-  repository=repository[!is.na(repository[,biofluid_column]),]
-  repository=repository[repository[,biofluid_column]>0,]
-  repository=repository[sort(repository[,biofluid_column],decreasing = T,index.return=T)$ix,c(1:3,5:7,biofluid_column)]
+  biofluid_column=which(gsub('.conc.','',colnames(repository))==biofluid)
+  repository=repository[repository[,biofluid_column]!=0,]
+  repository=repository[order(repository[,biofluid_column],decreasing = T),c(1:3,5:7,biofluid_column+c(0,12))]
 
 
 

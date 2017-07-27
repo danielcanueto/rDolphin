@@ -13,8 +13,6 @@ URL: http://github.com/danielcanueto/rDolphin
 BugReports: http://github.com/danielcanueto/rDolphin/issues
 Depends:
    R (>= 3.3.0)
-Suggests:
-  R (== 3.3.3)
 Imports:
 	minpack.lm,
 	shinyjs,
@@ -34,7 +32,6 @@ Imports:
 	gridExtra,
 	stringr,
 	robustbase,
-	D3TableFilter,
 	MassSpecWavelet,
 	SparseM,
 	speaq

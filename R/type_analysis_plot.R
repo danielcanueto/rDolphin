@@ -56,6 +56,6 @@ print(p)
   data=as.data.frame(scale(data))
 ind=apply(data,2,function(x)!all(is.na(x)))
 data=data[,ind]
-heatmaply::heatmaply(data[seq(nrow(data)),])
+heatmaply::heatmaply(data) %>% layout(height=1000,width=1000)
 })
 }

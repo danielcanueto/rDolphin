@@ -1,7 +1,6 @@
 library(shiny)
 library(plotly)
 library(DT)
-library(D3TableFilter)
 library(shinyjs)
 
 shinyUI(fluidPage(
@@ -40,21 +39,17 @@ shinyUI(fluidPage(
                                     div(dataTableOutput("sp"), style = "font-size:80%")
   ))),
                        #Second tab
-                       tabPanel("ROI Profiles",value = "tab2",
-                                fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
-
-                                         selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
-                                         plotlyOutput(outputId = "roi_profiles_plot"),
-                                         fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters."))),
-
-                                                  div(dataTableOutput("repository2"), style = "font-size:80%"),
-                                                  fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
-
-                                                           actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("open_hmdb_url", label = "Open signal HMDB website"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Confirm changes"),
-
-                                                           div(d3tfOutput('roi_profiles',width = "100%", height = "auto"), style = "font-size:80%")
-                                                  ),
-    #Third tab
+tabPanel("ROI Profiles",value = "tab2",
+  fluidRow(column(width = 12, h4("Here you can visually analyze the dataset characteristic traits."))),
+           selectInput("roi_profile_option",label="Select a possibility",choices=c('Exemplars'=1,'Median spectrum for each kind of sample'=2),selected=1),
+           plotlyOutput(outputId = "roi_profiles_plot"),
+           fluidRow(column(width = 12, h4("Here you have a HMDB repository to help with the identification of signals and the choice of ROI parameters."))),
+          div(dataTableOutput("repository2"), style = "font-size:80%"),
+          fluidRow(column(width = 12, h4("Here you have the current ROI profiles. They can be edited to optimize the profiling."))),
+                   actionButton("add_hmdb_signal", label = "Add signal from repository"),actionButton("open_hmdb_url", label = "Open signal HMDB website"),actionButton("add_signal", label = "Add signal"),actionButton("remove_signal", label = "Remove signal"),actionButton("save_changes", label = "Confirm changes"),
+  div(dataTableOutput("roi_profiles"), style = "font-size:80%")
+          ),
+#Third tab
     tabPanel("Individual Quantification",value = "tab3",
       fluidRow(column(width = 12, h4("Here you can supervise the ROI profiles to edit them before the automatic profiling. Here you can also see loaded quantifications on 'Quantifiction validation' tab and optimize them if necessary."))),
       sidebarLayout(
@@ -73,14 +68,14 @@ shinyUI(fluidPage(
        mainPanel(
           plotlyOutput("plot",height = "250px"),
 		  fluidRow(column(width = 12, h4("Here you have some indicators of the quantification."))),
-          div(d3tfOutput('qualitypar',width = "100%", height = "auto"), style = "font-size:80%"),
+          div(dataTableOutput('qualitypar',width = "100%", height = "auto"), style = "font-size:80%"),
           fluidRow(column(width = 12, h4("You can edit the ROI Profile and quantify it"))),
-          div(d3tfOutput('ROIdata',width = "100%", height = "auto"), style = "font-size:80%"),
+          div(dataTableOutput('ROIdata'), style = "font-size:80%"),
           fluidRow(column(width = 12, h4("Here you can see the signals in the HMDB Repository located at the same zone of the spectrum, selected by biofluid."))),
           div(dataTableOutput("repository"), style = "font-size:80%"),
           fluidRow(column(width = 12, h4("You can directly edit the signals parameters if you are not satisfied with the calculated parameters."))),
           actionButton("direct_edition", label = "Direct edition"),
-          div(d3tfOutput('directedition',width = "100%", height = "auto"), style = "font-size:80%"),
+          div(dataTableOutput('directedition'), style = "font-size:80%"),
           fluidRow(column(width = 12, h4("If you have selected to upload a 2D file, you can watch it here."))),
           div(style="display:inline-block",uiOutput('jres_plot'))
 
@@ -91,7 +86,7 @@ shinyUI(fluidPage(
     #Fourth tab
     tabPanel("Quantification Validation",value = "tab4",
       fluidRow(column(width = 12, h4("Here you have some indicators of quality for every quantification. Press one cell to analyze the quantification."))),
-      selectInput("select_validation",label=NULL,choices=c('Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Outliers'=5,'Relative Intensity'=6),selected=NULL),
+      selectInput("select_validation",label=NULL,choices=c('Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Intensity'=5),selected=NULL),
       div(dataTableOutput("fit_selection"), style = "font-size:80%")
     ),
 
@@ -113,7 +108,7 @@ shinyUI(fluidPage(
                   div(style="display: inline-block;vertical-align:top; width: 150px;",selectInput("stocsy",label="Select a possibility",choices=c('Exemplars'=1,'Run STOCSY'=2),selected=1)),
       plotlyOutput(outputId = "stocsy_plot"),
       fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals."))),
-      plotlyOutput(outputId = "dendheatmapareadata"),
+      plotlyOutput(outputId = "dendheatmapareadata",height="1100px"),
       fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical shift, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapshiftdata"))
   )))
