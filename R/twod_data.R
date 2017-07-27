@@ -46,7 +46,7 @@ close(readCon)
 data <- data / (2^-storedpars$NC_proc)
 
 interp2d <- function(old, newx, newy) {
-  interp.surface.grid(list(x=seq(nrow(old)),y=seq(ncol(old)),z=old),
+  fields::interp.surface.grid(list(x=seq(nrow(old)),y=seq(ncol(old)),z=old),
     list(x=seq(1,nrow(old),length=newx),
       y=seq(1,ncol(old),length=newy)))$z
 }

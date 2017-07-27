@@ -4,10 +4,10 @@
 \alias{validation}
 \title{Creation of matrix to validate quantifications, with information of difference with predicted shift, signal to total area ratio, fitting error, and difference with expected relative intensity}
 \usage{
-validation(final_output, validation_type, ROI_data, metadata)
+validation(final_output, alarmmatrix, validation_type)
 }
 \arguments{
-\item{final_output}{List with quantifications and indicators of quality of quantification.}
+\item{alarmmatrix}{List with quantifications and indicators of quality of quantification.}
 
 \item{validation_type}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)}
 
@@ -24,5 +24,5 @@ Creation of matrix to validate quantifications, with information of difference w
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 load("MTBLS242_subset_example.RData")
-validation_data=validation(quantification_variables$final_output,5,imported_data$ROI_data,imported_data$Metadata)
+validation_data=validation(quantification_variables$alarmmatrix,5,imported_data$ROI_data,imported_data$Metadata)
 }

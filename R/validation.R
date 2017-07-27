@@ -1,20 +1,17 @@
 #' Creation of matrix to validate quantifications, with information of difference with predicted shift, signal to total area ratio, fitting error, and difference with expected relative intensity
 #'
+#' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param alarmmatrix List with quantifications and indicators of quality of quantification.
 #' @param validation_type Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)
-#' @param ROI_data ROIs data
-#' @param metadata Dataset metadata
 #'
 #' @return Matrix with data required
 #' @export validation
 #' @import randomForest
-#' @import robustbase
-#'
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' load("MTBLS242_subset_example.RData")
-#' validation_data=validation(quantification_variables$alarmmatrix,5,imported_data$ROI_data,imported_data$Metadata)
+#' validation_data=validation(quantification_variables$final_output,quantification_variables$alarmmatrix,5)
 
 
 

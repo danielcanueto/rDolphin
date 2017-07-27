@@ -17,7 +17,6 @@ Imports:
 	minpack.lm,
 	shinyjs,
 	reshape2,
-	robust,
 	data.table,
 	plotly,
 	DT,
@@ -26,14 +25,13 @@ Imports:
 	baseline,
 	apcluster,
 	missForest,
-	mclust,
 	heatmaply,
 	ggplot2,
 	gridExtra,
 	stringr,
-	robustbase,
 	MassSpecWavelet,
-	SparseM,
-	speaq
+	speaq,
+	knitr,
+	rmarkdown
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown

@@ -1,17 +1,11 @@
 # rDolphin
 
-## Note: it seems R 3.4.0 is experimenting problems to install several packages in some computers (example here: https://github.com/tidyverse/dplyr/issues/1433). Problem will be patched in next 3.4 release: https://www.mail-archive.com/r-help@r-project.org/msg243256.html. Use of 3.3 releases is recommended until 3.4 bugs are solved.
-
-
-
-
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages(c("devtools","knitr","rmarkdown","miniUI","curl","mQTL","rprojroot","evaluate","yaml","shiny","spam","maps","gtable","scales","dendextend","base64enc","dplyr","doSNOW","purrr","tidyr","viridisLite","seriation","randomForest","itertools","TSP","fit.models","rrcov","DEoptimR"))`               #installation of packages necessary in next steps, as well as installation of all dependencies from packages called by rDolphin not adequately installed by install_github 
-2. `devtools::install_github("ThomasSiegmund/D3TableFilter")`             #installs D3TableFilter 
-3. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
-4. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
-5. `library(rDolphin)`          #loads rDolphin
+1. `install.packages("devtools"))`    #installation of package necessary to install rDolphin from Github
+2. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
+3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+4. `library(rDolphin)`          #loads rDolphin
 
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 
@@ -38,8 +32,6 @@ A vignette is available for the use of functions outside the GUI and can be run 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331878/df9d5ca8-28e4-11e7-99d4-9bd89e3d8174.png)
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331882/dfa16046-28e4-11e7-87b0-d10e6a7f71e8.png)
-
-![alt text](https://cloud.githubusercontent.com/assets/21126465/25331883/dfa1f56a-28e4-11e7-923f-792896f612d5.png)
 
 ![alt text](https://cloud.githubusercontent.com/assets/21126465/25331881/dfa12748-28e4-11e7-9932-d120a31cef72.png)
 
