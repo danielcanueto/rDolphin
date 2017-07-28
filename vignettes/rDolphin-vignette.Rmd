@@ -129,12 +129,11 @@ Sometimes with the information contained in the plots or the `final_output` list
 
 The `validation` function allows to analyse possible wrong identifications or quantifications. For example, this:
 ```
-validation_data=validation(quantification_variables$final_output,1,imported_data$ROI_data,imported_data$Metadata)
+validation_data=validation(quantification_variables$final_output,quantification_variables$alarmmatrix,5)
 library(DT)
-DT::datatable(round(validation_data$alarmmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$alarmmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
+datatable(round(validation_data$shownmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$shownmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
 ```
-
-shows the fitting error present in every quantification. The data can be shown with the `datatable` function of `DT` package with the cells with a darker red as the fitting error is higher.
+shows the ratio between expected intensity and calculated intensity in every signal quantification. The data can be shown with the `datatable` function of `DT` package with the cells with a darker red as the fitting error is higher.
     
 	
 ## Uni and multivariate analysis of fingerprinting and profiling data
