@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "for (i in seq_along(millorat$useful_data)) {\n  for (j in seq_along(millorat$useful_data[[i]])) millorat_trampa$useful_data[[i]][[j]]$ROI_profile = savedreactivedata$useful_data[[i]][[j]]$ROI_profile\n    \n}",
+    "created" : 1501305221884.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2973546945",
+    "id" : "2BA324DE",
+    "lastKnownWriteTime" : 3419473789575321445,
+    "last_content_update" : 1501305348801,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

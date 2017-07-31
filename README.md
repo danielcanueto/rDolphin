@@ -5,7 +5,8 @@
 1. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
 2. `source("https://bioconductor.org/biocLite.R"); biocLite("MassSpecWavelet")`            #installs MassSpecWavelet
 3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
-4. `library(rDolphin)`          #loads rDolphin
+4. `devtools::install_github('rstudio/DT@feature/editor')` #installs a special 'DT' version that allows edition of tables
+5. `library(rDolphin)`          #loads rDolphin
 
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 

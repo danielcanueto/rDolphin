@@ -710,11 +710,11 @@ if (length(input$fit_selection_cell_clicked)<1) return()
             #   tre=rownames(new_useful_data[[j]][[i]]$plot_data) %in% paste(reactiveprogramdata$ROI_data[,4],reactiveprogramdata$ROI_data[,5],sep='_')
             #   tre2=paste(reactiveprogramdata$ROI_data[,4],reactiveprogramdata$ROI_data[,5],sep='_') %in% rownames(new_useful_data[[j]][[i]]$plot_data)
             #   rownames(new_useful_data[[j]][[i]]$plot_data)[tre]=paste(reactiveprogramdata$ROI_data_check[reactiveprogramdata$list[tre2],4],reactiveprogramdata$ROI_data_check[tre2,5],sep='_')
-            #   
+            #
             #   new_useful_data[[j]][[i]]$ROI_profile[,4:5]=reactiveprogramdata$ROI_data_check[reactiveprogramdata$list[tre2],4:5]
             #   }
     }}}
-    
+
     reactiveprogramdata$final_output$fitting_error=new_fitting_error
     reactiveprogramdata$final_output$intensity=new_intensity
     reactiveprogramdata$final_output$signal_area_ratio=new_signal_area_ratio
@@ -745,7 +745,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
 
   #ROI Profiles table
-  output$roi_profiles  = DT::renderDataTable(reactiveprogramdata$ROI_data_check, selection = 'multiple', rownames = FALSE,options=list(pageLength = 50,
+  output$roi_profiles  = DT::renderDataTable(reactiveprogramdata$ROI_data_check, selection = 'multiple', rownames = FALSE,options=list(pageLength = 100,
                                              lengthMenu = c(50,100)))
 
   proxy_roi_profiles = dataTableProxy('roi_profiles')
