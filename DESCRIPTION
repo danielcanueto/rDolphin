@@ -36,6 +36,5 @@ Imports:
 	rmarkdown
 Remotes: 
 	github::rstudio/DT@feature/editor,
-	bioc::release/MassSpecWavelet
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown
