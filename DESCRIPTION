@@ -36,5 +36,6 @@ Imports:
 	rmarkdown
 Remotes: 
 	github::rstudio/DT@feature/editor,
+	https://github.com/Bioconductor-mirror/MassSpecWavelet/tree/release-3.5
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown
