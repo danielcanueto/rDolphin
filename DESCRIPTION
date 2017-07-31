@@ -19,7 +19,6 @@ Imports:
 	reshape2,
 	data.table,
 	plotly,
-	DT,
 	shiny,
 	fields,
 	baseline,
@@ -36,6 +35,5 @@ Imports:
 	rmarkdown
 Remotes: 
 	github::rstudio/DT@feature/editor,
-	bioc::3.5/MassSpecWavelet
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown
