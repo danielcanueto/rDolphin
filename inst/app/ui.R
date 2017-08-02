@@ -1,7 +1,7 @@
-library(shiny)
-library(plotly)
-library(DT)
-library(shinyjs)
+suppressMessages(library(shiny))
+suppressMessages(library(plotly))
+suppressMessages(library(DT))
+suppressMessages(library(shinyjs))
 
 shinyUI(fluidPage(
 
@@ -86,7 +86,7 @@ tabPanel("ROI Profiles",value = "tab2",
     #Fourth tab
     tabPanel("Quantification Validation",value = "tab4",
       fluidRow(column(width = 12, h4("Here you have some indicators of quality for every quantification. Press one cell to analyze the quantification."))),
-      selectInput("select_validation",label=NULL,choices=c('Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Intensity'=5),selected=NULL),
+      selectInput("select_validation",label=NULL,choices=c('Choose a method'=0,'Fitting Error'=1,'Signal/total area ratio'=2,'Shift'=3,'Halfwidth'=4,'Intensity'=5),selected=0),
       div(dataTableOutput("fit_selection"), style = "font-size:80%")
     ),
 
