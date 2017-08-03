@@ -473,7 +473,7 @@ observeEvent(input$folder, {
   observeEvent(input$directedition_cell_edit, {
     info = input$directedition_cell_edit
     i = info$row
-    j = info$col + 1
+    j = info$col
     v = info$value
     reactiveROItestingdata$signpar[i, j] <<- DT:::coerceValue(v, reactiveROItestingdata$signpar[i, j])
     replaceData(proxy_directedition, reactiveROItestingdata$signpar, resetPaging = FALSE, rownames = FALSE)
