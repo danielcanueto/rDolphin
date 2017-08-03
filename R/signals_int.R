@@ -61,7 +61,6 @@ fitting_type=ROI_profile[1,3]
         'J_coupling'
          )
 
-
       #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
       dummy = output_generator(
         signals_to_quantify,

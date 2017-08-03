@@ -260,7 +260,11 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
       dim(signals_parameters) = c(5, length(signals_parameters)/5)
       rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling')
       signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
-
+      if (fitting_type == "Clean Fitting") {
+        colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
+      } else {
+        colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
+      }
       #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
       dummy = output_generator(signals_to_quantify,fitted_signals,Ydata_2,Xdata_2,signals_parameters,multiplicities,program_parameters$buck_step)
       if(mean(dummy$output_data$fitting_error[signals_to_quantify])>mean(final_output$fitting_error[spectrum_index,signals_codes[signals_to_quantify]]))next

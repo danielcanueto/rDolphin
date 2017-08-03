@@ -56,8 +56,14 @@ loaded_quantification$ROIpar=ROI_profile
 loaded_quantification$signpar=matrix(NA,2,7)
 colnames(loaded_quantification$signpar)=c("intensity",	"shift",	"half bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
 
-if (!is.null(useful_data[[row]][[col]]$signals_parameters)) loaded_quantification$signpar=t(useful_data[[row]][[col]]$signals_parameters)
-if (is.null(colnames(loaded_quantification$signpar))) colnames(loaded_quantification$signpar)=c(as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',nrow(loaded_quantification$signpar)-3))
+if (!is.null(useful_data[[row]][[col]]$signals_parameters)) {
+  loaded_quantification$signpar=t(useful_data[[row]][[col]]$signals_parameters)
+  if (is.null(rownames(loaded_quantification$signpar))) {
+  if (ROI_profile[1,3]=="Baseline Fitting") {
+    rownames(loaded_quantification$signpar)=c(as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('baseline signal',nrow(loaded_quantification$signpar)-nrow(ROI_profile)))
+  } else {
+    rownames(loaded_quantification$signpar)=as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_'))
+}}}
 
 
 dummy = which(is.na(ROI_data[, 1]))
