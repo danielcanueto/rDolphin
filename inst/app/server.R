@@ -344,7 +344,7 @@ observeEvent(input$folder, {
 
 	#The automatic quantification
     reactivequantdata$method1 <- tryCatch({not_automatic_quant(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveprogramdata$ROIdata_subset,reactiveprogramdata$useful_data,interface=TRUE)}, warning = function(w) {},error=function(e) {
-      print("There was a problem.")
+      print("There was a problem. Check the compatibility between the ROI to fit and the current ROI profiles.")
       return(NULL)
       })
 
@@ -466,7 +466,7 @@ observeEvent(input$folder, {
 
 
   #Direct edition of parameters before quantification
-  output$directedition <-   DT::renderDataTable(reactiveROItestingdata$signpar, selection = 'none', rownames = FALSE)
+  output$directedition <-   DT::renderDataTable(reactiveROItestingdata$signpar, selection = 'none', rownames = T)
 
   proxy_directedition = dataTableProxy('directedition')
 
