@@ -23,9 +23,9 @@ for (i in seq(length(alarmmatrix))) alarmmatrix[[i]][,]=NA
 }
   tec=apply(final_output$half_band_width,2,function(x)!all(is.na(x)))
   final_output$shift[final_output$shift==Inf]=NA
-  final_output$shift=missForest::missForest(final_output$shift)$ximp
-  final_output$half_band_width[,tec]=missForest::missForest(final_output$half_band_width)$ximp
-  final_output$intensity=missForest::missForest(final_output$intensity)$ximp
+  final_output$shift=suppressWarnings(tryCatch(missForest::missForest(lol)$ximp,error=function(e) final_output$shift))
+  final_output$half_band_width[,tec]=suppressWarnings(tryCatch(missForest::missForest(lol)$ximp,error=function(e) final_output$half_band_width[,tec]))
+  final_output$intensity=suppressWarnings(tryCatch(missForest::missForest(lol)$ximp,error=function(e) final_output$intensity))
 
 
   indexes=sapply(seq(ncol(final_output$signal_area_ratio)),function(x)identical(final_output$signal_area_ratio[,x],alarmmatrix$signal_area_ratio[,x]))
