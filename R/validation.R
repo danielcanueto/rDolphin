@@ -6,7 +6,7 @@
 #'
 #' @return Matrix with data required
 #' @export validation
-#' @import randomForest
+#' @import ranger
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
@@ -34,17 +34,17 @@ indexes=which(indexes==F)
   for (i in intersect(ind,indexes)) {
 
     shift3=data.frame(y=final_output$shift[,i],d=final_output$shift[,setdiff(ind,i)])
-    alarmmatrix$shift[,i]=predict(randomForest::randomForest(y~.,data=shift3, importance =TRUE,mtry=5),shift3)-final_output$shift[,i]
+    alarmmatrix$shift[,i]=predict(ranger::ranger(y~.,data=shift3, importance =TRUE,mtry=5),shift3)$predictions-final_output$shift[,i]
   }
   ind=which(apply(final_output$half_band_width,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$half_band_width))
   for (i in intersect(ind,indexes)) {
     shift3=data.frame(y=final_output$half_band_width[,i],d=final_output$half_band_width[,setdiff(ind,i)])
-    alarmmatrix$half_band_width[,i]=predict(randomForest::randomForest(y ~.,data=shift3, importance =TRUE,mtry=5),shift3)/final_output$half_band_width[,i]
+    alarmmatrix$half_band_width[,i]=predict(ranger::ranger(y ~.,data=shift3, importance =TRUE,mtry=5),shift3)$predictions/final_output$half_band_width[,i]
   }
   ind=which(apply(final_output$intensity,2,function(x)length(which(is.na(x))))<0.5*nrow(final_output$intensity))
   for (i in intersect(ind,indexes)) {
     shift3=data.frame(y=final_output$intensity[,i],d=final_output$intensity[,setdiff(ind,i)])
-    alarmmatrix$intensity[,i]=predict(randomForest::randomForest(y~.,data=shift3, importance =TRUE,mtry=5),shift3)/final_output$intensity[,i]
+    alarmmatrix$intensity[,i]=predict(ranger::ranger(y~.,data=shift3, importance =TRUE,mtry=5),shift3)$predictions/final_output$intensity[,i]
   }
 
   alarmmatrix$fitting_error=final_output$fitting_error

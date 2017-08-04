@@ -27,7 +27,7 @@ Imports:
 	missForest,
 	heatmaply,
 	ggplot2,
-	randomForest,
+	ranger,
 	gridExtra,
 	stringr,
 	MassSpecWavelet,
