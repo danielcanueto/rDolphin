@@ -9,7 +9,7 @@ server = function(input, output,session) {
   reactiveROItestingdata <- reactiveValues(signpar = matrix(NA,2,7,dimnames = list(seq(2),c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect"))),qualitypar = matrix(NA,2,3,dimnames=list(seq(2),c('Quantification','fitting_error','signal/total area ratio'))))
   reactivequantdata <- reactiveValues(method1=NA)
  reactiveprogramdata <- reactiveValues(ROIdata_subset=NA,ind=NA,beginning=FALSE,dataset=NA,final_output=list(),useful_data=list(),imported_data=NA,p_value_final=NA,ROI_data=NA,ROI_data_check=NA,info=c(),select_options=NA,new_roi_profile=NA,p=NA,bgColScales=NA,autorun_plot=NA,ROI_names=NA,clusterplot=NA,medianplot=NA,jres_plot=NA)
-
+reac=reactiveValues(cho=NA)
   ## FIRST TAB REACTIVE OUTPUTS
  observe({
    dummy=ifelse(reactiveprogramdata$beginning ==F,0,1)
@@ -252,6 +252,7 @@ observeEvent(input$folder, {
     if (reactiveprogramdata$beginning==FALSE) return()
 	#Splitting of ROI data into individual ROIs to be quantified
     tryCatch({
+      reac$cho=NA
     dummy = which(is.na(reactiveprogramdata$ROI_data[, 1]))
     if (length(dummy)==0) dummy=dim(reactiveprogramdata$ROI_data)[1]+1
     lal=which(duplicated(reactiveprogramdata$ROI_data[-dummy,1:2])==FALSE)
@@ -287,9 +288,12 @@ observeEvent(input$folder, {
       i2 = info2$row
       j2 = info2$col + 1
       v2 = info2$value
-      reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
+      if (!is.na(reac$cho)) {
+        reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
       replaceData(proxy_ROIdata, reactiveprogramdata$ROIdata_subset, resetPaging = FALSE, rownames = FALSE)
-    })
+      }
+      reac$cho=1
+      })
   })
 
   #Selection of spectra, or of cluster or median plots
@@ -534,7 +538,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     #Checks and setting of parameters
     tryCatch({reactiveprogramdata$info=input$fit_selection_cell_clicked
     reactiveprogramdata$ind=reactiveprogramdata$info$row
-
+    reac$cho=NA
+    
     updateSelectInput(session, "select",selected = NULL)
 
     # if (length(reactiveprogramdata$info$row)!=1) return(NULL)
