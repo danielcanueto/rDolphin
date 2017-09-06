@@ -295,7 +295,7 @@ import_data = function(parameters_path) {
   for (i in seq_along(imported_data$useful_data)) imported_data$useful_data[[i]]=vector('list',length(imported_data$signals_codes))
   for (i in seq_along(imported_data$useful_data)) {
     for (j in seq_along(imported_data$useful_data[[i]])) {
-      imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=NULL,program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
+      imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=imported_data$ROI_data[j,],program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
     }}
 
 	# dummy = which(is.na(imported_data$ROI_data[, 1]))

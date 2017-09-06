@@ -44,6 +44,7 @@ reac=reactiveValues(cho=NA)
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
 	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect")
 	reactiveprogramdata$validation_data=list(alarmmatrix=reactiveprogramdata$final_output)
+	reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,1)
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
 	print('Automatic quantification of model spectrum not possible.')
 	})
