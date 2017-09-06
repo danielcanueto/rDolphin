@@ -61,8 +61,8 @@ import_data = function(parameters_path) {
   biofluid_column=which(gsub('.conc.','',colnames(repository))==biofluid)
   if (length(biofluid_column)==0) {
         times=rowSums(repository[,25:36])
-    repository=cbind(repository[order(times,decreasing = T),c(1:3,5:7)],rep(NA,length(times)),times)
-    
+    repository=cbind(repository[order(times,decreasing = T),c(1:3,5:7)],rep(NA,length(times)),times[order(times,decreasing = T)])
+    colnames(repository)[c(7,8)]=c('Conc','Times')
   } else {
   repository=repository[repository[,biofluid_column]!=0,]
   repository=repository[order(repository[,biofluid_column],decreasing = T),c(1:3,5:7,biofluid_column+c(0,12))]
