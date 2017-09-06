@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(XML)\nab=readLines(\"C:/Users/Usuario/Downloads/hmdb_metabolites/hmdb_metabolites.xml\")\nend=which(ab==\"</metabolite>\")\nbeg=which(ab==\"<metabolite>\")\nschei=c('Blood','Urine','Feces','Saliva','Cerebrospinal Fluid (CSF)','Amniotic Fluid','Aqueous Humour','Ascites Fluid','Breast Milk','Lymph','Sweat','Tears')\nsequence=c(seq(1,length(beg),100),length(beg)+1)\ntt=ttt=matrix(0,0,12)\nname=c()\nfor (jj in seq((length(sequence)-1))) {\nac=ab[c(1,2,beg[sequence[jj]]:end[sequence[(jj+1)]-1],length(ab))]\ntree <- xmlTreeParse(ac)\nroot <- xmlRoot(tree)\nacquisition <- xmlElementsByTagName(root, \"metabolite\", recursive = TRUE)\nfor (i in seq(length(acquisition))) {\n  name=c(name,xmlValue(xmlElementsByTagName(acquisition[[i]], \"accession\")[[1]]))\n  acquisition2 <- xmlElementsByTagName(acquisition[[i]], \"normal_concentrations\")\n  acq=sapply(xmlElementsByTagName(acquisition2[[1]], \"biofluid\",recursive = T),xmlValue)\n  acq2=sapply(xmlElementsByTagName(acquisition2[[1]], \"concentration_value\",recursive = T),xmlValue)\n  acq2=as.numeric(sapply(acq2,function(x) tryCatch(strsplit(x, \"[^0-9|.]+\")[[1]][1],error=function(e) NA)))\n  # acq3=sapply(xmlElementsByTagName(acquisition2[[1]], \"subject_age\",recursive = T),xmlValue)\n  # acq4=sapply(xmlElementsByTagName(acquisition2[[1]], \"subject_sex\",recursive = T),xmlValue)\n  # which(acq3=='Adult (>18 years old)')\n  # which(acq4=='Both)\n  tt=rbind(tt,rep(0,12))\n  ttt=rbind(ttt,rep(0,12))\n  lol=which(schei %in% unique(acq)==T)\n  for (iii in lol) {\n  tt[nrow(tt),iii]=mean(acq2[which(acq==schei[iii])],na.rm=T)\n  ttt[nrow(ttt),iii]=length(which(acq==schei[iii]))\n  }}}\nlibrary(readr)\nRepository_29112016 <- as.data.frame(read_csv(\"~/Repository/Repository_29112016.csv\"))\nRepository=cbind(Repository_29112016,matrix(NA,nrow(Repository_29112016),12))\ncolnames(Repository)[13:24]=c('Blood conc.','Urine conc.','Feces conc.','Saliva conc.','Cerebrospinal Fluid (CSF) conc.','Amniotic Fluid conc.','Aqueous Humour conc.','Ascites Fluid conc.','Breast Milk conc.','Lymph conc.','Sweat conc.','Tears conc.')\ncolnames(Repository)[25:36]=c('Blood times','Urine times','Feces times','Saliva times','Cerebrospinal Fluid (CSF) times','Amniotic Fluid times','Aqueous Humour times','Ascites Fluid times','Breast Milk times','Lymph times','Sweat times','Tears times')\nfor (i in seq_along(name)) {\n  ind=which(Repository[,2]==name[i])\n  Repository[ind,13:36]=t(replicate(length(ind),c(tt[i,],ttt[i,])))\n}\ndata.table::fwrite(Repository,file=\"Repository_26_07_2017.csv\")\n",
+    "created" : 1504715444530.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "178820886",
+    "id" : "FDF156D6",
+    "lastKnownWriteTime" : 1501099955,
+    "last_content_update" : 1501099955,
+    "path" : "C:/Users/Usuario/Downloads/xml_conc_extraction.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
