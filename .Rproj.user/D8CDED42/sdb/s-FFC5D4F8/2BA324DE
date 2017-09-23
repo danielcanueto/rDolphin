@@ -1,14 +1,14 @@
 {
     "collab_server" : "",
-    "contents" : "for (i in seq_along(millorat$useful_data)) {\n  for (j in seq_along(millorat$useful_data[[i]])) millorat_trampa$useful_data[[i]][[j]]$ROI_profile = savedreactivedata$useful_data[[i]][[j]]$ROI_profile\n    \n}",
+    "contents" : "library(DT)\noptions(DT.options = list(pageLength = 5))\ndf = as.data.frame(cbind(matrix(round(rnorm(50), 3), 10), sample(0:1, 10, TRUE)))\n\ndatatable(df) %>% formatStyle(\n  'V7',\n  target = 'row',\n  backgroundColor = styleEqual(c(0, 1), c('gray', 'yellow'))\n)\n\nlibrary(shiny)\nlibrary(DT)\nrunApp(\n  list(\n    ui = fluidPage(\n      DT::dataTableOutput(\"test\")\n    ),\n    server = function(input, output, session) {\n      \n      tbl <- reactive({\n        playernumber <- c(40,16,34,13,5,9,22,11)\n        athlete <- c(\"John Resetti\",\"Tom Nook\",\"K.K Slider\",\"Tortimer Montcillo\",\"Booker Wright\",\"Gayle Puffpants\",\"Wolfgang Puck\",\"Agent S\")\n        height <- c(\"5-11\", \"6-4\",\"5-10\",\"6-7\",\"6-10\",\"6-4\",\"6-8\",\"6-9\")\n        position <- c(\"Guard\",\"Forward\",\"Forward\",\"Guard\",\"Center\",\"Center\",\"PG\",\"PG\")\n        status <- c(\"B\",\"S\",\"S\",\"S\",\"S\",\"S\",\"B\",\"B\")\n        roster <- data.frame(playernumber,athlete,height,position,status)\n        names(roster) <- c(\"Player Number\",\"Athlete\",\"Height\",\"Position\",\"Status\")\n        # datatable\n        DT::datatable(roster) %>% formatStyle(1,target=\"row\",color=styleEqual(2:3,c(\"red\",\"red\")))\n      })\n      \n      output$test <- DT::renderDataTable({\n        tbl()\n      })\n    }\n  )\n)",
     "created" : 1501305221884.000,
     "dirty" : true,
     "encoding" : "",
     "folds" : "",
-    "hash" : "2973546945",
+    "hash" : "4242332660",
     "id" : "2BA324DE",
     "lastKnownWriteTime" : 3419473789575321445,
-    "last_content_update" : 1501305348801,
+    "last_content_update" : 1506159327173,
     "path" : null,
     "project_path" : null,
     "properties" : {

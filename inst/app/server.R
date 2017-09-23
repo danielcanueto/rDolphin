@@ -79,9 +79,6 @@ reac=reactiveValues(cho=NA)
 
 	reactiveprogramdata$jres_plot=tryCatch(twod_data(reactiveprogramdata$imported_data$jres_path), error = function(e) NA)
 
-	# if (dummy$beginning==TRUE) {
-	  # plo=names(sapply(dummy, names))
-	  # for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=dummy[[plo[i]]]
 
 	 #Variables that can change during the use of the GUI are separated from 'imported_data'.
 	output$moreControls <- renderUI({
@@ -437,8 +434,11 @@ observeEvent(input$folder, {
 
 
   #Spectra table.
-    output$x1 = tryCatch({DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE)},error=function(e){})
-    # proxy = dataTableProxy('x1')
+  #Spectra table.
+  # output$x1 = tryCatch({DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE)},error=function(e){})
+  tryCatch({
+  output$x1 = DT::renderDataTable(datatable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1))%>% formatStyle(0,target="row",color=styleEqual(1:2,c("red","blue")))
+  )},error=function(e){})
 
 
 
