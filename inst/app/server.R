@@ -194,6 +194,7 @@ observeEvent(input$folder, {
     quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data)
     reactiveprogramdata$final_output=quantification_variables$final_output
     reactiveprogramdata$useful_data=quantification_variables$useful_data
+
     reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,input$select_validation)
 
     },
@@ -359,7 +360,7 @@ observeEvent(input$folder, {
       #reactivequantdata$stop3=1
       reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
-      ind=which(reactiveprogramdata$ROIdata_subset[,5]==1)+3
+      ind=which(reactiveprogramdata$ROIdata_subset[,5]>0)+3
 
       rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[ind]
       if (!is.null(reactivequantdata$method1$signals_parameters)) reactiveROItestingdata$signpar <- t(reactivequantdata$method1$signals_parameters)
@@ -540,7 +541,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
     tryCatch({reactiveprogramdata$info=input$fit_selection_cell_clicked
     reactiveprogramdata$ind=reactiveprogramdata$info$row
     reac$cho=NA
-    
+
     updateSelectInput(session, "select",selected = NULL)
 
     # if (length(reactiveprogramdata$info$row)!=1) return(NULL)
@@ -666,8 +667,10 @@ if (length(input$fit_selection_cell_clicked)<1) return()
         for (k in 1:length(new_useful_data)) {
           for (l in seq_along(inde)) {
             new_useful_data[[k]][[inde[l]]]$ROI_profile[apply(new_useful_data[[k]][[inde[l]]]$ROI_profile[,4:5],1,function(x)identical(paste(x,collapse='_'),paste(knoc[j,],collapse='_'))),4:5]=knoc2[j,]
+            if (!is.null(new_useful_data[[k]][[inde[l]]]$plot_data)) {
             rownames(new_useful_data[[k]][[inde[l]]]$plot_data)=gsub(paste(knoc[j,],collapse='_'),paste(knoc2[j,],collapse='_'),rownames(new_useful_data[[k]][[inde[l]]]$plot_data))
-          }
+            }
+            }
         }
       }
 
@@ -751,7 +754,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
         if (input$stocsy==1) {
           reactiveprogramdata$clusterplot
           } else {
-        STOCSY(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,c(input$left_ppm,input$right_ppm),input$correlation_method)
+        identification_tool(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,c(input$left_ppm,input$right_ppm),input$correlation_method)
           }
         })
   },error=function(e) {return(NULL) })
@@ -780,6 +783,24 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
 }))
 
+  roifunc <- function(ROI_data,Metadata,Experiments) {
+    dummy = which(is.na(ROI_data[, 1]))
+    if (length(dummy)==0) dummy=dim(ROI_data)[1]+1
+    lal=which(duplicated(ROI_data[-dummy,1:2])==F)
+    ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
 
+    ROI_names=paste(ROI_data[ROI_separator[, 1],1],ROI_data[ROI_separator[, 1],2])
+    select_options=seq_along(ROI_names)
+    names(select_options)=ROI_names
+    mm=matrix(NA,2,dim(Metadata)[2])
+    colnames(mm)=colnames(Metadata)
+    spectra=cbind(c('Exemplars','Median Spectrum per group',Experiments),rbind(mm,Metadata))
+    colnames(spectra)=c('spectrum',colnames(mm))
+    dummy=list(select_options=select_options,spectra=spectra)
+    return(dummy)
+  }
 
 }
+
+
+
