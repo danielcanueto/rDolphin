@@ -44,7 +44,7 @@ import_data = function(parameters_path) {
   Metadata=dummy[,-1,drop=F]
 
   #Import of ROI profiles and generation of names and codes of signals
-  ROI_data=try(read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F),silent=T)
+  ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)[,1:11]
   signals_names=paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_')
   signals_codes = 1:length(signals_names)
 

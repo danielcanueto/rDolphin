@@ -220,16 +220,12 @@ autorun = function(imported_data, final_output,useful_data,ROI_data) {
 
 
 
-    print(paste(ROI_profile[1,1], ROI_profile[1,2], sep = '-'))
     hal=final_output$fitting_error[,ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],drop=F]
     hal2=apply(final_output$fitting_error,1,function(x)median(x,na.rm = T))
     hal3=hal/replicate(ncol(hal),hal2)
 
     index_to_use_3=unique(unlist(apply(hal3,2,function(x) which(x %in% boxplot.stats(x)$out==T))))
-    print(length(index_to_use_3))
-    # index_to_use_3=seq(nrow(imported_data$dataset))
-    #Quantification for every spectrum
-    # pb   <- txtProgressBar(1, nrow(imported_data$dataset), style=3)
+    
     for (spectrum_index in index_to_use_3) {
 
       ROI_profile_2=ROI_profile
