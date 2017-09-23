@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(impute)\ndata(khanmiss)\nkhan.expr <- khanmiss[-1, -(1:2)]\n##\n## First example\n##\nif(exists(\".Random.seed\")) rm(.Random.seed)\nkhan.imputed <- impute.knn(as.matrix(khan.expr))\n\n##\n## khan.imputed$data should now contain the imputed data matrix\n## khan.imputed$rng.seed should contain the random number seed used\n## in imputation. In the above invocation, it is the default seed.\n##\nkhan.imputed$rng.seed # should be 362436069\nkhan.imputed$rng.state # should be NULL\n##\n## Second example\n##\nset.seed(12345)\nsaved.state <- .Random.seed\nkhan.imputed <- impute.knn(as.matrix(khan.expr))\n# Assuming all goes well with no guarantees in case of error...\n.Random.seed <- khan.imputed$rng.state\nsum(saved.state - khan.imputed$rng.state) # should be zero!\nsave(khan.imputed, file=\"khanimputation.Rda\")\npredicted_shift=prediction_ranger(ab$final_output$shift)\n\nimputed_shift=predicted_shift\n\nfor (i in seq(ncol(imputed_shift))) {\n  difference=abs(imputed_shift[,i]-ab$final_output$shift[,i])\n  imputed_shift[difference %in% boxplot.stats(difference)$out,i]=NA\n  \n}\nimputed_shift_1 <- impute.knn(as.matrix(imputed_shift))$data\nimputed_shift_2 <- missForest(as.matrix(imputed_shift))$ximp\n\nplot(sort(cor(predicted_shift)))\nlines(sort(cor(imputed_shift_1)),col='red')\nlines(sort(cor(imputed_shift_2)),col='blue')\n\n\n",
+    "created" : 1506152011008.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "639561723",
+    "id" : "9F6AD03D",
+    "lastKnownWriteTime" : 31244212046397487,
+    "last_content_update" : 1506153898221,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

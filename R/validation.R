@@ -21,7 +21,7 @@ if (is.null(alarmmatrix)) {
   alarmmatrix=final_output
 for (i in seq(length(alarmmatrix))) alarmmatrix[[i]][,]=NA
 }
- if (validation_type=="0") validation_type==1
+ if (validation_type=="0") validation_type=1
   tec=apply(final_output$half_band_width,2,function(x)!all(is.na(x)))
   final_output$shift[final_output$shift==Inf]=NA
   final_output$shift=suppressWarnings(tryCatch(missForest::missForest(lol)$ximp,error=function(e) final_output$shift))
