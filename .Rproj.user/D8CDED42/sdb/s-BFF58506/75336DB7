@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1506238548443.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "75336DB7",
+    "lastKnownWriteTime" : 31244173393002613,
+    "last_content_update" : 1506238548443,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "9AD4D2AD",
+        "caption" : "cbind(test$Species, predictions$predict)",
+        "contentUrl" : "grid_resource/gridviewer.html?env=_rs_no_env&obj=&cache_key=9AD4D2AD",
+        "displayedObservations" : 0,
+        "environment" : "_rs_no_env",
+        "object" : "",
+        "preview" : 0,
+        "totalObservations" : 0,
+        "variables" : 2
+    },
+    "relative_order" : 15,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

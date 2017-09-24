@@ -1,11 +1,11 @@
-#' Automatic quantification of signals for all experiments using the information located in the ROI patterns file.
+#' STOCSY or RANSY identification tool.
 #'
 #' @param dataset Dataset
-#' @param ppm ppm
+#' @param ppm ppm axis
 #' @param limits Left and right edges of the region to correlate with the rest of spectrum.
 #' @param method Method ('pearson','spearman','ransy').
 #'
-#' @return identification_tool interactive plot
+#' @return interactive plot
 #' @export identification_tool
 #' @import plotly
 #' @examples
@@ -17,12 +17,7 @@
 
 identification_tool= function(dataset,ppm,limits,method) {
   ROI_buckets = which.min(abs(as.numeric(limits[1])-ppm)):which.min(abs(as.numeric(limits[2])-ppm))
-  # if (ROI_buckets[2]>ROI_buckets[1]) {
-# cor_values=as.vector(cor(rowSums(dataset[,ROI_buckets]),dataset,method=method))
 
-  # } else {
-  #   cor_values=rep(0,length(ppm))
-  # }
   if (method=='ransy') {
     #Loosely based on equivalent function in 'muma' R package
     driver = rowSums(dataset[, ROI_buckets]) %*% matrix(rep(1, ncol(dataset)),nrow=1)
