@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1508579933253.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "38758C84",
+    "lastKnownWriteTime" : 3543890281980456553,
+    "last_content_update" : 1508579933253,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "C05A195A",
+        "caption" : "dades12",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=dades12&cache_key=C05A195A",
+        "displayedObservations" : 146,
+        "environment" : "",
+        "object" : "dades12",
+        "preview" : 0,
+        "totalObservations" : 146,
+        "variables" : 66
+    },
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

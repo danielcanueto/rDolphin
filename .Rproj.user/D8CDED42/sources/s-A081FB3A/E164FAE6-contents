@@ -1,0 +1,88 @@
+
+Country=c(rep("France",length(grep("France",scopus_17_$Affiliations))),
+      rep("China",length(grep("China",scopus_17_$Affiliations))),
+      rep("US",length(grep("United States",scopus_17_$Affiliations))),
+      rep("UK",length(grep("United Kingdom",scopus_17_$Affiliations))),
+      rep("Spain",length(grep("Spain",scopus_17_$Affiliations))),
+      rep("Germany",length(grep("Germany",scopus_17_$Affiliations))),
+      rep("Japan",length(grep("Japan",scopus_17_$Affiliations))),
+      rep("Italy",length(grep("Italy",scopus_17_$Affiliations))))
+
+x <- vector(mode = "list", length = 8)
+for (i in 1:8) {
+
+dale_chall_readability_score=c(foo[grep("France",scopus_17_$Affiliations),i],
+foo[grep("China",scopus_17_$Affiliations),i],
+foo[grep("United States",scopus_17_$Affiliations),i],
+foo[grep("United Kingdom",scopus_17_$Affiliations),i],
+foo[grep("Spain",scopus_17_$Affiliations),i],
+foo[grep("Germany",scopus_17_$Affiliations),i],
+foo[grep("Japan",scopus_17_$Affiliations),i],
+foo[grep("Italy",scopus_17_$Affiliations),i])
+
+
+
+data=data.frame(dale_chall_readability_score,Country)
+x[[i]]=ggplot(data,aes(x=Country,y=dale_chall_readability_score))+geom_boxplot()
+}
+
+
+i=5
+dale_chall_readability_score=c(foo[grep("France",scopus_17_$Affiliations),i],
+                               foo[grep("China",scopus_17_$Affiliations),i],
+                               foo[grep("United States",scopus_17_$Affiliations),i],
+                               foo[grep("United Kingdom",scopus_17_$Affiliations),i],
+                               foo[grep("Spain",scopus_17_$Affiliations),i],
+                               foo[grep("Germany",scopus_17_$Affiliations),i],
+                               foo[grep("Japan",scopus_17_$Affiliations),i],
+                               foo[grep("Italy",scopus_17_$Affiliations),i])
+
+data=data.frame(dale_chall_readability_score,Country)
+x[[i]]=ggplot(data,aes(x=reorder(Country, dale_chall_readability_score, FUN=median),y=dale_chall_readability_score))+geom_boxplot()+
+  labs(x='Country',y='Score',title = "Dale-Chall Readability Score")
+
+i=8
+gunning_fog=c(foo[grep("France",scopus_17_$Affiliations),i],
+                               foo[grep("China",scopus_17_$Affiliations),i],
+                               foo[grep("United States",scopus_17_$Affiliations),i],
+                               foo[grep("United Kingdom",scopus_17_$Affiliations),i],
+                               foo[grep("Spain",scopus_17_$Affiliations),i],
+                               foo[grep("Germany",scopus_17_$Affiliations),i],
+                               foo[grep("Japan",scopus_17_$Affiliations),i],
+                               foo[grep("Italy",scopus_17_$Affiliations),i])
+
+data=data.frame(gunning_fog,Country)
+x[[i]]=ggplot(data,aes(x=reorder(Country, gunning_fog, FUN=median),y=gunning_fog))+geom_boxplot()+
+  labs(x='Country',y='Score',title = "Gunning Fog Score")
+  
+
+i=2
+flesh_kincaid_grade=c(foo[grep("France",scopus_17_$Affiliations),i],
+                  foo[grep("China",scopus_17_$Affiliations),i],
+                  foo[grep("United States",scopus_17_$Affiliations),i],
+                  foo[grep("United Kingdom",scopus_17_$Affiliations),i],
+                  foo[grep("Spain",scopus_17_$Affiliations),i],
+                  foo[grep("Germany",scopus_17_$Affiliations),i],
+                  foo[grep("Japan",scopus_17_$Affiliations),i],
+                  foo[grep("Italy",scopus_17_$Affiliations),i])
+
+data=data.frame(flesh_kincaid_grade,Country)
+x[[i]]=ggplot(data,aes(x=reorder(Country, flesh_kincaid_grade, FUN=median),y=flesh_kincaid_grade))+geom_boxplot()+
+  labs(x='Country',y='Score',title = "Flesh Kincaid Grade Score")
+
+scopus_17_$Abstract[order(foo[,8])[1]]
+scopus_17_$Abstract[order(foo[,8],decreasing=T)[1]]
+scopus_17_$Abstract[order(foo[,5])[1]]
+scopus_17_$Abstract[order(foo[,5],decreasing=T)[1]]
+scopus_17_$Abstract[order(foo[,2])[1]]
+scopus_17_$Abstract[order(foo[,2],decreasing=T)[1]]
+
+i=2
+France=foo[grep("France",scopus_17_$Affiliations),i]
+China=foo[grep("China",scopus_17_$Affiliations),i]
+US=foo[grep("United States",scopus_17_$Affiliations),i]
+UK=foo[grep("United Kingdom",scopus_17_$Affiliations),i]
+Spain=foo[grep("Spain",scopus_17_$Affiliations),i]
+Germany=foo[grep("Germany",scopus_17_$Affiliations),i]
+Japan=foo[grep("Japan",scopus_17_$Affiliations),i]
+lapply(list(France, China,US,UK,Spain,Germany,Japan),median)

@@ -1,0 +1,73 @@
+
+prova_intensity=rf_pred_coward_prova(profiling_names_corrected$final_output$intensity,initial_corrected$ROI_data[,4])$predicted_matrix
+prova_intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]=millorat_cow_5$final_output$intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]
+prova_shift=rf_pred_prova(profiling_names_corrected$final_output$shift)$predicted_matrix
+prova_shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]=millorat_cow_5$final_output$shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]
+prova_width=rf_pred_prova(profiling_names_corrected$final_output$half_band_width)$predicted_matrix
+prova_width[,apply(predicted_width,2,function(x)all(is.na(x)))]=millorat_cow_5$final_output$half_band_width[,apply(predicted_width,2,function(x)all(is.na(x)))]
+
+tec2=sapply(seq(length(prova_intensity)),function(x)sum(peakpvoigt(c(prova_intensity[x],prova_shift[x],prova_width[x]*0.5/600.2,0),initial_corrected$ppm))*initial_corrected$buck_step)
+dim(tec2)=dim(prova_intensity)
+tec2[,apply(tec2,2,function(x)all(is.na(x)))]=millorat_cow_5$final_output$quantification[,apply(tec2,2,function(x)all(is.na(x)))]
+# tec=log10(tec+1)
+toc2=diag(cor(profiling_names_corrected$final_output$quantification[,ind],TIC_normalization2[,ind2] ,method='spearman'))
+toc3=diag(cor(tec2[,ind],TIC_normalization2[,ind2] ,use='pairwise.complete.obs',method='spearman'))
+toc4=diag(cor(tec[,ind],TIC_normalization2[,ind2],method='spearman'))
+toc5=diag(cor(millorat_cow_5$final_output$quantification[,ind],TIC_normalization2[,ind2],method='spearman'))
+
+
+
+# edited_2=ac_quantification
+edited_2=ac$final_output$quantification
+
+for (i in which(ab$ROI_data[,5]>0))  {
+  ind=pal[,i] %in% boxplot.stats(pal[,i])$out
+  edited_2[ind,i]=NA
+}
+
+prova_intensity=predicted_intensity_2
+prova_intensity[,apply(predicted_intensity_2,2,function(x)all(is.na(x)))]=ac$final_output$intensity[,apply(predicted_intensity_2,2,function(x)all(is.na(x)))]
+prova_shift=predicted_shift_2
+prova_shift[,apply(predicted_shift_2,2,function(x)all(is.na(x)))]=ac$final_output$shift[,apply(predicted_shift_2,2,function(x)all(is.na(x)))]
+prova_width=predicted_width_2
+prova_width[,apply(predicted_width_2,2,function(x)all(is.na(x)))]=ac$final_output$half_band_width[,apply(predicted_width_2,2,function(x)all(is.na(x)))]
+
+tec2=sapply(seq(length(prova_intensity)),function(x)sum(peakpvoigt(c(prova_intensity[x],prova_shift[x],prova_width[x]*0.5/600.2,0),ab$ppm))*ab$buck_step)
+dim(tec2)=dim(prova_intensity)
+tec2[,apply(tec2,2,function(x)all(is.na(x)))]=ac$final_output$quantification[,apply(tec2,2,function(x)all(is.na(x)))]
+# tec2=log10(tec2+1)
+
+# asd=order(apply(ac_quantification,2,function(x)mad(x,na.rm=T)/median(x,na.rm=T)))
+# asd2=order(apply(millorat_quantification,2,function(x) median(x,na.rm=T)),na.last=NA)
+asd=order(apply(ac$final_output$quantification,2,function(x)mad(x,na.rm=T)/median(x,na.rm=T)))
+asd2=order(apply(millorat$final_output$quantification,2,function(x) median(x,na.rm=T)),na.last=NA)
+asd3=order(apply(edited_2,2,function(x) median(x,na.rm=T)),na.last=NA)
+asd4=order(apply(tec2,2,function(x) median(x,na.rm=T)),na.last=NA)
+
+asd=asd[asd %in% asd2]
+asd=asd[asd %in% asd3]
+asd=asd[asd %in% asd4]
+
+# dades=100*(apply(edited_2[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+#              apply(ac_quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+# dades2=100*(apply(tec2[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+#               apply(ac_quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+# dades3=100*(apply(millorat_quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+#               apply(ac_quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+dades=100*(apply(edited_2[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+             apply(ac$final_output$quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+dades2=100*(apply(tec2[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+              apply(ac$final_output$quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+dades3=100*(apply(millorat$final_output$quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))/
+              apply(ac$final_output$quantification[,asd],2,function(x)mad(x,na.rm=T)/median(x,na.rm=T))-1)
+
+data=data.frame(x=rep(seq_along(dades),3),y=c(dades,dades2,dades3),
+                z=rep(c('Removal suspicious quantifications',"Quantification edition", 'Profiling reimplementation'),c(length(dades),length(dades2),length(dades3))))
+
+ab5=ggplot(data=data,aes(x=x,y=y,fill=z)) +
+  geom_boxplot()+
+  scale_fill_manual(values=c("Profiling reimplementation"="red", "Removal suspicious quantifications"="blue","Quantification edition"="green")) +
+  
+  labs(x='',y='% variation of CV',title = "Serum dataset") +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),,axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))

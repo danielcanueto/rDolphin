@@ -1,0 +1,42 @@
+rf_pred_prova = function(initial_matrix) {
+
+  lol2=initial_matrix
+  analyzed_signals=which(apply(lol2,2,function(x)! all(is.na(x)))==T)
+  lol2=missForest::missForest(lol2[,analyzed_signals])$ximp
+
+  hent=hent2=hent3=as.data.frame(matrix(NA,nrow(lol2),ncol(lol2)))
+  tel=prcomp(scale(lol2))$x[,1:20]
+
+  for (i in seq(ncol(lol2))) {
+    st=matrix(0,nrow(lol2),0)
+    for (j in 1:10) {
+      samples2=sample(nrow(lol2),0.7*nrow(lol2))
+      model=randomForest::randomForest(x=tel[samples2,],y=lol2[samples2,i],
+                                       xtest=tel[-samples2,],ytest=lol2[-samples2,i],
+                                       keep.forest=T,replace=T,keep.inbag=T)
+      st=cbind(st,predict(model,tel))
+    }
+    st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+    hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+    hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+    hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+  }
+
+
+
+
+if (length(analyzed_signals)<ncol(initial_matrix)) {
+  predicted_matrix=lower_bound_matrix=upper_bound_matrix=matrix(NA,nrow(initial_matrix),ncol(initial_matrix))
+  predicted_matrix[,analyzed_signals]=as.matrix(hent)
+  lower_bound_matrix[,analyzed_signals]=as.matrix(hent2)
+  upper_bound_matrix[,analyzed_signals]=as.matrix(hent3)
+
+} else {
+  predicted_matrix=hent
+  lower_bound_matrix=hent2
+  upper_bound_matrix=hent3
+
+}
+  output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
+return(output)
+}

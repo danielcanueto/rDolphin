@@ -1,0 +1,51 @@
+at1=system.time({forl=matrix(NA,nrow(profiling_names_corrected$final_output$shift),ncol(profiling_names_corrected$final_output$shift))
+ind=which(apply(profiling_names_corrected$final_output$shift,2,function(x)all(is.na(x)))==F)
+h2o.init()
+for (i in ind) {
+  samples=sample(146,90)
+  train <- as.h2o(data.frame(y=profiling_names_corrected$final_output$shift[samples,i],profiling_names_corrected$final_output$shift[samples,setdiff(ind,i)]))
+  test <- as.h2o(data.frame(y=profiling_names_corrected$final_output$shift[-samples,i],profiling_names_corrected$final_output$shift[-samples,setdiff(ind,i)]))
+  toc <- as.h2o(data.frame(y=profiling_names_corrected$final_output$shift[,i],profiling_names_corrected$final_output$shift[,setdiff(ind,i)]))
+  aml <- h2o.automl(x = setdiff(names(train), "y"), y = "y",
+                    training_frame = train,
+                    leaderboard_frame = test,
+                    max_runtime_secs = 30)
+  forl[,i]=as.vector(predict(aml,toc))
+  h2o.removeAll()
+  
+}})
+
+at2=system.time({forl2=matrix(NA,nrow(profiling_names_corrected$final_output$half_band_width),ncol(profiling_names_corrected$final_output$half_band_width))
+ind=which(apply(profiling_names_corrected$final_output$half_band_width,2,function(x)all(is.na(x)))==F)
+for (i in ind) {
+  samples=sample(146,90)
+  
+  train <- as.h2o(data.frame(y=profiling_names_corrected$final_output$half_band_width[samples,i],profiling_names_corrected$final_output$half_band_width[samples,setdiff(ind,i)]))
+  test <- as.h2o(data.frame(y=profiling_names_corrected$final_output$half_band_width[-samples,i],profiling_names_corrected$final_output$half_band_width[-samples,setdiff(ind,i)]))
+  toc <- as.h2o(data.frame(y=profiling_names_corrected$final_output$half_band_width[,i],profiling_names_corrected$final_output$half_band_width[,setdiff(ind,i)]))
+  aml <- h2o.automl(x = setdiff(names(train), "y"), y = "y",
+                    training_frame = train,
+                    leaderboard_frame = test,
+                    max_runtime_secs = 30)
+  forl2[,i]=as.vector(predict(aml,toc))
+  h2o.removeAll()
+  
+}})
+
+at3=system.time({forl3=matrix(NA,nrow(profiling_names_corrected$final_output$intensity),ncol(profiling_names_corrected$final_output$intensity))
+ind=which(apply(profiling_names_corrected$final_output$intensity,2,function(x)all(is.na(x)))==F)
+for (i in ind) {
+  samples=sample(146,90)
+  lolo=which(initial_corrected$ROI_data[,4]==initial_corrected$ROI_data[i,4])
+  if (length(lolo)==1) next
+  train <- as.h2o(data.frame(y=profiling_names_corrected$final_output$intensity[samples,i],profiling_names_corrected$final_output$intensity[samples,setdiff(lolo,i)]))
+  test <- as.h2o(data.frame(y=profiling_names_corrected$final_output$intensity[-samples,i],profiling_names_corrected$final_output$intensity[-samples,setdiff(lolo,i)]))
+  toc <- as.h2o(data.frame(y=profiling_names_corrected$final_output$intensity[,i],profiling_names_corrected$final_output$intensity[,setdiff(lolo,i)]))
+  aml <- h2o.automl(x = setdiff(names(train), "y"), y = "y",
+                    training_frame = train,
+                    leaderboard_frame = test,
+                    max_runtime_secs = 30)
+  forl3[,i]=as.vector(predict(aml,toc))
+  h2o.removeAll()
+  
+}})

@@ -1,0 +1,400 @@
+
+
+metadata=factor(rep(c("Original","Profiling reimplementation"),c(length(dades6),length(dades5))),levels =c("Original","Profiling reimplementation") )
+data=data.frame(shift=c(dades6,dades5),metadata=metadata)
+p10 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin(alpha=0.5)+
+  scale_fill_manual(values=c("Original"="yellow","Profiling reimplementation"="red")) +
+  scale_y_continuous(limits=c(0,3))+
+  labs(title='Spearman correlation between quantifications of metabolites in MS and NMR data',
+       y="rho",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+
+
+
+
+set.seed(1);samples2=sample(nrow(acv),0.5*nrow(acv))
+lac=randomForest::randomForest(x=acv[samples2,-i],y=acv[samples2,i],xtest=acv[-samples2,-i],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+var_hat <- randomForestCI::randomForestInfJack(lac, acv[,-i], calibrate = TRUE)
+df <- data.frame(y = acv[,i], var_hat)
+df <- dplyr::mutate(df, se = sqrt(var.hat))
+library(ggplot2)
+p1 <- ggplot(df, aes(x = y, y = y.hat))
+p1 + geom_errorbar(aes(ymin=y.hat-se, ymax=y.hat+se), width=.00001) +
+geom_abline(intercept=0, slope=1, linetype=2) +
+geom_point() +
+xlab("Reported Chemical shift") +
+ylab("Predicted Chemical shift") +
+ggtitle("Error Bars for Random Forests")
+
+var_hat <- rfPredVar(lac,rf.data=acv[,-i], ,CI=TRUE,tree.type='rf')
+
+
+ a <- var_hat$y.hat[1]
+ s <- sqrt(var_hat$var.hat[1])
+ n <- i7
+ error <- qnorm(0.975)*s/sqrt(n)
+ left <- a-error
+ right <- a+error
+ left
+ right
+ 
+ 
+ acv=profiling_names_corrected$final_output$half_band_width[,!is.na(profiling_names_corrected$final_output$half_band_width[1,])]
+ ind=which(apply(profiling_names_corrected$final_output$fitting_error[,!is.na(profiling_names_corrected$final_output$half_band_width[1,])],2,median)<0.05)
+ # acv2
+ hent=hent2=hent3=matrix(NA,nrow(acv),ncol(acv))
+ for (i in 1:ncol(acv)) {
+   st=matrix(0,nrow(acv),0)
+   for (j in 1:10) {
+ samples2=sample(nrow(acv),0.7*nrow(acv))
+ # lac=randomForest::randomForest(x=acv[samples2,-i],y=acv[samples2,i],xtest=acv[-samples2,-i],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+ # st=cbind(st,predict(lac,acv[,-i],predict.all = T)$individual)
+ lac=randomForest::randomForest(x=acv[samples2,setdiff(ind,i)],y=acv[samples2,i],xtest=acv[-samples2,setdiff(ind,i)],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+ st=cbind(st,predict(lac,acv[,setdiff(ind,i)]))
+ # st=cbind(st,predict(lac,acv[,-i]))
+   }
+  st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+   hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+ hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+ hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ }
+ df=data.frame(y=acv[,14],y.hat=hent[,14],se1=hent2[,14],se2=hent3[,14])
+ p1 <- ggplot(df, aes(x = y, y = y.hat))
+ p1 + geom_errorbar(aes(ymin=se1, ymax=se2), width=.00001) +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   geom_point() +
+   xlab("Reported Chemical shift") +
+   ylab("Predicted Chemical shift") +
+   ggtitle("Error Bars for Random Forests")
+ 
+ 
+ st=matrix(0,nrow(acv),0)
+ tel=prcomp(acv[,c(14,16)])$x[,1:2]
+ for (j in 1:10) {
+   samples2=sample(nrow(acv),0.7*nrow(acv))
+   
+   lac=randomForest::randomForest(x=tel[samples2,],y=acv[samples2,14],xtest=tel[-samples2,],ytest=acv[-samples2,14],keep.forest=T,keep.inbag=T,replace=T)
+   st=cbind(st,predict(lac,tel))
+ }
+ st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+ hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+ hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+ hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ 
+ 
+ st=matrix(0,nrow(acv),0)
+ tel=prcomp(acv[,c(14,16)])$x
+ for (j in 1:10) {
+   samples2=sample(nrow(acv),0.7*nrow(acv))
+   
+   lac=randomForest::randomForest(x=tel[samples2,],y=acv[samples2,14],xtest=tel[-samples2,],ytest=acv[-samples2,14],keep.forest=T,keep.inbag=T,replace=T)
+   st=cbind(st,predict(lac,tel))
+ }
+ st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+ hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+ hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+ hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ 
+ tel=prcomp(scale(acv))$x[,1:20]
+ hent=hent2=hent3=matrix(NA,nrow(acv),ncol(acv))
+ for (i in 1:ncol(acv)) {
+   st=matrix(0,nrow(acv),0)
+   for (j in 1:10) {
+     samples2=sample(nrow(acv),0.7*nrow(acv))
+     # lac=randomForest::randomForest(x=acv[samples2,-i],y=acv[samples2,i],xtest=acv[-samples2,-i],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+     # st=cbind(st,predict(lac,acv[,-i],predict.all = T)$individual)
+     lac=randomForest::randomForest(x=tel[samples2,],y=acv[samples2,i],xtest=tel[-samples2,],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+     st=cbind(st,predict(lac,tel))
+     # st=cbind(st,predict(lac,acv[,-i]))
+   }
+   st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+   hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+   hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+   hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ }
+ 
+ st=matrix(0,nrow(acv),0)
+ tel=prcomp(acv[,c(14,16)])$x
+ for (j in 1:10) {
+   samples2=sample(nrow(acv),0.7*nrow(acv))
+   
+   lac=randomForest::randomForest(x=tel[samples2,],y=acv[samples2,14],xtest=tel[-samples2,],ytest=acv[-samples2,14],keep.forest=T,keep.inbag=T,replace=T)
+   st=cbind(st,predict(lac,tel))
+ }
+ 
+ st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+ hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+ hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+ hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ 
+ hent=hent2=hent3=matrix(NA,nrow(acv),ncol(acv))
+ for (i in 1:ncol(acv)) {
+   st=matrix(0,nrow(acv),0)
+   for (j in 1:10) {
+     samples2=sample(nrow(acv),0.7*nrow(acv))
+     
+     # lac=randomForest::randomForest(x=acv[samples2,-i],y=acv[samples2,i],xtest=acv[-samples2,-i],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+     # st=cbind(st,predict(lac,acv[,-i],predict.all = T)$individual)
+     lac=randomForest::randomForest(x=tel[samples2,],y=acv[samples2,i],xtest=tel[-samples2,],ytest=acv[-samples2,i],keep.forest=T,keep.inbag=T,replace=T)
+     st=cbind(st,predict(lac,tel))
+     # st=cbind(st,predict(lac,acv[,-i]))
+   }
+   st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,]),sd(st[x,]))))
+   hent[,i]=apply(st,1,function(x)quantile(x,0.5))
+   hent2[,i]=apply(st,1,function(x)quantile(x,0.025))
+   hent3[,i]=apply(st,1,function(x)quantile(x,0.975))
+ }
+ 
+ 
+ predicted_shift=millorat_cow_7$predicted_shift
+ predicted_width=millorat_cow_7$predicted_width
+ predicted_width[,apply(predicted_width,2,function(x)length(unique(x)))==1]=NA
+ predicted_intensity=millorat_cow_7$predicted_intensity
+ 
+ prova_intensity=predicted_intensity
+ prova_intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]=millorat_cow_7$final_output$intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]
+ prova_shift=predicted_shift
+ prova_shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]=millorat_cow_7$final_output$shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]
+ prova_width=predicted_width
+ prova_width[,apply(predicted_width,2,function(x)all(is.na(x)))]=millorat_cow_7$final_output$half_band_width[,apply(predicted_width,2,function(x)all(is.na(x)))]
+ 
+ tec2=sapply(seq(length(prova_intensity)),function(x)sum(peakpvoigt(c(prova_intensity[x],prova_shift[x],prova_width[x]*0.5/600,2,0),initial_corrected$ppm))*initial_corrected$buck_step)
+ dim(tec2)=dim(prova_intensity)
+ tec2[,apply(tec2,2,function(x)all(is.na(x)))]=millorat_cow_7$final_output$quantification[,apply(tec2,2,function(x)all(is.na(x)))]
+ # tec2=log10(tec2+1)
+ 
+ 
+ 
+ 
+ 
+ j=16
+ i=order(millorat_cow_7$final_output$quantification[,j]/profiling_names_corrected$final_output$quantification[,j],decreasing=T)[6]
+ df <- data.frame(y= profiling_names_corrected$final_output$shift[,j], y.hat= predicted_shift[,j],
+                  min.se=millorat_cow_7$min_shift[,j],
+                  max.se=millorat_cow_7$max_shift[,j])
+ p1 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained chemical shift") +
+   ylab("Predicted chemical shift") +
+   ggtitle("Prediction of chemical shift")
+ p1=p1+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ df <- data.frame(y= profiling_names_corrected$final_output$half_band_width[,j], y.hat= predicted_width[,j],
+                  min.se=millorat_cow_7$min_width[,j],
+                  max.se=millorat_cow_7$max_width[,j])
+ p2 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained half bandwidth") +
+   ylab("Predicted half bandwidth") +
+   ggtitle("Prediction of half bandwidth")
+ p2=p2+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ df <- data.frame(y= profiling_names_corrected$final_output$intensity[,j], y.hat= predicted_intensity[,j],
+                  min.se=millorat_cow_7$min_intensity[,j],
+                  max.se=millorat_cow_7$max_intensity[,j])
+ p3 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained intensity") +
+   ylab("Predicted intensity") +
+   ggtitle("Prediction of intensity")
+ 
+ p3=p3+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ 
+ FeaturesMatrix=millorat_cow_7$useful_data[[i]][[j]]$FeaturesMatrix
+ Xdata_2=millorat_cow_7$useful_data[[i]][[j]]$Xdata
+ Xdata_2=seq(max(Xdata_2),min(Xdata_2),-0.00001)
+ program_parameters=millorat_cow_7$useful_data[[i]][[j]]$program_parameters
+ multiplicities=FeaturesMatrix[1,11]
+ roof_effect=FeaturesMatrix[1,12]
+ multiplicities=FeaturesMatrix[1,11]
+ roof_effect=FeaturesMatrix[1,12]
+ fitted_signals=matrix(NA,11,length(Xdata_2))
+ fitted_signals[1,] = approx(millorat_cow_7$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_7$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+ multiplicities=FeaturesMatrix[1,11]
+ roof_effect=FeaturesMatrix[1,12]
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ fitted_signals[2,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[2]=signals_parameters[2]+0.003
+ fitted_signals[3,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[2]=signals_parameters[2]-0.003
+ fitted_signals[4,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[2]=millorat_cow_7$max_shift[i,j]
+ fitted_signals[5,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[2]=millorat_cow_7$min_shift[i,j]
+ fitted_signals[6,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ data=data.frame(y=t(fitted_signals[-1,]),x=Xdata_2)
+ data=reshape2::melt(data, id.var="x")
+ data3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+ ab1=ggplot() +
+   geom_line(aes(x, value), colour='blue',alpha=0.5, data=data[(1*nrow(data3)+1):(2*nrow(data3)),]) +
+   geom_line(aes(x, value), colour='blue',alpha=0.5, data=data[(2*nrow(data3)+1):(3*nrow(data3)),]) +
+   geom_line(aes(x, value), colour='red', alpha=0.5,data=data[(3*nrow(data3)+1):(4*nrow(data3)),]) +
+   geom_line(aes(x, value), colour='red',alpha=0.5, data=data[(4*nrow(data3)+1):(5*nrow(data3)),]) +
+   geom_line(data=data3,aes(x,y),colour='black',linetype='dashed') +
+   scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+labs(x = "ppm",y='Intensity',title = "Chemical shift") +
+   theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+ 
+ 
+ multiplicities=FeaturesMatrix[1,11]
+ roof_effect=FeaturesMatrix[1,12]
+ fitted_signals=matrix(NA,11,length(Xdata_2))
+ fitted_signals[1,] = approx(millorat_cow_7$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_7$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ fitted_signals[2,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[3]=signals_parameters[3]*(1+0.25)
+ fitted_signals[3,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[3]=signals_parameters[3]*(1-0.25)
+ fitted_signals[4,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[3]=millorat_cow_7$max_width[i,j]
+ fitted_signals[5,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[3]=millorat_cow_7$min_width[i,j]
+ fitted_signals[6,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ data=data.frame(x=Xdata_2,twox=fitted_signals[4,],x2=fitted_signals[3,])
+ data2=data.frame(x=Xdata_2,twox=fitted_signals[6,],x2=fitted_signals[5,])
+ data3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+ ab2=ggplot(data, aes(x=x, y=twox)) +
+   geom_ribbon(data=data,aes(ymin=twox,ymax=x2), fill="blue", alpha="0.5") +
+   geom_ribbon(data=data2,aes(ymin=twox,ymax=x2), fill="red", alpha="0.5") +
+   geom_line(data=data3,aes(x,y),colour='black',linetype='dashed') +
+   scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+ labs(x = "ppm",y='Intensity',title = "Half bandwidth") +
+   theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+ 
+ 
+ multiplicities=FeaturesMatrix[1,11]
+ roof_effect=FeaturesMatrix[1,12]
+ fitted_signals=matrix(NA,11,length(Xdata_2))
+ # signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ fitted_signals[1,] = approx(millorat_cow_7$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_7$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ fitted_signals[2,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[1]=0
+ fitted_signals[3,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[1]=max(colSums(fitted_signals[1:2,]))
+ fitted_signals[4,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[1]=millorat_cow_7$min_intensity[i,j]
+ fitted_signals[5,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ signals_parameters=millorat_cow_7$useful_data[[i]][[j]]$signals_parameters[8:12]
+ signals_parameters[1]=millorat_cow_7$max_intensity[i,j]
+ fitted_signals[6,] = signal_fitting(signals_parameters,
+                                     Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+ fitted_signals[fitted_signals>2]=2
+ data=data.frame(x=Xdata_2,twox=fitted_signals[4,],x2=fitted_signals[3,])
+ data2=data.frame(x=Xdata_2,twox=fitted_signals[6,],x2=fitted_signals[5,])
+ data3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+ 
+ ab3=ggplot(data, aes(x=x, y=twox)) +
+   
+   geom_ribbon(data=data,aes(ymin=twox,ymax=x2), fill="blue", alpha="0.5") +
+   geom_ribbon(data=data2,aes(ymin=twox,ymax=x2), fill="red", alpha="0.5") +
+   geom_line(data=data3,aes(x,y),colour='black',linetype='dashed') +
+   scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+ labs(x = "ppm",y='Intensity',title = "Intensity") +
+   theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+ p12 <- grid.arrange(arrangeGrob(p1 ,ab1,p2,ab2,p3 ,ab3,nrow=3))
+ 
+ 
+ j=16
+ i=order(millorat_cow_7$final_output$quantification[,j]/profiling_names_corrected$final_output$quantification[,j],decreasing=T)[3]
+ df <- data.frame(y= millorat_cow_7$final_output$shift[,j], y.hat= newpredicted_shift$predicted_matrix[,j],
+                  min.se=newpredicted_shift$lower_bound_matrix[,j],
+                  max.se=newpredicted_shift$upper_bound_matrix[,j])
+ p11 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained chemical shift") +
+   ylab("Predicted chemical shift") +
+   ggtitle("Prediction of chemical shift")
+ p11=p11+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ df <- data.frame(y= millorat_cow_7$final_output$half_band_width[,j], 
+                  y.hat= newpredicted_width$predicted_matrix[,j],
+                  min.se=newpredicted_width$lower_bound_matrix[,j],
+                  max.se=newpredicted_width$upper_bound_matrix[,j])
+ p22 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained half bandwidth") +
+   ylab("Predicted half bandwidth") +
+   ggtitle("Prediction of half bandwidth")
+ p22=p22+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ df <- data.frame(y= millorat_cow_7$final_output$intensity[,j], 
+                  y.hat= newpredicted_intensity$predicted_matrix[,j],
+                  min.se=newpredicted_intensity$lower_bound_matrix[,j],
+                  max.se=newpredicted_intensity$upper_bound_matrix[,j])
+ p33 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained intensity") +
+   ylab("Predicted intensity") +
+   ggtitle("Prediction of intensity")
+ 
+ p33=p33+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ 
+ j=16
+ df <- data.frame(y= acv[,j], y.hat= acv2$predicted_matrix[,j],
+                  min.se=acv2$lower_bound_matrix[,j],
+                  max.se=acv2$upper_bound_matrix[,j])
+ p1 <- ggplot(df, aes(x = y, y = y.hat)) +
+   geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+   geom_point() +
+   geom_abline(intercept=0, slope=1, linetype=2) +
+   xlab("Obtained chemical shift") +
+   ylab("Predicted chemical shift") +
+   ggtitle("Prediction of chemical shift")
+ p1=p1+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+   geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+ 
+ acx=c(which(initial_corrected$ROI_data[,5]==0),grep('Sum',initial_corrected$ROI_data[,3]))
+ acv3=rbind(apply(millorat_cow_7$final_output$quantification[,-acx],2,function(x)diff(t.test(x[1:52],x[53:69])$conf.int)),
+            apply(profiling_names_corrected$final_output$quantification[,-acx],2,function(x)diff(t.test(x[1:52],x[53:69])$conf.int)))
+ 
+ 
