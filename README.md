@@ -13,11 +13,11 @@ If, at some moment, the installation fails, probably the reason is a missing dep
 
 For a quick look to the capabilitites of the package, examples of sessions of profiling of MTBLS1 and MTBLS242 Metabolights data sets are available on the next links:
 
-MTBLS1: https://www.dropbox.com/s/cpjwnubpd6tdydj/MTBLS1_session.RData?dl=0
+MTBLS1: https://www.dropbox.com/s/k0x8enlonpr2njo/MTBLS1_example.RData?dl=0
 
-MTBLS242: https://www.dropbox.com/s/uyq8a8dpala53fp/MTBLS242_session.RData?dl=0
+MTBLS237: https://www.dropbox.com/s/08kjxpd08vo9tq9/MTBLS237_example.RData?dl=0
 
-To load e.g. the MTBLS242 profiling session, run “rDolphin_GUI()” to open the GUI and click on the "Reanudate a saved session" button on the left panel. 
+To load e.g. the MTBLS1 profiling session, run “rDolphin_GUI()” to open the GUI and click on the "Reanudate a saved session" button on the left panel. 
 
 
 A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
