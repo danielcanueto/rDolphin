@@ -16,7 +16,7 @@
 
 
 
-profile_model_spectrum = function(imported_data, ROI_data) {
+profile_model_spectrum = function(imported_data, ROI_data,spectrum_index=NA) {
 
   print('Preparing quantifications in a model spectrum with the current ROI Profiles. A figure with the performed quantifications will be shown, as well as a chemometric model with the metadata given. Then you can go to change the parameters of the ROI Profiles')
 
@@ -29,12 +29,13 @@ profile_model_spectrum = function(imported_data, ROI_data) {
   # indicators=matrix(NA,nrow(ROI_data),2,dimnames=list(imported_data$signals_names)))
   total_signals_parameters=matrix(NA,nrow(ROI_data),9,dimnames=list(imported_data$signals_names))
   colnames(total_signals_parameters)=c("intensity",	" chemical shift",	"half_band_width",	"gaussian %",	"J coupling",	"multiplicities",	"roof_effect","fitting error","signal / total area ratio")
-
+if (is.na(spectrum_index)) {
   quartile_spectrum = as.numeric(apply(imported_data$dataset, 2, function(x)
     quantile(x, 0.75,na.rm=T)))
   spectrum_index = which.min(apply(imported_data$dataset, 1, function(x)
     sqrt(mean((x - quartile_spectrum) ^ 2
       ,na.rm=T))))
+}
   baseline=baseline::baseline.rollingBall(rbind(imported_data$dataset[spectrum_index,],imported_data$dataset[spectrum_index,]),5,5)$baseline[1,]
 
   plotdata = data.frame(Xdata=as.numeric(imported_data$ppm),Ydata = as.numeric(imported_data$dataset[spectrum_index,]))
@@ -74,11 +75,6 @@ profile_model_spectrum = function(imported_data, ROI_data) {
     # If the quantification is through integration with or without baseline
     if (fitting_type == "Clean Sum" ||
         fitting_type == "Baseline Sum") {
-      # program_parameters$clean_fit = ifelse(fitting_type == "Clean Sum", "Y",
-      #                                       "N")
-      # program_parameters$freq=imported_data$freq
-      # baseline_int = fitting_prep_integration(Xdata,Ydata,program_parameters,baseline[ROI_buckets])
-      # Ydatamedian=as.numeric(apply(imported_data$dataset[, ROI_buckets,drop=F],2,median))
 
       integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,program_parameters$buck_step)
 

@@ -1,0 +1,291 @@
+
+results_group_1=metabolomics_scopus_data[grep('China',metabolomics_scopus_data$Affiliations),]
+china=allp$pvalue[((allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013)&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('United States',metabolomics_scopus_data$Affiliations),]
+us=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('United Kingdom',metabolomics_scopus_data$Affiliations),]
+uk=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Germany',metabolomics_scopus_data$Affiliations),]
+germany=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Japan',metabolomics_scopus_data$Affiliations),]
+japan=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Netherlands',metabolomics_scopus_data$Affiliations),]
+netherlands=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('France',metabolomics_scopus_data$Affiliations),]
+france=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Canada',metabolomics_scopus_data$Affiliations),]
+canada=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Spain',metabolomics_scopus_data$Affiliations),]
+spain=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+results_group_1=metabolomics_scopus_data[grep('Italy',metabolomics_scopus_data$Affiliations),]
+italy=allp$pvalue[(allp$pmid %in% results_group_1$PubMed.ID[!is.na(results_group_1$PubMed.ID)]==T|allp$doi %in% results_group_1$DOI[!is.na(results_group_1$DOI)])&allp$year>2013]
+global=allp$pvalue[allp$pmid %in% metabolomics_scopus_data$PubMed.ID[!is.na(metabolomics_scopus_data$PubMed.ID)]==T|allp$doi %in% metabolomics_scopus_data$DOI[!is.na(metabolomics_scopus_data$DOI)]]
+dummy=c(length(china),length(japan),length(germany),length(us),length(uk),
+           length(spain),length(italy),length(france),length(netherlands),
+           length(canada))
+samp=min(dummy[dummy>200])
+ks_p_vals__country_met=c(prop.test(c(length(global[global<=0.025]), length(china[china<=0.025])), c(length(global[global<=0.05]), length(china[china<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(canada[canada<=0.025])), c(length(global[global<=0.05]), length(canada[canada<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(japan[japan<=0.025])), c(length(global[global<=0.05]), length(japan[japan<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(us[us<=0.025])), c(length(global[global<=0.05]), length(us[us<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(uk[uk<=0.025])), c(length(global[global<=0.05]), length(uk[uk<=0.05])))$p.value,
+                         # prop.test(c(length(global[global<=0.025]), length(france[france<=0.025])), c(length(global[global<=0.05]), length(france[france<=0.05])))$p.value,
+                         # prop.test(c(length(global[global<=0.025]), length(italy[italy<=0.025])), c(length(global[global<=0.05]), length(italy[italy<=0.05])))$p.value,
+                         # prop.test(c(length(global[global<=0.025]), length(spain[spain<=0.025])), c(length(global[global<=0.05]), length(spain[spain<=0.05])))$p.value,
+                         # prop.test(c(length(global[global<=0.025]), length(netherlands[netherlands<=0.025])), c(length(global[global<=0.05]), length(netherlands[netherlands<=0.05])))$p.value,
+                        NA,NA,NA,NA,
+                          prop.test(c(length(global[global<=0.025]), length(germany[germany<=0.025])), c(length(global[global<=0.05]), length(germany[germany<=0.05])))$p.value
+)
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(china,samp,'China'))
+data=rbind(data,undersampler(canada,samp,'Canada'))
+data=rbind(data,undersampler(japan,samp,'Japan'))
+data=rbind(data,undersampler(us,samp,'United States'))
+p2=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Metabolomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+# data=rbind(data,undersampler(spain,samp,'Spain'))
+# data=rbind(data,undersampler(italy,samp,'Italy'))
+data=rbind(data,undersampler(germany,samp,'Germany'))
+data=rbind(data,undersampler(uk,samp,'United Kingdom'))
+# data=rbind(data,undersampler(france,samp,'France'))
+# data=rbind(data,undersampler(netherlands,samp,'Netherlands'))
+p6=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Metabolomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+
+
+
+germany_pubmed = read_csv("germany_genomics.csv")
+germany=allp$pvalue[(allp$pmid %in% germany_pubmed$EntrezUID | allp$doi %in% germany_pubmed$DOI)&allp$year>2013)&allp$year>2013]
+global_pubmed = read_csv("genomics.csv")
+global=allp$pvalue[(allp$pmid %in% global_pubmed$EntrezUID| allp$doi %in% global_pubmed$DOI)&allp$year>2013]
+china_pubmed = read_csv("china_genomics.csv")
+china=allp$pvalue[(allp$pmid %in% china_pubmed$EntrezUID| allp$doi %in% china_pubmed$DOI)&allp$year>2013]
+us_pubmed = read_csv("us_genomics.csv")
+us=allp$pvalue[(allp$pmid %in% us_pubmed$EntrezUID| allp$doi %in% us_pubmed$DOI)&allp$year>2013]
+spain_pubmed = read_csv("spain_genomics.csv")
+spain=allp$pvalue[(allp$pmid %in% spain_pubmed$EntrezUID| allp$doi %in% spain_pubmed$DOI)&allp$year>2013]
+uk_pubmed = read_csv("uk_genomics.csv")
+uk=allp$pvalue[(allp$pmid %in% uk_pubmed$EntrezUID| allp$doi %in% uk_pubmed$DOI)&allp$year>2013]
+france_pubmed = read_csv("france_genomics.csv")
+france=allp$pvalue[(allp$pmid %in% france_pubmed$EntrezUID | allp$doi %in% france_pubmed$DOI)&allp$year>2013]
+italy_pubmed = read_csv("italy_genomics.csv")
+italy=allp$pvalue[(allp$pmid %in% italy_pubmed$EntrezUID| allp$doi %in% italy_pubmed$DOI)&allp$year>2013]
+japan_pubmed = read_csv("japan_genomics.csv")
+japan=allp$pvalue[(allp$pmid %in% japan_pubmed$EntrezUID| allp$doi %in% japan_pubmed$DOI)&allp$year>2013]
+netherlands_pubmed = read_csv("netherlands_genomics.csv")
+netherlands=allp$pvalue[(allp$pmid %in% netherlands_pubmed$EntrezUID| allp$doi %in% netherlands_pubmed$DOI)&allp$year>2013]
+canada_pubmed = read_csv("canada_genomics.csv")
+canada=allp$pvalue[(allp$pmid %in% canada_pubmed$EntrezUID| allp$doi %in% canada_pubmed$DOI)&allp$year>2013]
+samp=min(c(length(china),length(japan),length(germany),length(us),length(uk),
+           length(spain),length(italy),length(france),length(netherlands),
+           length(canada)))
+ks_p_vals__country_gen=c(prop.test(c(length(global[global<=0.025]), length(china[china<=0.025])), c(length(global[global<=0.05]), length(china[china<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(canada[canada<=0.025])), c(length(global[global<=0.05]), length(canada[canada<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(japan[japan<=0.025])), c(length(global[global<=0.05]), length(japan[japan<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(us[us<=0.025])), c(length(global[global<=0.05]), length(us[us<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(uk[uk<=0.025])), c(length(global[global<=0.05]), length(uk[uk<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(france[france<=0.025])), c(length(global[global<=0.05]), length(france[france<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(italy[italy<=0.025])), c(length(global[global<=0.05]), length(italy[italy<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(spain[spain<=0.025])), c(length(global[global<=0.05]), length(spain[spain<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(netherlands[netherlands<=0.025])), c(length(global[global<=0.05]), length(netherlands[netherlands<=0.05])))$p.value,
+                         prop.test(c(length(global[global<=0.025]), length(germany[germany<=0.025])), c(length(global[global<=0.05]), length(germany[germany<=0.05])))$p.value
+)
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(china,samp,'China'))
+data=rbind(data,undersampler(canada,samp,'Canada'))
+data=rbind(data,undersampler(japan,samp,'Japan'))
+data=rbind(data,undersampler(us,samp,'United States'))
+p1=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Genomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(spain,samp,'Spain'))
+data=rbind(data,undersampler(italy,samp,'Italy'))
+data=rbind(data,undersampler(germany,samp,'Germany'))
+data=rbind(data,undersampler(uk,samp,'United Kingdom'))
+data=rbind(data,undersampler(france,samp,'France'))
+data=rbind(data,undersampler(netherlands,samp,'Netherlands'))
+p5=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Genomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+
+
+germany_pubmed = read_csv("germany_proteomics.csv")
+germany=allp$pvalue[(allp$pmid %in% germany_pubmed$EntrezUID | allp$doi %in% germany_pubmed$DOI)&allp$year>2013]
+global_pubmed = read_csv("proteomics.csv")
+global=allp$pvalue[(allp$pmid %in% global_pubmed$EntrezUID| allp$doi %in% global_pubmed$DOI)&allp$year>2013]
+china_pubmed = read_csv("china_proteomics.csv")
+china=allp$pvalue[(allp$pmid %in% china_pubmed$EntrezUID| allp$doi %in% china_pubmed$DOI)&allp$year>2013]
+us_pubmed = read_csv("us_proteomics.csv")
+us=allp$pvalue[(allp$pmid %in% us_pubmed$EntrezUID| allp$doi %in% us_pubmed$DOI)&allp$year>2013]
+spain_pubmed = read_csv("spain_proteomics.csv")
+spain=allp$pvalue[(allp$pmid %in% spain_pubmed$EntrezUID| allp$doi %in% spain_pubmed$DOI)&allp$year>2013]
+uk_pubmed = read_csv("uk_proteomics.csv")
+uk=allp$pvalue[(allp$pmid %in% uk_pubmed$EntrezUID| allp$doi %in% uk_pubmed$DOI)&allp$year>2013]
+france_pubmed = read_csv("france_proteomics.csv")
+france=allp$pvalue[(allp$pmid %in% france_pubmed$EntrezUID | allp$doi %in% france_pubmed$DOI)&allp$year>2013]
+italy_pubmed = read_csv("italy_proteomics.csv")
+italy=allp$pvalue[(allp$pmid %in% italy_pubmed$EntrezUID| allp$doi %in% italy_pubmed$DOI)&allp$year>2013]
+japan_pubmed = read_csv("japan_proteomics.csv")
+japan=allp$pvalue[(allp$pmid %in% japan_pubmed$EntrezUID| allp$doi %in% japan_pubmed$DOI)&allp$year>2013]
+netherlands_pubmed = read_csv("netherlands_proteomics.csv")
+netherlands=allp$pvalue[(allp$pmid %in% netherlands_pubmed$EntrezUID| allp$doi %in% netherlands_pubmed$DOI)&allp$year>2013]
+canada_pubmed = read_csv("canada_proteomics.csv")
+canada=allp$pvalue[(allp$pmid %in% canada_pubmed$EntrezUID| allp$doi %in% canada_pubmed$DOI)&allp$year>2013]
+dummy=c(length(china),length(japan),length(germany),length(us),length(uk),
+           length(spain),length(italy),length(france),length(netherlands),
+           length(canada))
+samp=min(dummy[dummy>200])
+#japan,spain not
+
+ks_p_vals__country_prot=c(prop.test(c(length(global[global<=0.025]), length(china[china<=0.025])), c(length(global[global<=0.05]), length(china[china<=0.05])))$p.value,
+                          prop.test(c(length(global[global<=0.025]), length(canada[canada<=0.025])), c(length(global[global<=0.05]), length(canada[canada<=0.05])))$p.value,
+                          # prop.test(c(length(global[global<=0.025]), length(japan[japan<=0.025])), c(length(global[global<=0.05]), length(japan[japan<=0.05])))$p.value,
+                          NA,
+                          prop.test(c(length(global[global<=0.025]), length(us[us<=0.025])), c(length(global[global<=0.05]), length(us[us<=0.05])))$p.value,
+                          prop.test(c(length(global[global<=0.025]), length(uk[uk<=0.025])), c(length(global[global<=0.05]), length(uk[uk<=0.05])))$p.value,
+                          prop.test(c(length(global[global<=0.025]), length(france[france<=0.025])), c(length(global[global<=0.05]), length(france[france<=0.05])))$p.value,
+                          prop.test(c(length(global[global<=0.025]), length(italy[italy<=0.025])), c(length(global[global<=0.05]), length(italy[italy<=0.05])))$p.value,
+                          # prop.test(c(length(global[global<=0.025]), length(spain[spain<=0.025])), c(length(global[global<=0.05]), length(spain[spain<=0.05])))$p.value,
+                          NA,
+                          prop.test(c(length(global[global<=0.025]), length(netherlands[netherlands<=0.025])), c(length(global[global<=0.05]), length(netherlands[netherlands<=0.05])))$p.value,
+                          prop.test(c(length(global[global<=0.025]), length(germany[germany<=0.025])), c(length(global[global<=0.05]), length(germany[germany<=0.05])))$p.value
+)
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(china,samp,'China'))
+data=rbind(data,undersampler(canada,samp,'Canada'))
+# data=rbind(data,undersampler(japan,samp,'Japan'))
+data=rbind(data,undersampler(us,samp,'United States'))
+p3=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Proteomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+# data=rbind(data,undersampler(spain,samp,'Spain'))
+data=rbind(data,undersampler(italy,samp,'Italy'))
+data=rbind(data,undersampler(germany,samp,'Germany'))
+data=rbind(data,undersampler(uk,samp,'United Kingdom'))
+data=rbind(data,undersampler(france,samp,'France'))
+data=rbind(data,undersampler(netherlands,samp,'Netherlands'))
+p7=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Proteomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+
+germany_pubmed = read_csv("germany_transcriptomics.csv")
+germany=allp$pvalue[(allp$pmid %in% germany_pubmed$EntrezUID | allp$doi %in% germany_pubmed$DOI)&allp$year>2013]
+global_pubmed = read_csv("transcriptomics.csv")
+global=allp$pvalue[(allp$pmid %in% global_pubmed$EntrezUID| allp$doi %in% global_pubmed$DOI)&allp$year>2013]
+china_pubmed = read_csv("china_transcriptomics.csv")
+china=allp$pvalue[(allp$pmid %in% china_pubmed$EntrezUID| allp$doi %in% china_pubmed$DOI)&allp$year>2013]
+us_pubmed = read_csv("us_transcriptomics.csv")
+us=allp$pvalue[(allp$pmid %in% us_pubmed$EntrezUID| allp$doi %in% us_pubmed$DOI)&allp$year>2013]
+spain_pubmed = read_csv("spain_transcriptomics.csv")
+spain=allp$pvalue[(allp$pmid %in% spain_pubmed$EntrezUID| allp$doi %in% spain_pubmed$DOI)&allp$year>2013]
+uk_pubmed = read_csv("uk_transcriptomics.csv")
+uk=allp$pvalue[(allp$pmid %in% uk_pubmed$EntrezUID| allp$doi %in% uk_pubmed$DOI)&allp$year>2013]
+france_pubmed = read_csv("france_transcriptomics.csv")
+france=allp$pvalue[(allp$pmid %in% france_pubmed$EntrezUID | allp$doi %in% france_pubmed$DOI)&allp$year>2013]
+italy_pubmed = read_csv("italy_transcriptomics.csv")
+italy=allp$pvalue[(allp$pmid %in% italy_pubmed$EntrezUID| allp$doi %in% italy_pubmed$DOI)&allp$year>2013]
+japan_pubmed = read_csv("japan_transcriptomics.csv")
+japan=allp$pvalue[(allp$pmid %in% japan_pubmed$EntrezUID| allp$doi %in% japan_pubmed$DOI)&allp$year>2013]
+netherlands_pubmed = read_csv("netherlands_transcriptomics.csv")
+netherlands=allp$pvalue[(allp$pmid %in% netherlands_pubmed$EntrezUID| allp$doi %in% netherlands_pubmed$DOI)&allp$year>2013]
+canada_pubmed = read_csv("canada_transcriptomics.csv")
+canada=allp$pvalue[(allp$pmid %in% canada_pubmed$EntrezUID| allp$doi %in% canada_pubmed$DOI)&allp$year>2013]
+samp=min(c(length(china),length(japan),length(germany),length(us),length(uk),
+           length(spain),length(italy),length(france),length(netherlands),
+           length(canada)))
+
+ks_p_vals__country_trans=c(prop.test(c(length(global[global<=0.025]), length(china[china<=0.025])), c(length(global[global<=0.05]), length(china[china<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(canada[canada<=0.025])), c(length(global[global<=0.05]), length(canada[canada<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(japan[japan<=0.025])), c(length(global[global<=0.05]), length(japan[japan<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(us[us<=0.025])), c(length(global[global<=0.05]), length(us[us<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(uk[uk<=0.025])), c(length(global[global<=0.05]), length(uk[uk<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(france[france<=0.025])), c(length(global[global<=0.05]), length(france[france<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(italy[italy<=0.025])), c(length(global[global<=0.05]), length(italy[italy<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(spain[spain<=0.025])), c(length(global[global<=0.05]), length(spain[spain<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(netherlands[netherlands<=0.025])), c(length(global[global<=0.05]), length(netherlands[netherlands<=0.05])))$p.value,
+                           prop.test(c(length(global[global<=0.025]), length(germany[germany<=0.025])), c(length(global[global<=0.05]), length(germany[germany<=0.05])))$p.value
+)
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(china,samp,'China'))
+data=rbind(data,undersampler(canada,samp,'Canada'))
+data=rbind(data,undersampler(japan,samp,'Japan'))
+data=rbind(data,undersampler(us,samp,'United States'))
+p4=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Transcriptomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+data = data.frame(y=c(),x=c(),z=c())
+data=rbind(data,undersampler(global,samp,'Global'))
+data=rbind(data,undersampler(spain,samp,'Spain'))
+data=rbind(data,undersampler(italy,samp,'Italy'))
+data=rbind(data,undersampler(germany,samp,'Germany'))
+data=rbind(data,undersampler(uk,samp,'United Kingdom'))
+data=rbind(data,undersampler(france,samp,'France'))
+data=rbind(data,undersampler(netherlands,samp,'Netherlands'))
+p8=ggplot(data=data, aes(x=x, y=y,group=z,colour=z))+
+  geom_line(size=1.2)+ ggtitle("Transcriptomics") +
+  theme_bw() + theme(legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(x = "p-value",y='Density',colour='Country')
+
+
+
+mylegend=g_legend(p1)
+
+png("country1.png", width = 760, height = 900)
+grid.newpage();grid.draw(grid.arrange(arrangeGrob(p1 + theme(legend.position="none"),
+                                                  p2 + theme(legend.position="none"),
+                                                  p3 + theme(legend.position="none"),
+                                                  p4 + theme(legend.position="none"),
+                                                  top="Density plot of p-values by country affiliation (non-European countries)",
+                                                  nrow=2),
+                                      mylegend, nrow=2,heights=c(10, 1)))
+dev.off()
+
+
+mylegend=g_legend(p5)
+
+png("country2.png", width = 760, height = 900)
+grid.newpage();grid.draw(grid.arrange(arrangeGrob(p5 + theme(legend.position="none"),
+                                                  p6 + theme(legend.position="none"),
+                                                  p7 + theme(legend.position="none"),
+                                                  p8 + theme(legend.position="none"),
+                                                  top="Density plot of p-values by country affiliation (European countries)",
+                                                  nrow=2),
+                                      mylegend, nrow=2,heights=c(10, 1)))
+dev.off()

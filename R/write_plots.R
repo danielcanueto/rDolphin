@@ -50,7 +50,7 @@ write_plots = function(path,final_output,imported_data,useful_data) {
       plotdata5 = reshape2::melt(plotdata4, id = "Xdata")
       r=which(paste(ROI_profile[,4],ROI_profile[,5],sep='_')==imported_data$signals_names[ind2])
       if (length(r)==0) next
-      plotdata = data.frame(Xdata, signals = plot_data[3 + r, ] )
+      plotdata = data.frame(Xdata, signals = plot_data[3 + r,] )
 
 
 
@@ -79,9 +79,10 @@ write_plots = function(path,final_output,imported_data,useful_data) {
         ) + theme(legend.position = "none", text = element_text(size=5)) + ggtitle(paste(imported_data$Experiments[ind]," - fitting error ",round(final_output$fitting_error[ind,ind2],3)," - signal/area ratio ",round(final_output$signal_area_ratio[ind,ind2],3),sep=''))+
         scale_x_reverse() + labs(x='ppm',y='Intensity')
     }
-    gridExtra::grid.arrange(grid::rectGrob(), grid::rectGrob())
-    ml <- gridExtra::marrangeGrob(p, top = imported_data$signals_names[ind2],nrow=3, ncol=1)
-    ggplot2::ggsave(file.path(path,paste(imported_data$signals_names[ind2],".pdf",sep='')),  ml)
+      gridExtra::grid.arrange(grid::rectGrob(), grid::rectGrob())
+      ml <- gridExtra::marrangeGrob(p, top = imported_data$signals_names[ind2],nrow=3, ncol=1)
+      ggplot2::ggsave(file.path(path,paste(imported_data$signals_names[ind2],".pdf",sep='')),  ml)
+
     setTxtProgressBar(pb, ind2)
 
   }

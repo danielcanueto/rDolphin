@@ -1,0 +1,183 @@
+---
+title: "Introduction to rDolphin"
+author: "Daniel Canueto"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Introduction to rDolphin"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of all biofluids and outputs several indicators of quality of quantification and identification of signal. The package incorporates a Shiny GUI with Plotly figures that eases the use of the programme by researchers with non-expert programming skills.
+
+To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin subdivides the spectrum into Regions of Interest (ROIs) with characteristic signals and method of quantification (integration or deconvolution; with or without baseline fitting) for each ROI. The correct parameters for each ROI for each dataset can be changed if necessary before performing an automatic profiling. The Shiny GUI is specially prepared to help during the parameter optimization process.
+
+rDolphin comes with tools to load individual quantifications to be evaluated if necessary. rDolphin can also perform different kinds of analysis of the generated data.
+
+## Vignette Structure
+
+The vignette will show how to perform in the R console the profiling of a subset of 30 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 30 spectra belong to 15 patients with blood samples taken at two different times.
+
+* First a CSV file is read to import all the necessary information to perform the profiling.
+* Then, an exploratory analysis of the dataset is performed to evaluate possible ROI improvements.
+* Next, a profiling of all spectra is performed and an output of quantifications (with associated quality parameters) and figures is generated.
+* Lastly, it is shown how to evaluate the quantifications performed and how to watch the results of basic uni and multivariate analyses of performed quantifications.
+
+A link to an on-line document showing how to perform similar steps through the Shiny GUI is available on the Readme file of the Github website: https://github.com/danielcanueto/rDolphin.
+
+## Import of necessary data
+
+In the `extdata` folder of the package there is the necessary information to load the dataset of 30 spectra of MTBLS242:
+
+* A `Parameters` CSV file with the necessary information to import with the desired preprocessing parameters. A brief description is given inside the CSV file for each parameter.
+
+* A `dataset` CSV file with a matrix with each row a spectrum and each observation a bin. The header has the information to which ppm belongs every bin. Bruker processed spectra can also be read if specified in the `Parameters` file.
+
+* A `Metadata` CSV file with three columns:
+
+    * `Sample` is the name of the sample. If reading Bruker processed spectra, it needs to be the same than the one in the Bruker folder.
+    * `Individual` is a number specifying each individual. For example, in the case of this MTBLS242 dataset, the 1-15 sequence is repeated 2 times because there are two samples for each individual.
+    * `Type` is a number specifying the kind of sample. If differences are to be analyzed, then the analysis of differences has to be specified with a negative number. For example, if one wants to compare differences before and after a drug treatment and a placebo treatment, samples before placebo can have `-1`, samples after placebo can have `1`, samples before treatment `-2`, and samples after treatment can have `2`.
+    
+    Information of `Individual` and `Type` is not necessary for the program to be run, but it will be useful for fingerprinting, univariate and multivariate analyses.
+
+* An `ROI_profiles` CSV file with information of every signal to be quantified. Every signal is contained into an ROI that can contain one or more signals to quantify. Several parameters of the signal and the kind of quantification are also shown.
+
+* An `HMDB_Repository` CSV file with information contained in the HMDB database about every signal of every metabolite. This information can be useful to perform correct identifications of signals when performing the profiling.
+
+Run these commands to set as directory the `extdata` folder and to import the data contained there:
+```
+setwd(file.path(system.file(package = "rDolphin"),"extdata"))
+imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
+```
+
+An `imported_data` list is generated with several variables. Especially important ones are:
+
+* `dataset`, with the dataset of spectra to profile.
+
+* `final_output`, a list that will contain performed quantifications in `quantification` as well as several indicators of quality of quantification and of the signal.
+
+* `useful_data`, a list of lists where useful information of individual quantifications will be stored, allowing that a signal can have different fitting parameters for different spectra if necessary.
+
+## Exploratory analysis of dataset traits
+
+rDolphin eases the analysis of the dataset complexity through two kinds of interactive Plotly figures:
+
+* a subset of spectra that are exemplars of the variability in the dataset:
+```
+clustspectraplot(imported_data)
+```
+* visualization of the median spectrum for each kind of sample:
+```
+medianplot(imported_data)
+```
+
+For each kind of figure, a red trace appears below the spectra. This red trace gives the results of an univariate analysis for every bin, and helps the user detect interesting regions to profile.
+
+In addition, the user can also visualize the results of STOCSY or RANSY in a region of the dataset. These are the results achieved for a glutamine signal at 2.14-2.12 ppm:
+```
+identification_tool(imported_data$dataset,imported_data$ppm,c(2.14,2.12),method='spearman')
+```
+
+If you do not know how to annotate a signal in the dataset, you can evaluate possible options ranked by probability through
+```
+View(imported_data$repository)
+```
+
+.
+
+
+## Analysis of profiling quality in a model spectrum
+
+Looking to the performance of profiling in a model spectrum can help to improve the parameters in some ROIs and to check additional regions of the spectrum with the potential to give interesting insights to a study.
+
+Run the next command:
+```
+profiling_model=profile_model_spectrum(imported_data,imported_data$ROI_data)
+```
+
+`profiling_model` has three elements:
+
+* `p`, a Plotly figure showing the fitting applied to every ROI in the model spectrum as well as fingerprinting data of every bin (with this information, you can look for example if there are zones of the spectrum with significant differences that are not profiled yet). 
+
+* `total_signals_parameters`, a matrix with parameters of fitting and of quality of fitting for every quantified signal. This matrix can be useful to optimize some ROI parameters.
+
+* `ROI_data`, a data frame of the ROI data used during the process.
+
+
+## Automatic profiling of spectra
+
+When you are satisfied with the ROI profiles, you can perform an automatic profiling of the spectra:
+```
+profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+```
+
+`profiling_data` has two variables:
+
+* `final_output`, a list that will contain performed quantifications in `quantification` as well as several indicators of quality of quantification and of the signal.
+
+* `useful_data`, a list of lists where useful information of individual quantifications will be stored, allowing that a signal can have different fitting parameters for different spectra if necessary.
+
+To output in your computer CSV files with `final_output` data, run this command:
+```
+write_info('output_info',profiling_data$final_output,imported_data$ROI_data)
+```
+
+Go to the `output_info` folder stored inside the `extdata` folder mentioned in `Import of necessary data`. You can see some CSV files with that contain the information of `final_output`.
+
+To output in your computer PDFs with plots of every quantification, run this command:
+```
+write_plots('',profiling_data$final_output,imported_data,profiling_data$useful_data)
+```
+
+A `plots` folder is stored inside the `extdata` folder mentioned in `Import of necessary data`. You can see a PDF file for every signal with all quantifications.
+
+
+## Validation of quantifications
+
+Sometimes with the information contained in the plots or the `final_output` list is not enough to evaluate the quality of the quantifications. For example, in urine the signals have much chemical shift variability and one cannot be sure if he is quantifying always the correct signal. The presence of outlier quantifications is another clue of possible bad identification.
+
+The `validation` function allows to analyse possible wrong identifications or quantifications. For example, this:
+```
+validation_data=validation(profiling_data$final_output,profiling_data$alarmmatrix,3)
+library(DT)
+datatable(round(validation_data$shownmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$shownmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
+```
+shows the difference between the expected chemical shift and the calculated chemical shift in every signal quantification. The data can be shown with the `datatable` function of `DT` package, with the cells with a darker red as the quantification is more suspicious.
+
+The quality of individual quantifications can be checked through `load_quantification`. Run these commands:
+```
+loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=1,col=1),imported_data$ROI_data)
+loaded_quantification$p
+loaded_quantification$ROIpar
+```
+The `p` element of `loaded_quantification` shows an interactive figure of the quantification in order to check its quality . It can be observed that the signal fitted is narrower than the real one. This effect is caused by the binding of the TSP to the protein. The 'ROI_par' element shows the ROI parameters used during this quantification. As there is neither baseline nor any overlapping signal, it is more optimal to change the quantification mode to "Clean Sum", so integration instead of fitting is performed:
+```
+imported_data$ROI_data[1,3]="Clean Sum"
+```
+And to update the quantification:
+```
+updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,1:nrow(imported_data$dataset),imported_data$ROI_data[1,,drop=F],imported_data$useful_data)
+```
+    
+	
+## Uni and multivariate analysis of fingerprinting and profiling data
+
+Univariate analyses of every bin could be already seen with the `profile_model_spectrum` function. The p values calculated can be also analysed with the `p_values` function:
+```
+pval=p_values(imported_data$dataset,imported_data$Metadata)
+```
+
+However, the big advantage of profiling data to fingerprinting data is its resilience to overlapping and chemical shift variability (typical in urine) or baseline (typical in blood). Basic univariate analyses of profiling data can be evaluated changing the data called in `p_values`:
+```
+pval=p_values(profiling_data$final_output$quantification,imported_data$Metadata)
+```
+
+Finally, dendrogram heatmaps can show us interesting subsets of samples or signals with the quantification or chemical shift information provided. For example, a not identified signal can be highly correlated in quantification with another signal because they are signals from the same metabolite. Or a not identified signal can have a chemical shift highly correlated to a identified signal, meaning that they possibly belong to metabolites with similar chemical traits.
+```
+type_analysis_plot(profiling_data$final_output$quantification,profiling_data$final_output,imported_data,'dendrogram_heatmap')
+type_analysis_plot(profiling_data$final_output$shift,profiling_data$final_output,imported_data,'dendrogram_heatmap')
+```
+
+
+

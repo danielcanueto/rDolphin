@@ -1,0 +1,189 @@
+# Load data -----------------------------------------------------------------------------------------------------------------
+
+  dir <- 'C:/Users/Usuario/Downloads/Machine_Learning/Machine_Learning'
+
+  # Importing xls from Ad-hoc section in ICU-DaMa, exporting 2 csv and importing from csv
+
+  require(xlsx)
+  
+  df_admday3 <- read.xlsx2(paste(dir,"/","Regression/AdmDay3.xls", sep=""),sheetName = "DB")
+  write.csv(df_admday3, file = paste(dir,"/","Regression/AdmDay3.csv", sep=""),dec='.')
+  df_admday3 <- read.csv(file = paste(dir,"/","Regression/AdmDay3.csv", sep=""),dec='.')
+  
+  #df_admday3 <- read.csv(file = 'D:/Feina/ICU-DaMa/Machine_Learning/Regression/AdmDay3.csv',dec='.')
+
+# Prepare data --------------------------------------------------------------------------------------------------------------
+
+  # Clean and prepare data --------------------------------------------------------------------------------------------------
+  
+    # Using numbers as indexes
+  
+    #colnames() #feature checking
+    
+    clean_v <- c(1,2,6,9) # X, ID, & Dis_G & Adv_G
+  
+    admday3<-df_admday3[,-c(clean_v)]
+
+  # Assign classes ----------------------------------------------------------------------------------------------------------
+    
+    # Using numbers as indexes
+    
+    #colnames() #feature checking
+    
+    #numeric_v = c(2,3,6:30)
+    
+    #numeric2_v = c(2,3,6,13,14,16:22,24,26:28)
+    
+    # for (i in numeric_v){
+    #   prevday3[,i]=as.numeric(prevday3[,i])
+    #   prevday2[,i]=as.numeric(prevday2[,i])
+    #   prevday1[,i]=as.numeric(prevday1[,i])
+    #   
+    # }
+    
+  # Inpute missing values ---------------------------------------------------------------------------------------------------
+    
+  require(mice) #The best inputing missing values
+    
+  # Important to know if missing values should be take as 0
+    
+  admday3<- mice(admday3)
+  admday3<-complete(admday3)
+    
+  # One Hot Enconding -------------------------------------------------------------------------------------------------------
+
+  require(caret)
+  
+  sapply(admday3, class)
+    
+  ohe_v <- c('Gender','Outcome','Adm_G','APACHE_G','Diag_G','Motiu.Aïllam','O2.Teràpia')
+  
+  fmla <- as.formula(paste("~ ", paste(ohe_v, collapse= "+")))
+
+  #dummies_prevday3 = dummyVars(fmla , data = prevday3)
+  #dummies_prevday2 = dummyVars(fmla , data = prevday2)
+  dummies_admday3 = dummyVars(fmla , data = admday3)
+  #dummies_admday3 = dummyVars(fmla , data = admday3)
+  #ohe_prevday3 <- as.data.frame(predict(dummies_prevday3, newdata = prevday3))
+  #ohe_prevday2 <- as.data.frame(predict(dummies_prevday2, newdata = prevday2))
+  ohe_admday3 <- as.data.frame(predict(dummies_admday3, newdata = admday3))
+  #ohe_admday3 <- as.data.frame(predict(dummies_admday3, newdata = admday3))
+  #prevday3 <- cbind(prevday3,ohe_prevday3)
+  #prevday2 <- cbind(prevday2,ohe_prevday2)
+  admday3 <- cbind(admday3,ohe_admday3)
+  #admday3 <- cbind(admday3,ohe_admday3)
+  
+  #rm(ohe_prevday3,ohe_prevday2,ohe_prevday1,ohe_admday3)
+  
+  # Split data --------------------------------------------------------------------------------------------------------------
+  
+  require(caTools)
+  set.seed(123)
+  
+  # Regression Outcome
+  
+  admday3$spl=sample.split(admday3$Outcome,SplitRatio=0.6)
+  admday3_train=subset(admday3, admday3$spl==TRUE)
+  admday3_train_Y=admday3_train$T2Dis
+  admday3_train$spl<-NULL
+  admday3_test=subset(admday3, admday3$spl==FALSE)
+  admday3_test_Y=admday3_test$T2Dis
+  admday3_test$spl<-NULL
+  
+  # Remove factorials and dependent variable from independent variables matrix
+  
+    factorials_v <- c(1,2,4:7,21,28)
+  
+    admday3<-admday3[,-c(factorials_v)]
+    admday3_train<-admday3_train[,-c(factorials_v)]
+    admday3_test<-admday3_test[,-c(factorials_v)]
+  
+# Train models --------------------------------------------------------------------------------------------------------------
+  
+  # Random Forest -----------------------------------------------------------------------------------------------------------
+  
+  #require(caret)
+  # require(pROC)
+  # require(e1071)  
+  #     
+  # forest.model_prevday1 <- train(prevday1_train, prevday1_train_Y_factor)
+  # print(forest.model_prevday1)
+  # result.predicted.prob_prevday1 <- predict(forest.model_prevday1, prevday1_test, type="prob") # Prediction
+  # result.roc_prevday1 <- roc(prevday1_test_Y_factor,result.predicted.prob_prevday1$Alive) # Draw ROC curve.
+  # plot(result.roc_prevday1, print.thres="best", print.thres.best.method="closest.topleft")
+  # result.coords <- coords(result.roc_prevday1, "best", best.method="closest.topleft", ret=c("threshold", "accuracy"))
+  # print(result.coords)#to get threshold and accuracy
+
+  require(randomForest)
+    outcome=admday3$T2Dis
+    admday3<-admday3[,-c(1,2,4:7,21,28)]
+   
+samples=sample(nrow(admday3),nrow(admday3)*0.7)
+admday3_train=admday3[samples,]
+admday3_test=admday3[-samples,]
+admday3_train_Y=outcome[samples]
+admday3_test_Y=outcome[-samples]
+
+    
+  admday3_rf <- randomForest(admday3_train,y=admday3_train_Y,xtest=admday3_test,ytest=admday3_test_Y,keep.forest=T)
+  print(admday3_rf)
+  plot(admday3_rf)
+  varImpPlot(admday3_rf,sort=TRUE,n.var=10)
+  
+  mae_rf_train<-mean(abs(admday3_rf$predicted-admday3_train_Y))
+  mae_rf_test<-mean(abs(admday3_rf$test$predicted-admday3_test_Y))
+  mmm=matrix(NA,205,10)
+  # for (i in 1:10) {
+  samples=sample(nrow(admday3),nrow(admday3)*0.7)
+  admday3_train=admday3[samples,]
+  admday3_test=admday3[-samples,]
+  admday3_train_Y=outcome[samples]
+  admday3_test_Y=outcome[-samples]
+
+  admday3_rf <- randomForest(admday3_train,y=admday3_train_Y,xtest=admday3_test,ytest=admday3_test_Y,keep.forest=T)
+  mae_rf_train<-mean(abs(admday3_rf$predicted-admday3_train_Y))
+    mae_rf_test<-mean(abs(admday3_rf$test$predicted-admday3_test_Y))
+  
+  # mmm[,i]=predict(admday3_rf$test$predicted)
+  }
+  
+  
+  require(h2o)
+  
+  # x<-colnames(admday3_train)
+  # y<-admday3_train_Y
+  # 
+  # rf_adamday3<-h2o.randomForest(x=x,y=y,training_frame=admday3_train,validation_frame = admday3_test, nfolds = 4)
+  
+  # Liniar Regression -------------------------------------------------------------------------------------------------------
+  
+  model <- lm(admday3_train_Y~., admday3_train)
+  predictions<-predict(model,admday3_test)
+  
+  mae_lm_train<-mean(abs(model$fitted.values-admday3_train_Y))
+  mae_lm_test<-mean(abs(predictions-admday3_test_Y))
+  
+  model <- robustbase::lmrob(admday3_train_Y~., admday3_train,control=robustbase::lmrob.control(max.it=2000))
+  predictions<-predict(model,admday3_test)
+  mae_lm_train<-mean(abs(model$fitted.values-admday3_train_Y))
+  mae_lm_test<-mean(abs(predictions-admday3_test_Y))
+  
+  # train=as.h2o(data.frame(admday3_train,y=admday3_train_Y))
+  # test=as.h2o(data.frame(admday3_test,y=admday3_test_Y))
+  # aml <- h2o.automl(x = setdiff(names(train), "y"), y = "y",
+  #                   training_frame = train,
+  #                   leaderboard_frame = test,
+  #                   max_runtime_secs = 60)
+  # 
+  # lon=as.vector(predict(aml,test))
+  # lon
+  train=as.data.frame(scale(admday3_train))
+  test=as.data.frame(scale(admday3_test))
+  train=train[,!is.na(test[1,])]
+  test=test[,!is.na(test[1,])]
+  
+  model <- robustbase::lmrob(admday3_train_Y~., train,control=robustbase::lmrob.control(max.it=2000))
+  predictions<-predict(model,test)
+  mae_lm_train<-mean(abs(model$fitted.values-admday3_train_Y))
+  mae_lm_test<-mean(abs(predictions-admday3_test_Y))
+  

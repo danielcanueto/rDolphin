@@ -1,0 +1,51 @@
+{
+    "debugBreakpointsState" : {
+        "breakpoints" : [
+            {
+                "editor_line_number" : 118,
+                "editor_state" : 1,
+                "function_name" : "toplevel",
+                "function_steps" : "",
+                "id" : 0,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 118,
+                "needs_updated_steps" : true,
+                "package_name" : "",
+                "path" : "C:/Users/Usuario/Downloads/tests_indicators_2.R",
+                "state" : 1,
+                "type" : 1
+            },
+            {
+                "editor_line_number" : 16,
+                "editor_state" : 2,
+                "function_name" : "prediction_ranger_weights",
+                "function_steps" : "",
+                "id" : 1,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 16,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "C:/Users/Usuario/Downloads/prediction_code/prediction_ranger_weights.R",
+                "state" : 2,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 19,
+                "editor_state" : 1,
+                "function_name" : "rf_pred_outliers",
+                "function_steps" : "10",
+                "id" : 3,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 19,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "C:/Users/Usuario/Downloads/prediction_code/rf_pred_outliers.R",
+                "state" : 1,
+                "type" : 0
+            }
+        ]
+    }
+}
