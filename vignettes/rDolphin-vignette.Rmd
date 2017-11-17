@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of all biofluids and outputs several indicators of quality of quantification and identification of signal.  To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin splits the spectrum into Regions of Interest (ROIs). Each ROI has a specific method of quantification (integration or deconvolution; with or without baseline fitting), a list of signals to quantify and a list of signal parameters to monitor.
+rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra datasets and outputs several indicators of quality of quantification and identification for each signal area quantification. To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin splits the spectrum into Regions of Interest (ROIs). Each ROI has a specific method of quantification (integration or deconvolution; with or without baseline fitting), a list of signals to quantify and a list of signal parameters to monitor (e.g. the chemical shift variability).
 
 In addition, rDolphin comes with tools to load individual quantifications to be evaluated and updated or to perform different kinds of exploratory analyses. For researchers with non-expert programming skills, the package incorporates a Shiny GUI.
 
@@ -19,8 +19,8 @@ The vignette will show how to perform in the R console the profiling of a subset
 * First a CSV file is read to import all the necessary information to perform the profiling.
 * Then, an exploratory analysis of the spectra dataset is performed.
 * Next, the quality of the ROI information is evaluated before beginning the automatic profiling.
-* A profiling of all spectra is performed and an output of quantifications (with associated quality parameters) and figures is generated.
-* Lastly, it is shown how to evaluate (and to update if necessary) the quantifications performed and how to watch the results of basic uni and multivariate analyses of performed quantifications.
+* A profiling of all spectra is performed and an output of quantifications (with associated quality indicators) and figures is generated.
+* Lastly, it is shown how to evaluate (and to update if necessary) the quantifications performed and how to watch the results of basic uni and multivariate analyses of the achieved quantification dataset.
 
 A link to an online document showing how to perform similar steps through the Shiny GUI is available in the Readme file of the Github website: https://github.com/danielcanueto/rDolphin.
 
@@ -69,7 +69,7 @@ In addition, the user can also visualize the results of STOCSY or RANSY in a reg
 identification_tool(imported_data$dataset,imported_data$ppm,c(2.14,2.12),method='spearman')
 ```
 
-If you do not know how to annotate a signal in the dataset, you can evaluate possible options ranked by probability through
+If you do not know how to annotate a signal in the dataset, you can evaluate possible options in the biofluid studied (blood) ranked by probability through:
 ```
 View(imported_data$repository)
 ```
@@ -89,14 +89,14 @@ profiling_model=profile_model_spectrum(imported_data,imported_data$ROI_data)
 
 * `ROI_data`, a data frame of the ROI data used during the process.
 
-* `total_signals_parameters`, a data frame with parameters of fitting and of quality of fitting (e.g.  the fitting error) for every quantified signal. This matrix can be useful to see if an ROI does not contain e.g. the accurate chemical shift for a signal.
+* `total_signals_parameters`, a data frame with parameters of fitting and of quality of fitting (e.g.  the fitting error) for every quantified signal.
 
-Feel free to modify cells of the ROI information contained in`imported_data$ROI_data` or to add or remove ROIs and to repeat the model spectrum profiling process.
+Feel free to modify cells of the ROI information contained in `imported_data$ROI_data` or to add or remove ROIs and to repeat the model spectrum profiling process.
 
 
 ## Automatic profiling of spectra
 
-When you are satisfied with the ROI profiles, you can perform an automatic profiling of the spectra:
+When you are satisfied with the ROI data contained in `imported_data$ROI_data`, you can perform an automatic profiling of the spectra:
 ```
 profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
 ```
@@ -133,29 +133,26 @@ help show the difference between the expected chemical shift and the calculated 
 If the user wants to load the information and the plot of these suspicious quantifications, he can do it through the  `load_quantification` function. Run these commands to load the TSP quantification of the first experiment:
 ```
 loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=1,col=1),imported_data$ROI_data)
-loaded_quantification$p
-loaded_quantification$ROIpar
 ```
-The `p` element of `loaded_quantification` shows an interactive figure of the quantification in order to check its quality. It can be observed that the signal fitted is narrower than the real one. This effect is caused by the binding of the TSP to the protein: this binding creates excessive half bandwidth variability in the TSP signal in a spectra dataset. The 'ROI_par' element shows the ROI parameters used during this quantification.
+The `p` element of `loaded_quantification` shows an interactive figure of the quantification in order to check its quality. It can be observed that the signal fitted is narrower than the real one. This effect is caused by the binding of the TSP to the protein: this binding creates excessive half bandwidth variability in the TSP signal in a spectra dataset. The `ROI_par` element shows the ROI parameters used during this quantification.
 
 As there is neither baseline nor any overlapping signal, it is more optimal to change the quantification mode for the TSP signal to "Clean Sum", so integration instead of fitting is performed:
 ```
 imported_data$ROI_data[1,3]="Clean Sum"
 ```
-And to update the ROI profiling in all experiments of the dataset 
- (inputting `1:nrow(imported_data$dataset)` in the `not_automatic_quant` function):
+And to update the ROI profiling in all experiments of the dataset (inputting `1:nrow(imported_data$dataset)` ) through the `not_automatic_quant` function):
 ```
 updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,1:nrow(imported_data$dataset),imported_data$ROI_data[1,,drop=F],imported_data$useful_data)
 ```
     
 ## Uni and multivariate analysis of fingerprinting and profiling data
 
-Univariate analyses of every bin could be already seen with the `profile_model_spectrum` function. The p values calculated can be also analysed with the `p_values` function:
+Univariate analyses of every bin could be already seen with the `profile_model_spectrum` function. The p values calculated can be outputted with the `p_values` function:
 ```
 pval=p_values(imported_data$dataset,imported_data$Metadata)
 ```
 
-However, the big advantage of profiling data to fingerprinting data is its resilience to overlapping and chemical shift variability (typical in urine) or baseline (typical in blood). Basic univariate analyses of profiling data can be evaluated changing the data called in `p_values`:
+However, the big advantage of profiling data to fingerprinting data is its resilience to overlapping and to chemical shift variability (typical in urine) or baseline (typical in blood). Basic univariate analyses of profiling data can be evaluated changing the data called in `p_values`:
 ```
 pval=p_values(profiling_data$final_output$quantification,imported_data$Metadata)
 ```
@@ -164,3 +161,9 @@ Finally, dendrogram heatmaps can show us interesting subsets of samples or signa
 ```
 type_analysis_plot(profiling_data$final_output$quantification,profiling_data$final_output,imported_data,'dendrogram_heatmap')
 ```
+
+## And now, what do I have to do?
+
+After this introduction to the wide range of options to perform the automatic profiling of spectra datasets and to maximize the quality of this profiling, feel free to investigate the inputs and outputs of every function. A thorough description of the structure of every file necessary to input to the tool is available here: https://docs.google.com/document/d/1t--gF5mCBNhbGvn53vKth2nlTzucLx55EfUWIgrMh_o/edit?usp=sharing
+
+We also share in the rDolphin website the ROI information we have found optimal in several matrixes. This ROI information will have to be adapted to the changes caused by the lab protocol during sample preparation or during spectrum acqusition and pre-processing.
