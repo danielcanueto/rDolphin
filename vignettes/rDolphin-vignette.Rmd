@@ -12,9 +12,17 @@ rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spec
 
 In addition, rDolphin comes with tools to load individual quantifications to be evaluated and updated or to perform different kinds of exploratory analyses. For researchers with non-expert programming skills, the package incorporates a Shiny GUI.
 
-## Vignette Structure
+## Please run these commands in the R console to install the package:
 
-The vignette will show how to perform in the R console the profiling of a subset of 30 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 30 spectra belong to 15 patients with blood samples taken at two different times.
+1. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
+2. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+3. `library(rDolphin)`          #loads rDolphin
+
+If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
+
+## Introduction Structure
+
+The introduction will show how to perform in the R console the profiling of a subset of 30 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 30 spectra belong to 15 patients with blood samples taken at two different times.
 
 * First a CSV file is read to import all the necessary information to perform the profiling.
 * Then, an exploratory analysis of the spectra dataset is performed.
@@ -26,11 +34,15 @@ A link to an online document showing how to perform similar steps through the Sh
 
 ## Import of necessary data
 
-In the `extdata` folder of the package there is the necessary information to load the dataset of 30 spectra of MTBLS242:
+In the `extdata` folder of the package there is the necessary information to load a dataset of 30 spectra of MTBLS242. Run this command to find the path where this information is located on your computer:
+```
+file.path(system.file(package = "rDolphin"),"extdata")
+```
+You will find in the folder the next files:
 
 * A `Parameters` CSV file with the necessary information to import with the desired preprocessing parameters. A brief description is given inside the CSV file for each parameter.
 
-* A `dataset` CSV file with a matrix with each row a spectrum and each observation a bin. The header has the information to which ppm belongs every bin. Spectra can also be inputted as Bruker experiments if specified in the `Parameters` file.
+* A `Dataset` CSV file with a matrix with each row a spectrum and each observation a bin. The header has the information to which ppm belongs every bin. Spectra can also be inputted as Bruker experiments if specified in the `Parameters` file.
 
 * A `Metadata` CSV file with three columns:
 
@@ -41,6 +53,9 @@ In the `extdata` folder of the package there is the necessary information to loa
     Accurate information about `Individual` and `Type` is not necessary for the program to be run, but it will be useful to maximize the quality of exploratory analyses.
 
 * An `ROI_profiles` CSV file with information of every signal to be quantified. Every signal is located in an ROI that can contain one or more signals to quantify. Several parameters of the signal and the kind of quantification are also shown.
+
+A thorough description of the structure of every file necessary to input to the tool is available here: https://docs.google.com/document/d/1t--gF5mCBNhbGvn53vKth2nlTzucLx55EfUWIgrMh_o/edit?usp=sharing
+
 
 Run these commands to set as directory the `extdata` folder and to import the data contained there:
 ```
@@ -58,21 +73,30 @@ rDolphin eases the analysis of the dataset complexity through two kinds of inter
 ```
 clustspectraplot(imported_data)
 ```
+![alt text](https://user-images.githubusercontent.com/21126465/32982160-4c222af4-cc80-11e7-9431-a3533c10f880.png)
+
 * the median spectrum of each kind of sample:
 ```
 medianplot(imported_data)
 ```
+![alt text](https://user-images.githubusercontent.com/21126465/32982158-4bedc93a-cc80-11e7-8c5a-6bd91696283a.png)
+
 For each kind of figure, a red trace appears below the spectra. This red trace gives the results of a univariate analysis for every bin and helps the user detect interesting regions to profile. Feel free to play with the interactivity of the Plotly figure.
+
+If you do not know how to annotate a signal in the dataset, you can evaluate possible options in the biofluid studied (blood) ranked by probability thanks to signal repository included with the package. For example, these commands:
+```
+ind=intersect(which(imported_data$repository$Shift..ppm.<3.37),which(imported_data$repository$Shift..ppm.>3.35))
+View(imported_data$repository[ind,])
+```
+help see which signals in blood matrix are seen in the 3.37-3.35 ppm region. A methanol singlet stands out in the results. Acconrdingly, a high intensity singlet appears in our dataset. The filtering by biofluid avoids wrong annotations typical when using general databases.
 
 In addition, the user can also visualize the results of STOCSY or RANSY in a region of the dataset. These are the results achieved for a glutamine signal at 2.14-2.12 ppm:
 ```
 identification_tool(imported_data$dataset,imported_data$ppm,c(2.14,2.12),method='spearman')
 ```
+![alt text](https://user-images.githubusercontent.com/21126465/32982159-4c080d0e-cc80-11e7-88c6-9ec61b11e378.png)
 
-If you do not know how to annotate a signal in the dataset, you can evaluate possible options in the biofluid studied (blood) ranked by probability through:
-```
-View(imported_data$repository)
-```
+The other important glutamine signal at 2.45-2.4 ppm stands out. 
 
 ## Evaluation of ROI information
 
@@ -86,7 +110,7 @@ profiling_model=profile_model_spectrum(imported_data,imported_data$ROI_data)
 `profiling_model` has three elements:
 
 * `p`, a Plotly figure showing the fitting applied to every ROI in the model spectrum as well as a red trace below showing the univariate analysis on each bin. 
-
+![alt text](https://user-images.githubusercontent.com/21126465/32982245-abe6d10a-cc81-11e7-8953-e4b84d99aadd.png)
 * `ROI_data`, a data frame of the ROI data used during the process.
 
 * `total_signals_parameters`, a data frame with parameters of fitting and of quality of fitting (e.g.  the fitting error) for every quantified signal.
@@ -164,6 +188,6 @@ type_analysis_plot(profiling_data$final_output$quantification,profiling_data$fin
 
 ## And now, what do I have to do?
 
-After this introduction to the wide range of options to perform the automatic profiling of spectra datasets and to maximize the quality of this profiling, feel free to investigate the inputs and outputs of every function. A thorough description of the structure of every file necessary to input to the tool is available here: https://docs.google.com/document/d/1t--gF5mCBNhbGvn53vKth2nlTzucLx55EfUWIgrMh_o/edit?usp=sharing
+After this introduction to the wide range of options to perform the automatic profiling of spectra datasets and to maximize the quality of this profiling, feel free to investigate the inputs and outputs of every function.
 
-We also share in the rDolphin website the ROI information we have found optimal in several matrixes. This ROI information will have to be adapted to the changes caused by the lab protocol during sample preparation or during spectrum acqusition and pre-processing.
+You should investigate how to adapt the ROI profiles to the matrix studied. We share in the rDolphin website the ROI information we have found optimal in several matrixes. This ROI information will have to be adapted to the changes caused by the lab protocol during sample preparation or during spectrum acqusition and pre-processing.
