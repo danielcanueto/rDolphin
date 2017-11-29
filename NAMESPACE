@@ -3,6 +3,7 @@
 export(identification_tool)
 export(alignment)
 export(autorun)
+export(autorun_improv)
 export(clustspectraplot)
 export(fitting_variables)
 export(import_data)
