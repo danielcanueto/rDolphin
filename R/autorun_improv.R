@@ -114,7 +114,7 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
     print(paste('ROI',ROI_index,'of',nrow(ROI_separator)))
 
 
-	index_to_use_3=which(rowSums(quantifications_to_repeat[,ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2]])>0)
+	index_to_use_3=which(rowSums(quantifications_to_repeat[,ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],drop=F])>0)
 
     #Quantification for every spectrum
     for (spectrum_index in index_to_use_3) {
