@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1512638362465.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "638D9C4F",
+    "lastKnownWriteTime" : 1512638255,
+    "last_content_update" : 1512638255,
+    "path" : "~/GitHub/rDolphin/vignettes/rDolphin-vignette.Rmd",
+    "project_path" : "vignettes/rDolphin-vignette.Rmd",
+    "properties" : {
+        "cursorPosition" : "168,3",
+        "scrollLine" : "7"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
