@@ -45,7 +45,7 @@ plotdata3$variable = c(
 )
 plot_title = paste(imported_data$Experiments[row],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
 colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow'))
-loaded_quantification$plot=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
+loaded_quantification$plot=plotly::plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
 for (i in 4:nrow(plot_data)) {
   plotdata5 =  data.frame(Xdata=Xdata, variable=rownames(plot_data)[i] ,value=plot_data[i,])
 
@@ -74,7 +74,7 @@ dummy = which(is.na(ROI_data[, 1]))
 	ind=which(ROI_separator[,2]-col>=0)[1]
 	loaded_quantification$ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
 
-	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,ind,drop=F]),t(final_output$fitting_error[row,ind,drop=F]),t(final_output$signal_area_ratio[row,ind,drop=F]))
+	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,info$col,drop=F]),t(final_output$fitting_error[row,info$col,drop=F]),t(final_output$signal_area_ratio[row,info$col,drop=F]))
 	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
 	rownames(loaded_quantification$qualitypar)=imported_data$signals_names[col]
 return(loaded_quantification)

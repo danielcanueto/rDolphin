@@ -89,7 +89,7 @@ If you do not know how to annotate a signal in the dataset, you can evaluate pos
 ind=intersect(which(imported_data$repository$Shift..ppm.<3.37),which(imported_data$repository$Shift..ppm.>3.35))
 View(imported_data$repository[ind,])
 ```
-help see which signals in blood matrix are seen in the 3.37-3.35 ppm region. A methanol singlet stands out in the results. Acconrdingly, a high intensity singlet appears in our dataset. The filtering by biofluid avoids wrong annotations typical when using general databases.
+help see which signals in blood matrix are seen in the 3.37-3.35 ppm region. A methanol singlet stands out in the results. Accordingly, a high-intensity singlet appears in our dataset. The filtering by biofluid avoids wrong annotations typical when using general databases.
 
 In addition, the user can also visualize the results of STOCSY or RANSY in a region of the dataset. These are the results achieved for a glutamine signal at 2.14-2.12 ppm:
 ```
@@ -101,7 +101,7 @@ The other important glutamine signal at 2.45-2.4 ppm stands out.
 
 ## Evaluation of ROI information
 
-Looking to the performance of profiling in a model spectrum can help to improve the parameters in some ROIs and to check additional regions of the spectrum with the potential to give interesting insights to a study.
+Looking to the performance of profiling in a model spectrum can help to improve the parameters in some ROIs and to check additional regions of the spectrum with the potential to give interesting insights into a study.
 
 Run the next command:
 ```
@@ -121,9 +121,15 @@ Feel free to modify cells of the ROI information contained in `imported_data$ROI
 
 ## Automatic profiling of spectra
 
-When you are satisfied with the ROI data contained in `imported_data$ROI_data`, you can perform an automatic profiling of the spectra:
+When you are satisfied with the ROI data contained in `imported_data$ROI_data`, you can perform an automatic profiling of the spectra through this command:
 ```
 profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+```
+
+If you do not want to wait for the completion of the profiling of the dataset, you can stop the profiling and load this .RData file, where the data of an already performed profiling session is saved:
+
+```
+load(file.path(system.file(package = "rDolphin"),"extdata","MTBLS242_subset_profiling_data.RData"))
 ```
 
 `profiling_data` has two variables:
@@ -132,43 +138,63 @@ profiling_data=autorun(imported_data,imported_data$final_output,imported_data$us
 
 * `useful_data`, a list of lists where useful information of each quantification is stored, for reproducibility and profiling update purposes.
 
+
+
+
 To output in your computer CSV files with the `final_output` data, run this command:
 ```
-write_info('output_info',profiling_data$final_output,imported_data$ROI_data)
+write_info(file.path(system.file(package = "rDolphin"),"extdata"),profiling_data$final_output,imported_data$ROI_data)
 ```
-Go to the `output_info` folder stored in the `extdata` folder mentioned in `Import of necessary data` and you will find the outputted information.
+Go to the `extdata` folder mentioned in `Import of necessary data` and you will find the outputted information.
 
 To output in your computer PDFs with plots of every quantification, run this command:
 ```
-write_plots('',profiling_data$final_output,imported_data,profiling_data$useful_data)
+write_plots(file.path(system.file(package = "rDolphin"),"extdata"),profiling_data$final_output,imported_data,profiling_data$useful_data)
 ```
 A `plots` folder is stored in the `extdata` folder mentioned in `Import of necessary data`. You can see a PDF file for every signal with all quantifications.
 
 
 ## Validation of quantifications
 
-The `validation` function allows to analyse possible wrong identifications or quantifications. For example, these commands:
+The `validation` function allows to analyse possible wrong identifications or quantifications. For example, this command:
 ```
-validation_data=validation(profiling_data$final_output,profiling_data$alarmmatrix,3)
-library(DT)
-datatable(round(validation_data$shownmatrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(validation_data$shownmatrix), backgroundColor = styleInterval(validation_data$brks, validation_data$clrs))
-```
-help show the difference between the expected chemical shift and the calculated chemical shift in every signal quantification. The `datatable` function of `DT` package helps easily identify the cells with a darker red as the more suspicious quantifications. 
+View(validation(profiling_data$final_output,profiling_data$alarmmatrix,1)$shownmatrix)
 
-If the user wants to load the information and the plot of these suspicious quantifications, he can do it through the  `load_quantification` function. Run these commands to load the TSP quantification of the first experiment:
 ```
-loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=1,col=1),imported_data$ROI_data)
-```
-The `p` element of `loaded_quantification` shows an interactive figure of the quantification in order to check its quality. It can be observed that the signal fitted is narrower than the real one. This effect is caused by the binding of the TSP to the protein: this binding creates excessive half bandwidth variability in the TSP signal in a spectra dataset. The `ROI_par` element shows the ROI parameters used during this quantification.
+shows the fitting error in every signal quantification. And this command:
 
-As there is neither baseline nor any overlapping signal, it is more optimal to change the quantification mode for the TSP signal to "Clean Sum", so integration instead of fitting is performed:
 ```
-imported_data$ROI_data[1,3]="Clean Sum"
+View(validation(profiling_data$final_output,profiling_data$alarmmatrix,3)$shownmatrix)
+
 ```
-And to update the ROI profiling in all experiments of the dataset (inputting `1:nrow(imported_data$dataset)` ) through the `not_automatic_quant` function):
+shows the difference between the expected chemical shift and the calculated chemical shift in every signal quantification.
+
+
+
+If the user wants to load the information and the plot of these suspicious quantifications, he can do it through the  `load_quantification` function. Run these commands to load the lineshape fitting with most fitting error of 'Valine-2':
 ```
-updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,1:nrow(imported_data$dataset),imported_data$ROI_data[1,,drop=F],imported_data$useful_data)
+loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=23,col=4),imported_data$ROI_data)
+loaded_quantification$plot
+loaded_quantification$qualitypar
 ```
+
+![alt text](https://user-images.githubusercontent.com/21126465/33806333-059d973c-ddc7-11e7-8f56-f4ba5d472764.png)
+
+You can try if repeating this quantification can firther optimize the results, through the `not_automatic_quant` function):
+```
+updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,23,imported_data$ROI_data[3:4,,drop=F],imported_data$useful_data)
+```
+And compare the results:
+```
+loaded_updated_quantification=load_quantification(updated_profiling_data$useful_data,imported_data,updated_profiling_data$final_output,list(row=23,col=4),imported_data$ROI_data)
+loaded_updated_quantification$plot
+loaded_updated_quantification$qualitypar
+```
+
+![alt text](https://user-images.githubusercontent.com/21126465/33806332-05828d52-ddc7-11e7-9e01-990307c3287c.png)
+
+If satisfied with the repeated lineshape fitting, the `updated_profiling_data` already contains the updated quantification.
+
     
 ## Uni and multivariate analysis of fingerprinting and profiling data
 
@@ -186,9 +212,13 @@ Finally, dendrogram heatmaps can show us interesting subsets of samples or signa
 ```
 type_analysis_plot(profiling_data$final_output$quantification,profiling_data$final_output,imported_data,'dendrogram_heatmap')
 ```
+![alt text](https://user-images.githubusercontent.com/21126465/33806410-f9ca64c0-ddc7-11e7-8e75-d3a38669bd24.png)
+
+For example, the heat map shows that the 'U3_61' signal correspond probably to another signal of L-valine.
+
 
 ## And now, what do I have to do?
 
 After this introduction to the wide range of options to perform the automatic profiling of spectra datasets and to maximize the quality of this profiling, feel free to investigate the inputs and outputs of every function.
 
-You should investigate how to adapt the ROI profiles to the matrix studied. We share in the rDolphin website the ROI information we have found optimal in several matrixes. This ROI information will have to be adapted to the changes caused by the lab protocol during sample preparation or during spectrum acqusition and pre-processing.
+You should investigate how to adapt the ROI profiles to the matrix studied. We share on the rDolphin website the ROI information we have found optimal in several matrixes. This ROI information will have to be adapted to the changes caused by the lab protocol during sample preparation or during spectrum acquisition and pre-processing.

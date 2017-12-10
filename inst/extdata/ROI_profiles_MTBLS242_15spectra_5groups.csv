@@ -1,11 +1,11 @@
 ROI left edge,ROI right edge,Quantification Mode,Metabolite,Quantification Signal,Chemical shift,Chemical shift tolerance,Half bandwidth,Multiplicity,J coupling,Roof effect
 0.04,-0.07,Clean Fitting,TSP,1,-0.026,0.015,8.4,1,0,0
 0.705,0.675,Baseline Sum,U0_7,1,0.7,0.002,1.4,1,0,0
-1.06,0.915,Baseline Fitting,Isoleucine,1,1.003,0.002,1.4,2,7.001,0
-1.06,0.915,Baseline Fitting,Valine,2,0.985,0.002,1.4,2,7.01,0
-1.06,0.915,Baseline Fitting,Valine,1,1.0356,0.002,1.4,2,7.05,0
-1.06,0.915,Baseline Fitting,Leucine,1,0.955,0.002,1.4,3,5.897,0
-1.06,0.915,Baseline Fitting,Isoleucine,2,0.933,0.002,1.4,3,7.414,0
+1.02,0.973,Baseline Fitting,Isoleucine,1,1.003,0.002,1.4,2,7.001,0
+1.02,0.973,Baseline Fitting,Valine,2,0.985,0.002,1.4,2,7.01,0
+1.055,1.015,Baseline Fitting,Valine,1,1.0356,0.002,1.4,2,7.05,0
+0.973,0.915,Baseline Fitting,Leucine,1,0.955,0.002,1.4,3,5.897,0
+0.973,0.915,Baseline Fitting,Isoleucine,2,0.933,0.002,1.4,3,7.414,0
 1.08,1.05,Baseline Fitting,U1_066,1,1.0666,0.002,1.2,2,7.2,0
 1.128,1.102,Baseline Fitting,U1_115,1,1.1152,0.002,1.6,2,6.9,0
 1.21,1.155,Baseline Fitting,Ethanol,1,1.1784,0.002,1.2,3,6.96,0
