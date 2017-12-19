@@ -1,0 +1,532 @@
+library(grid)
+library(gridExtra)
+library(ggplot2)
+sapply(list.files('C:/Users/Usuario/Downloads/prediction_code',full.names=T),source)
+sapply(list.files('C:/Users/Usuario/Documents/GitHub/rDolphin/R',full.names=T),source)
+aaa=missForest(load("C:/Bruker/TopSpin3.2/data/MNavarro_femtes_IRSI/data_analysis/resultats_paper_3.RData")
+ac$final_output$fitting_error[ac$final_output$fitting_error>1]=1
+millorat_3$final_output$fitting_error[millorat_3$final_output$fitting_error>1]=1
+profiling_names_corrected$final_output$fitting_error[profiling_names_corrected$final_output$fitting_error>1]=1
+millorat_cow_9$final_output$fitting_error[millorat_cow_9$final_output$fitting_error>1]=1
+profiling_names_corrected$final_output$fitting_error[profiling_names_corrected$final_output$fitting_error<(-1)]=1
+millorat_cow_9$final_output$fitting_error[millorat_cow_9$final_output$fitting_error<(-1)]=1
+profiling_names_corrected$final_output$fitting_error[which(profiling_names_corrected$final_output$fitting_error<0)]=abs(profiling_names_corrected$final_output$fitting_error[which(profiling_names_corrected$final_output$fitting_error<0)])
+millorat_cow_9$final_output$fitting_error[which(millorat_cow_9$final_output$fitting_error<0)]=abs(millorat_cow_9$final_output$fitting_error[which(millorat_cow_9$final_output$fitting_error<0)])
+ac$final_output$fitting_error[ac$final_output$fitting_error<(-1)]=1
+millorat_3$final_output$fitting_error[millorat_3$final_output$fitting_error<(-1)]=1
+ac$final_output$fitting_error[which(ac$final_output$fitting_error<0)]=abs(ac$final_output$fitting_error[which(ac$final_output$fitting_error<0)])
+millorat_3$final_output$fitting_error[which(millorat_3$final_output$fitting_error<0)]=abs(millorat_3$final_output$fitting_error[which(millorat_3$final_output$fitting_error<0)])
+
+#####
+
+predicted_shift=millorat_cow_9$predicted_shift
+predicted_width=millorat_cow_9$predicted_width
+predicted_width[,apply(predicted_width,2,function(x)length(unique(x)))==1]=NA
+predicted_intensity=millorat_cow_9$predicted_intensity
+
+ind=c(which(initial_corrected$ROI_data[,5]==0),grep('Sum',initial_corrected$ROI_data[,3]))
+dades=millorat_cow_9$max_shift[,-ind]-millorat_cow_9$min_shift[,-ind]
+lol=as.vector(diff(apply(millorat_cow_9$final_output$shift[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades2=t(replicate(146,lol))
+dades3=(millorat_cow_9$max_width[,-ind]-millorat_cow_9$min_width[,-ind])/millorat_cow_9$predicted_width[,-ind]
+lol=as.vector(diff(apply(millorat_cow_9$final_output$half_band_width[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades4=t(replicate(146,lol))/apply(millorat_cow_9$final_output$half_band_width[,-ind],2,function(x)median(x,na.rm=T))
+dades5=100*millorat_cow_9$max_intensity[,-ind]-millorat_cow_9$min_intensity[,-ind]/millorat_cow_9$predicted_intensity[,-ind]
+lol=as.vector(diff(apply(millorat_cow_9$final_output$intensity[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades6=100*t(replicate(146,lol))/apply(millorat_cow_9$final_output$intensity[,-ind],2,function(x)median(x,na.rm=T))
+sed=c(which(apply(dades,2,function(x)(all(is.na(x))))==T),which(apply(dades2,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades=dades[,-sed]
+  dades2=dades2[,-sed]
+}
+sed=c(which(apply(dades3,2,function(x)(all(is.na(x))))==T),which(apply(dades4,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades3=dades3[,-sed]
+  dades4=dades4[,-sed]
+}
+sed=c(which(apply(dades5,2,function(x)(all(is.na(x))))==T),which(apply(dades6,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades5=dades5[,-sed]
+  dades6=dades6[,-sed]
+}
+
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades2),length(dades))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades2,dades),metadata=metadata)
+p10 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin()+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  scale_y_continuous(limits=c(0,0.01))+
+  labs(title='Chemical shift',
+       y="ppm",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades4),length(dades3))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades4,dades3),metadata=metadata)
+p11 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+geom_violin()+
+  scale_y_continuous(limits=c(0,0.8))+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  labs(title='Half bandwidth',y='% of median half bandwidth',x='') +
+theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                   axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades6),length(dades5))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades6,dades5),metadata=metadata)
+p12 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin()+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  scale_y_continuous(limits=c(0,300))+
+  labs(title='Intensity',
+       y="% of median intensity",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+
+
+predicted_shift_2=millorat_3$predicted_shift
+predicted_width_2=millorat_3$predicted_width
+predicted_width_2[,apply(predicted_width_2,2,function(x)length(unique(x)))==1]=NA
+predicted_intensity_2=millorat_3$predicted_intensity
+ind=c(which(ab$ROI_data[,5]==0),grep('Sum',ab$ROI_data[,3]))
+dades7=millorat_3$max_shift[,-ind]-millorat_3$min_shift[,-ind]
+lol=as.vector(diff(apply(millorat_3$final_output$shift[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades8=t(replicate(146,lol))
+dades9=(millorat_3$max_width[,-ind]-millorat_3$min_width[,-ind])/millorat_3$predicted_width[,-ind]
+lol=as.vector(diff(apply(millorat_3$final_output$half_band_width[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades10=t(replicate(146,lol))/apply(millorat_3$final_output$half_band_width[,-ind],2,function(x)median(x,na.rm=T))
+dades11=100*millorat_3$max_intensity[,-ind]-millorat_3$min_intensity[,-ind]/millorat_3$predicted_intensity[,-ind]
+lol=as.vector(diff(apply(millorat_3$final_output$intensity[,-ind],2,function(x)quantile(x,c(0.025,0.975)))))
+dades12=100*t(replicate(146,lol))/apply(millorat_3$final_output$intensity[,-ind],2,function(x)median(x,na.rm=T))
+sed=c(which(apply(dades7,2,function(x)(all(is.na(x))))==T),which(apply(dades8,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades7=dades7[,-sed]
+dades8=dades8[,-sed]
+}
+sed=c(which(apply(dades9,2,function(x)(all(is.na(x))))==T),which(apply(dades10,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades9=dades9[,-sed]
+  dades10=dades10[,-sed]
+}
+sed=c(which(apply(dades11,2,function(x)(all(is.na(x))))==T),which(apply(dades12,2,function(x)(all(is.na(x))))==T))
+if (length(sed)>0) {
+  dades11=dades11[,-sed]
+  dades12=dades12[,-sed]
+}
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades8),length(dades7))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades8,dades7),metadata=metadata)
+p13 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin(alpha=0.5)+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  scale_y_continuous(limits=c(0,0.01))+
+  labs(title='Chemical shift',
+       y="ppm",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades10),length(dades9))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades10,dades9),metadata=metadata)
+p14 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin(alpha=0.5)+
+  scale_y_continuous(limits=c(0,0.8))+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  labs(title='Half bandwidth',y='% of median half bandwidth',x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+
+metadata=factor(rep(c("Original CIs","Calculated CIs"),c(length(dades12),length(dades11))),levels =c("Original CIs","Calculated CIs") )
+data=data.frame(shift=c(dades12,dades11),metadata=metadata)
+p15 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_violin(alpha=0.5)+
+  scale_fill_manual(values=c("Original CIs"="yellow","Calculated CIs"="red")) +
+  scale_y_continuous(limits=c(0,300))+
+  labs(title='Intensity',
+       y="% of median intensity",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+g_legend=function(a.gplot){
+  tmp = ggplot_gtable(ggplot_build(a.gplot))
+  leg = which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend = tmp$grobs[[leg]]
+  return(legend)}
+mylegend=g_legend(p10)
+
+
+p16 <- grid.arrange(arrangeGrob(p10+theme(legend.position = 'none'),
+                                p11+theme(legend.position = 'none'),
+                                p12+theme(legend.position = 'none'),
+                                top=textGrob('Faecal extract dataset',gp=gpar(fontsize=14,fontface='bold')),nrow=1) )
+p17 <- grid.arrange(arrangeGrob(p13+theme(legend.position = 'none'),
+                                p14+theme(legend.position = 'none'),
+                                p15+theme(legend.position = 'none'),
+                                top=textGrob('Serum extract dataset',gp=gpar(fontsize=14,fontface='bold')),nrow=1) )
+
+p18 <- grid.arrange(arrangeGrob(p16,p17,
+                                nrow=2),
+                    mylegend, heights=c(10, 1))
+
+
+median(dades)/median(dades2)-1
+median(dades3)/median(dades4)-1
+median(dades5)/median(dades6)-1
+median(dades7)/median(dades8)-1
+median(dades9)/median(dades10)-1
+median(dades11)/median(dades12)-1
+
+######
+
+
+j=16
+i=order(millorat_cow_9$final_output$quantification[,j]/profiling_names_corrected$final_output$quantification[,j],decreasing=T)[3]
+df <- data.frame(y= profiling_names_corrected$final_output$shift[,j], y.hat= predicted_shift[,j],
+                 min.se=millorat_cow_9$min_shift[,j],
+                 max.se=millorat_cow_9$max_shift[,j])
+p1 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Obtained chemical shift") +
+  ylab("Predicted chemical shift") +
+  ggtitle("Prediction of chemical shift")
+p1=p1+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+
+df <- data.frame(y= profiling_names_corrected$final_output$half_band_width[,j], y.hat= predicted_width[,j],
+                 min.se=millorat_cow_9$min_width[,j],
+                 max.se=millorat_cow_9$max_width[,j])
+p2 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Obtained half bandwidth") +
+  ylab("Predicted half bandwidth") +
+  ggtitle("Prediction of half bandwidth")
+p2=p2+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+
+df <- data.frame(y= profiling_names_corrected$final_output$intensity[,j], y.hat= predicted_intensity[,j],
+                 min.se=millorat_cow_9$min_intensity[,j],
+                 max.se=millorat_cow_9$max_intensity[,j])
+p3 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Obtained intensity") +
+  ylab("Predicted intensity") +
+  ggtitle("Prediction of intensity")
+
+p3=p3+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)
+
+
+j=16
+i=order(millorat_cow_9$final_output$quantification[,j]/profiling_names_corrected$final_output$quantification[,j],decreasing=T)[3]
+i=2
+df <- data.frame(y= profiling_names_corrected$final_output$shift[,j], y.hat= predicted_shift[,j],
+                 min.se=millorat_cow_9$min_shift[,j],
+                 max.se=millorat_cow_9$max_shift[,j])
+p1 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Collected chemical shift") +
+  ylab("Predicted chemical shift") +
+  ggtitle("Prediction of chemical shift")
+p1=p1+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)+
+  theme(axis.text=element_text(size=22),text = element_text(size=22),plot.title = element_text(size = 20))
+
+df <- data.frame(y= profiling_names_corrected$final_output$half_band_width[,j], y.hat= predicted_width[,j],
+                 min.se=millorat_cow_9$min_width[,j],
+                 max.se=millorat_cow_9$max_width[,j])
+p2 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Collected half bandwidth") +
+  ylab("Predicted half bandwidth") +
+  ggtitle("Prediction of half bandwidth")
+p2=p2+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)+
+  theme(axis.text=element_text(size=22),text = element_text(size=22),plot.title = element_text(size = 20))
+
+df <- data.frame(y= profiling_names_corrected$final_output$intensity[,j], y.hat= predicted_intensity[,j],
+                 min.se=millorat_cow_9$min_intensity[,j],
+                 max.se=millorat_cow_9$max_intensity[,j])
+p3 <- ggplot(df, aes(x = y, y = y.hat)) +
+  geom_errorbar(aes(ymin=min.se, ymax=max.se), width=.00001) +
+  geom_point() +
+  geom_abline(intercept=0, slope=1, linetype=2) +
+  xlab("Collected intensity") +
+  ylab("Predicted intensity") +
+  ggtitle("Prediction of intensity")
+
+p3=p3+geom_point(x=df$y[j], y = df$y.hat[j],color='red')+
+  geom_errorbar(data=df[j,,drop=F], aes(ymin=min.se, ymax=max.se),color='red', width=.00001)+
+  theme(axis.text=element_text(size=22),text = element_text(size=22),plot.title = element_text(size = 20))
+
+######
+FeaturesMatrix=millorat_cow_9$useful_data[[i]][[j]]$FeaturesMatrix
+Xdata_2=millorat_cow_9$useful_data[[i]][[j]]$Xdata
+Xdata_2=seq(max(Xdata_2),min(Xdata_2),-0.00001)
+program_parameters=millorat_cow_9$useful_data[[i]][[j]]$program_parameters
+multiplicities=FeaturesMatrix[1,11]
+roof_effect=FeaturesMatrix[1,12]
+multiplicities=FeaturesMatrix[1,11]
+roof_effect=FeaturesMatrix[1,12]
+fitted_signals=matrix(NA,11,length(Xdata_2))
+fitted_signals[1,] = approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_9$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+multiplicities=FeaturesMatrix[1,11]
+roof_effect=FeaturesMatrix[1,12]
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+fitted_signals[2,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+data3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+data4=data.frame(x=Xdata_2,y=approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,profiling_names_corrected$useful_data[[i]][[j]]$plot_data[5,],Xdata_2)$y)*0.8
+data5=data.frame(x=Xdata_2,y=approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,millorat_cow_9$useful_data[[i]][[j]]$plot_data[5,],Xdata_2)$y)
+#####
+ab1=ggplot() +
+  geom_rect(aes(xmin=signals_parameters[2]-0.003,xmax=signals_parameters[2]+0.003,ymin=-Inf,ymax=Inf,fill="E31A1C"),alpha=0.3)+
+  geom_rect(aes(xmin=millorat_cow_9$min_shift[i,j],xmax=millorat_cow_9$max_shift[i,j],ymin=-Inf,ymax=Inf,fill="1F78B4"),alpha=0.3)+
+  geom_line(data=data3,aes(x,y),colour='black') +
+  geom_line(data=data4,aes(x,y,colour="#E31A1C"),linetype="dashed",size=1)+
+  geom_line(data=data5,aes(x,y,colour="#1F78B4" ),linetype="dashed",size=1)+
+  scale_fill_manual(values= c("#E31A1C", "#1F78B4"),name="CIs",
+                    breaks=c("#E31A1C", "#1F78B4"),labels=c("Updated", "Original")) +
+  scale_colour_manual(values= c("#E31A1C", "#1F78B4"),name="Fitting",
+                      breaks=c("#E31A1C", "#1F78B4"),labels=c("Updated", "Original")) +
+  geom_line(data=data3,aes(x,y),colour='black') +
+  scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+labs(x = "ppm",y='Intensity',
+                                                                               title = "Old and new chemical shift CIs") +
+  theme_bw() + theme(axis.text=element_text(size=22),legend.position='none',text = element_text(size=22),
+                     plot.title = element_text(size = 20),panel.border = element_blank(),
+                     panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+ab4=ggplot(data3, aes(x,y)) +
+  geom_rect(aes(xmin=1.035,xmax=1.06,ymin=0,ymax=2),fill='grey',alpha=0.1)+
+  geom_line(data=data3,aes(x,y),colour='black') +
+  scale_x_reverse(limits=c(1.08,1.035))+scale_y_continuous(limits=c(0,7.5))+ labs(x = "ppm",y='Intensity',
+                                                                                  title = "ROI 1.08-1.035 in faecal extract dataset") +
+  theme_bw() + theme(axis.text=element_text(size=22),text = element_text(size=22),plot.title = element_text(size = 20),panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+######
+
+multiplicities=FeaturesMatrix[1,11]
+roof_effect=FeaturesMatrix[1,12]
+fitted_signals=matrix(NA,11,length(Xdata_2))
+fitted_signals[1,] = approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_9$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+fitted_signals[2,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=profiling_names_corrected$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[3]=signals_parameters[3]*(1+0.25)
+fitted_signals[3,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=profiling_names_corrected$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[3]=signals_parameters[3]*(1-0.25)
+fitted_signals[4,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[3]=millorat_cow_9$max_width[i,j]
+fitted_signals[5,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[3]=millorat_cow_9$min_width[i,j]
+fitted_signals[6,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+data=data.frame(x=Xdata_2,twox=fitted_signals[4,],x2=fitted_signals[3,])
+data2=data.frame(x=Xdata_2,twox=fitted_signals[6,],x2=fitted_signals[5,])
+xdata3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+data4=data.frame(x=Xdata_2,y=approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,profiling_names_corrected$useful_data[[i]][[j]]$plot_data[5,],Xdata_2)$y)*0.8
+data5=data.frame(x=Xdata_2,y=approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,millorat_cow_9$useful_data[[i]][[j]]$plot_data[5,],Xdata_2)$y)
+#######
+ab2=ggplot(data, aes(x=x, y=twox)) +
+  geom_ribbon(data=data,aes(ymin=twox,ymax=x2,fill="#E31A1C"), alpha=0.3) +
+  geom_ribbon(data=data2,aes(ymin=twox,ymax=x2, fill="#1F78B4" ), alpha=0.3) +
+  geom_line(data=data3,aes(x,y),colour='black') +
+  geom_line(data=data4,aes(x,y,colour="#E31A1C"),linetype="dashed",size=1)+
+  geom_line(data=data5,aes(x,y,colour="#1F78B4" ),linetype="dashed",size=1)+
+  scale_fill_manual(values= c("#E31A1C", "#1F78B4"),name="CIs",
+                    breaks=c("#E31A1C", "#1F78B4"),labels=c("Updated", "Original")) +
+  scale_colour_manual(values= c("#E31A1C", "#1F78B4"),name="Fitting",
+                      breaks=c("#E31A1C", "#1F78B4"),labels=c("Updated", "Original")) +
+  geom_line(data=data3,aes(x,y),colour='black') +
+  scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+ labs(x = "ppm",y='Intensity',
+
+                                                                                title = "Old and new half bandwidth CIs") +
+  theme_bw() + theme(axis.text=element_text(size=22),legend.position='none',text = element_text(size=22),plot.title = element_text(size = 20),panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+######
+
+multiplicities=FeaturesMatrix[1,11]
+roof_effect=FeaturesMatrix[1,12]
+fitted_signals=matrix(NA,11,length(Xdata_2))
+# signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+fitted_signals[1,] = approx(millorat_cow_9$useful_data[[i]][[j]]$Xdata,colSums(millorat_cow_9$useful_data[[i]][[j]]$plot_data[4:6,]),Xdata_2)$y
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+fitted_signals[2,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=profiling_names_corrected$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[1]=0
+fitted_signals[3,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=profiling_names_corrected$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[1]=max(colSums(fitted_signals[1:2,]))
+fitted_signals[4,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[1]=millorat_cow_9$min_intensity[i,j]
+fitted_signals[5,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+signals_parameters=millorat_cow_9$useful_data[[i]][[j]]$signals_parameters[8:12]
+signals_parameters[1]=millorat_cow_9$max_intensity[i,j]
+fitted_signals[6,] = signal_fitting(signals_parameters,
+                                    Xdata_2,multiplicities,roof_effect,program_parameters$freq)
+fitted_signals[fitted_signals>2]=2
+data=data.frame(x=Xdata_2,twox=fitted_signals[4,],x2=fitted_signals[3,])
+data2=data.frame(x=Xdata_2,twox=fitted_signals[6,],x2=fitted_signals[5,])
+data3=data.frame(x=Xdata_2,y=colSums(fitted_signals[1:2,]))
+#####
+ab3=ggplot(data, aes(x=x, y=twox)) +
+  geom_ribbon(data=data,aes(ymin=twox,ymax=x2, fill="#E31A1C"), alpha=0.3) +
+  geom_ribbon(data=data2,aes(ymin=twox,ymax=x2, fill="#1F78B4" ), alpha=0.3) +
+  geom_line(data=data4,aes(x,y,colour="#E31A1C"),linetype="dashed",size=1)+
+  geom_line(data=data5,aes(x,y,colour="#1F78B4" ),linetype="dashed",size=1)+
+  scale_fill_manual(values= c("#E31A1C", "#1F78B4"),name="CIs",
+                    breaks=c("#E31A1C", "#1F78B4"),labels=c("Original", "Updated")) +
+  scale_colour_manual(values= c("#E31A1C", "#1F78B4"),name="Fitting",
+                      breaks=c("#E31A1C", "#1F78B4"),labels=c("Original", "Updated")) +
+  geom_line(data=data3,aes(x,y),colour='black') +
+  scale_x_reverse(limits=c(1.06,1.035))+scale_y_continuous(limits=c(0,2))+ labs(x = "ppm",y='Intensity',title = "Old and new intensity CIs") +
+  theme_bw() + theme(axis.text=element_text(size=22),legend.position="bottom",text = element_text(size=22),plot.title = element_text(size = 20),panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+
+
+
+g_legend=function(a.gplot){
+  tmp = ggplot_gtable(ggplot_build(a.gplot))
+  leg = which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend = tmp$grobs[[leg]]
+  return(legend)}
+mylegend=g_legend(ab3)
+
+
+p12 <- grid.arrange(arrangeGrob(ab4,ab1,ab2,ab3+theme(legend.position = "none"),
+                                top=textGrob('Signal parameter prediction of L-valine signal',
+                                             gp=gpar(fontsize=28,fontface='bold')),
+                                nrow=4),
+                    mylegend, heights=c(10, 1))
+
+
+
+#######
+
+TIC_normalization <- as.data.frame(readr::read_csv("C:/Bruker/TopSpin3.2/data/MNavarro_femtes_IRSI/TIC.normalization.csv"))
+TIC_normalization2=t(TIC_normalization[,-c(1:6,141:165)])
+colnames(TIC_normalization2)=TIC_normalization[,2]
+# ind=c(58,21,13,14,36,110,98,68,69,6,38,20,57,92,60,33,51)
+# ind2=c(21,1,4,2,10,17,18,24,26,29,37,40,48,49,53,62,59)
+ind=c(58,21,13,14,110,98,68,69,6,38,20,57,92,60,33)
+ind2=c(21,1,4,2,17,18,24,26,29,37,40,48,49,53,62)
+tec3=profiling_names_corrected$final_output$quantification
+sol=which(profiling_names_corrected$final_output$fitting_error>0.05)
+tec3[sol]=millorat_cow_9$final_output$quantification[sol]
+library(KODAMA)
+azx=normalization(TIC_normalization2,method='pqn')$newXtrain
+azx2=normalization(profiling_names_corrected$final_output$quantification,method='pqn')$newXtrain
+azx3=normalization(tec3,method='pqn')$newXtrain
+azx4=normalization(millorat_cow_9$final_output$quantification,method='pqn')$newXtrain
+azx[azx==Inf]=NA
+toc2=diag(cor(azx2[,ind],azx[,ind2],use='pairwise.complete.obs' ,method='spearman'))
+toc4=diag(cor(azx3[,ind],azx[,ind2],use='pairwise.complete.obs',method='spearman'))
+toc5=diag(cor(azx4[,ind],azx[,ind2],use='pairwise.complete.obs',method='spearman'))
+colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) , rgb(0.7,0.5,0.1,0.9) )
+colors_in=c( rgb(1,1,1,0), rgb(1,1,1,0) , rgb(1,1,1,0) )
+
+
+toc7=as.data.frame(rbind(rep(1,15),rep(0,15),toc2,toc4,toc5))
+colnames(toc7)=colnames(TIC_normalization2)[ind2]
+rownames(toc7)=c("1","2","Original","Selective\n profiling\n reimplementation","Profiling\n reimplementation")
+radarchart( toc7  , axistype=1 ,
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey",  cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1.5, y=1.5, legend = rownames(toc7)[3:5], bty = "n", pch=20 , col=colors_border , cex=1, pt.cex=2)
+
+
+metadata=factor(rep(c("Original","Selective profiling reimplementation","Profiling reimplementation"),c(length(toc2),length(toc4),length(toc5))),levels =c("Original","Selective profiling reimplementation","Profiling reimplementation") )
+data=data.frame(shift=c(toc2,toc4,toc5),metadata=metadata)
+p11 <- ggplot(data, aes(x = metadata, y = shift, fill = metadata)) +
+  geom_boxplot() +
+
+  scale_fill_manual(values=c("Original"="yellow","Profiling reimplementation"="red", "Selective profiling reimplementation"="blue")) +
+
+  labs(title='Faecal extract dataset',
+       y="rho",x='') +
+  theme_bw() + theme(legend.title=element_blank(),legend.position="bottom",panel.border = element_blank(), panel.grid.major = element_blank(),
+                     axis.text.x=element_blank(),axis.ticks.x=element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+RamirezN_quantifiable_metabolites_eRah_areas <- read_excel("C:\\Bruker\\TopSpin3.2\\data\\RamirezN\\data_analysis\\RamirezN_quantifiable_metabolites_eRah_areas.xlsx")
+data=t(RamirezN_quantifiable_metabolites_eRah_areas[,-c(1:7)])
+data=apply(data,2,as.numeric)
+rownames(data)=as.numeric(sapply(colnames(RamirezN_quantifiable_metabolites_eRah_areas)[-c(1:7)],function(x)strsplit(x,"_")[[1]][3]))
+colnames(data)=RamirezN_quantifiable_metabolites_eRah_areas$Metabolite
+data2=data[order(rownames(data)),]
+data2=normalization(data2[,!is.na(data2[1,])],method="pqn")$newXtrain
+data3=normalization(millorat_3$final_output$quantification[,!is.na(millorat_3$final_output$quantification[1,])],method="pqn")$newXtrain
+data4=normalization(ac$final_output$quantification[,!is.na(ac$final_output$quantification[1,])],method="pqn")$newXtrain
+
+
+ind3=c(1:14,19:22,24:26)[-c(7,8,10,19)][-3]
+ind4=c(6,7,9,12,14,15,18,23,24,25,5,28,26,34,53,56,58,62,69,74,79)[-c(7,8,10,19)][-3]
+tec3=ac$final_output$quantification
+sol=which(ac$final_output$fitting_error>0.05)
+tec3[sol]=millorat_3$final_output$quantification[sol]
+tec4=ac$final_output$quantification
+
+data6=normalization(tec3[,!is.na(tec3[1,])],method="pqn")$newXtrain
+
+
+toc2=diag(cor(data2[,ind3],data4[,ind4],use='pairwise.complete.obs' ,method='spearman'))
+toc4=diag(cor(data2[,ind3],data6[,ind4],use='pairwise.complete.obs',method='spearman'))
+toc5=diag(cor(data2[,ind3],data3[,ind4],use='pairwise.complete.obs', method='spearman'))
+
+toc7=as.data.frame(rbind(rep(1,length(ind3)),rep(0,length(ind3)),toc2,toc4,toc5))
+colnames(toc7)=colnames(data2)[ind3]
+rownames(toc7)=c("1","2","Original","Selective\n profiling\n reimplementation","Profiling\n reimplementation")
+radarchart( toc7  , axistype=1 ,
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey",  cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1.5, y=1.5, legend = rownames(toc7)[3:5], bty = "n", pch=20 , col=colors_border , cex=1, pt.cex=2)
+
+g_legend=function(a.gplot){
+  tmp = ggplot_gtable(ggplot_build(a.gplot))
+  leg = which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend = tmp$grobs[[leg]]
+  return(legend)}
+mylegend=g_legend(p10)
+
+
+p16 <- grid.arrange(arrangeGrob(p11+theme(legend.position = 'none'),
+                                p10+theme(legend.position = 'none'),
+                                top=textGrob('Spearman correlation between quantifications of metabolites in MS and NMR data',
+                                             gp=gpar(fontsize=16,fontface='bold')),
+                                nrow=1),
+                    mylegend, heights=c(10, 1))

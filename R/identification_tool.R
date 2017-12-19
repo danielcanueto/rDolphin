@@ -32,7 +32,7 @@ identification_tool= function(dataset,ppm,limits,method) {
 
 Ydata = apply(dataset,2,median)
 ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "correlation",range = c(0, max(Ydata)))
-az = list(title = "Intensity",range = c(-1, max(Ydata)-1))
+az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(Ydata)-1))
 p=plot_ly()%>%
   add_lines(x=~ppm,y = ~Ydata,name='Median spectrum')%>%
   add_lines(x=~ppm,y = ~cor_values, name='Correlation',yaxis = "y2")%>%

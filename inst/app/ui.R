@@ -16,7 +16,7 @@ shinyUI(fluidPage(
                                     fileInput("file1", "Load a file of parameters of the dataset to profile.",
                                               accept = c("text/csv")
                                     ),
-                                    fileInput("file2", "Reanudate a saved profiling session.",
+                                    fileInput("file2", "Resume a saved profiling session.",
                                               accept = c("text/RData")),
                                     actionButton("save", "Save a profiling session"),
                                     actionButton('folder', 'Save quantification plots'),

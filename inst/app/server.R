@@ -261,7 +261,7 @@ observeEvent(input$folder, {
     colnames(reactiveROItestingdata$signpar)=c("intensity",	"chemical shift",	"half bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof effect")
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
     rownames(reactiveROItestingdata$qualitypar)=NULL
-    colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
+    colnames(reactiveROItestingdata$qualitypar)=c('Quantification (arbitrary unit)','fitting_error','signal/total area ratio')
 
     # Plot is prepared
     ROI_limits=c(reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,1]))],reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,2]))])
@@ -323,7 +323,7 @@ observeEvent(input$folder, {
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
     rownames(reactiveROItestingdata$qualitypar)=NULL
 
-    colnames(reactiveROItestingdata$qualitypar)=c('Quantification','fitting_error','signal/total area ratio')
+    colnames(reactiveROItestingdata$qualitypar)=c('Quantification (arbitrary unit)','fitting_error','signal/total area ratio')
     ROI_limits=c(reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,1]))],reactiveprogramdata$imported_data$ppm[which.min(abs(reactiveprogramdata$imported_data$ppm-reactiveprogramdata$ROIdata_subset[1,2]))])
 
 	#Generation of plot
@@ -495,7 +495,7 @@ observeEvent(input$folder, {
     reactiveprogramdata$plot=reactivequantdata$method1$p
     #reactivequantdata$stop3=1
     reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
-    colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
+    colnames(reactiveROItestingdata$qualitypar)=c('Quantification (arbitrary unit)','Fitting Error','Signal/total area ratio')
     rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[4:(3+nrow(reactiveROItestingdata$qualitypar))]
     # ind=which(rownames(reactiveROItestingdata$qualitypar)=='additional signal')
     # reactiveprogramdata$bgColScales = rep(c("","info"),times=c(length(rownames(reactiveROItestingdata$qualitypar))-length(ind),length(ind)))

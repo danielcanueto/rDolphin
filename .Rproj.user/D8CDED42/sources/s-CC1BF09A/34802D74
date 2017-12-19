@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1513691355655.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "693270469",
+    "id" : "34802D74",
+    "lastKnownWriteTime" : 1513691368,
+    "last_content_update" : 1513691368960,
+    "path" : "~/GitHub/rDolphin/R/clustspectraplot.R",
+    "project_path" : "R/clustspectraplot.R",
+    "properties" : {
+        "cursorPosition" : "53,47",
+        "scrollLine" : "44"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

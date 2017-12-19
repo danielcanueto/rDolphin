@@ -142,7 +142,7 @@ if (is.na(spectrum_index)) {
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
   ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0, max(as.numeric(imported_data$dataset[spectrum_index, ]))))
-  az = list(title = "Intensity",range = c(-1, max(as.numeric(imported_data$dataset[spectrum_index, ]))-1))
+  az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(as.numeric(imported_data$dataset[spectrum_index, ]))-1))
   p=plot_ly()%>%
     add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),name='Model spectrum')%>%
     add_lines(x=~imported_data$ppm,y = ~fitted_data,name='Fitted spectrum',fill='tozeroy')%>%

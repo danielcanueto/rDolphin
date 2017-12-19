@@ -18,7 +18,7 @@ medianplot = function(imported_data) {
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
   ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0,max(mediandataset)))
-  az = list(title = "Intensity",range = c(-1, max(mediandataset)-1))
+  az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(mediandataset)-1))
 
   p=plot_ly(x=~imported_data$ppm)
   for (i in seq(nrow(mediandataset))){

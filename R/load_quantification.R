@@ -75,7 +75,7 @@ dummy = which(is.na(ROI_data[, 1]))
 	loaded_quantification$ind=(ROI_separator[ind, 1]:ROI_separator[ind, 2])
 
 	loaded_quantification$qualitypar=cbind(t(final_output$quantification[row,info$col,drop=F]),t(final_output$fitting_error[row,info$col,drop=F]),t(final_output$signal_area_ratio[row,info$col,drop=F]))
-	colnames(loaded_quantification$qualitypar)=c('Quantification','fitting_error','signal/total spectrum ratio')
+	colnames(loaded_quantification$qualitypar)=c('Quantification (arbitrary unit)','fitting_error','signal/total spectrum ratio')
 	rownames(loaded_quantification$qualitypar)=imported_data$signals_names[col]
 return(loaded_quantification)
 }

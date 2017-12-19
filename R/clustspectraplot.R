@@ -51,7 +51,7 @@ ind=seq(nrow(imported_data$dataset))
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
   ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0,max(visual_roi)))
-  az = list(title = "Intensity",range = c(-1, max(visual_roi)-1))
+  az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(visual_roi)-1))
 
   p=plot_ly(x=~imported_data$ppm)
   shade=as.character(seq(0.2,1,length.out = nrow(visual_roi)))
