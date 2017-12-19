@@ -12,16 +12,29 @@ rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spec
 
 In addition, rDolphin comes with tools to load individual quantifications to be evaluated and updated or to perform different kinds of exploratory analyses. For researchers with non-expert programming skills, the package incorporates a Shiny GUI.
 
-## Please run these commands in the R console to install the package:
+
+## Package Installation
+
+Please run these commands in the R console (preferably through RStudio) to install the package:
 
 1. `source("https://bioconductor.org/biocLite.R"); biocLite("impute")` #installation of package that cannot be installed from Github
 2. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
 3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
 4. `library(rDolphin)`          #loads rDolphin
 
-If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
+At some moment, you may be asked to install Rtools:
 
-## Introduction Structure
+![](https://user-images.githubusercontent.com/21126465/34153581-ded6c13a-e4b2-11e7-9120-4722d25b953b.png)
+
+The installation may stop at some point because of the multiple dependencies from different repositories required to install rDolphin:
+
+![](https://user-images.githubusercontent.com/21126465/34153583-df0bc998-e4b2-11e7-92dc-5255373fc4e2.png)
+
+These issues tend to be solved when running the previous commands again. If not, please find the package with failed installation (in this example, MassSpecWavelet) and install it before running again the commands.
+
+If you have problems during installation, please contact me at daniel.canueto@urv.cat
+
+## Tutorial Structure
 
 The introduction will show how to perform in the R console the profiling of a subset of 30 spectra of MTBLS242, a Metabolights dataset of blood spectra. The 30 spectra belong to 15 patients with blood samples taken at two different times.
 
@@ -74,13 +87,13 @@ rDolphin eases the analysis of the dataset complexity through two kinds of inter
 ```
 clustspectraplot(imported_data)
 ```
-![alt text](https://user-images.githubusercontent.com/21126465/32982160-4c222af4-cc80-11e7-9431-a3533c10f880.png)
+![](https://user-images.githubusercontent.com/21126465/32982160-4c222af4-cc80-11e7-9431-a3533c10f880.png)
 
 * the median spectrum of each kind of sample:
 ```
 medianplot(imported_data)
 ```
-![alt text](https://user-images.githubusercontent.com/21126465/32982158-4bedc93a-cc80-11e7-8c5a-6bd91696283a.png)
+![](https://user-images.githubusercontent.com/21126465/32982158-4bedc93a-cc80-11e7-8c5a-6bd91696283a.png)
 
 For each kind of figure, a red trace appears below the spectra. This red trace gives the results of a univariate analysis for every bin and helps the user detect interesting regions to profile. Feel free to play with the interactivity of the Plotly figure.
 
@@ -95,7 +108,7 @@ In addition, the user can also visualize the results of STOCSY or RANSY in a reg
 ```
 identification_tool(imported_data$dataset,imported_data$ppm,c(2.14,2.12),method='spearman')
 ```
-![alt text](https://user-images.githubusercontent.com/21126465/32982159-4c080d0e-cc80-11e7-88c6-9ec61b11e378.png)
+![](https://user-images.githubusercontent.com/21126465/32982159-4c080d0e-cc80-11e7-88c6-9ec61b11e378.png)
 
 The other important glutamine signal at 2.45-2.4 ppm stands out. 
 
@@ -111,7 +124,7 @@ profiling_model=profile_model_spectrum(imported_data,imported_data$ROI_data)
 `profiling_model` has three elements:
 
 * `p`, a Plotly figure showing the fitting applied to every ROI in the model spectrum as well as a red trace below showing the univariate analysis on each bin. 
-![alt text](https://user-images.githubusercontent.com/21126465/32982245-abe6d10a-cc81-11e7-8953-e4b84d99aadd.png)
+![](https://user-images.githubusercontent.com/21126465/32982245-abe6d10a-cc81-11e7-8953-e4b84d99aadd.png)
 * `ROI_data`, a data frame of the ROI data used during the process.
 
 * `total_signals_parameters`, a data frame with parameters of fitting and of quality of fitting (e.g.  the fitting error) for every quantified signal.
@@ -178,7 +191,7 @@ loaded_quantification$plot
 loaded_quantification$qualitypar
 ```
 
-![alt text](https://user-images.githubusercontent.com/21126465/33806333-059d973c-ddc7-11e7-8f56-f4ba5d472764.png)
+![](https://user-images.githubusercontent.com/21126465/33806333-059d973c-ddc7-11e7-8f56-f4ba5d472764.png)
 
 You can try if repeating this quantification can firther optimize the results, through the `not_automatic_quant` function):
 ```
@@ -191,7 +204,7 @@ loaded_updated_quantification$plot
 loaded_updated_quantification$qualitypar
 ```
 
-![alt text](https://user-images.githubusercontent.com/21126465/33806332-05828d52-ddc7-11e7-9e01-990307c3287c.png)
+![](https://user-images.githubusercontent.com/21126465/33806332-05828d52-ddc7-11e7-9e01-990307c3287c.png)
 
 If satisfied with the repeated lineshape fitting, the `updated_profiling_data` already contains the updated quantification.
 
@@ -212,7 +225,7 @@ Finally, dendrogram heatmaps can show us interesting subsets of samples or signa
 ```
 type_analysis_plot(profiling_data$final_output$quantification,profiling_data$final_output,imported_data,'dendrogram_heatmap')
 ```
-![alt text](https://user-images.githubusercontent.com/21126465/33806410-f9ca64c0-ddc7-11e7-8e75-d3a38669bd24.png)
+![](https://user-images.githubusercontent.com/21126465/33806410-f9ca64c0-ddc7-11e7-8e75-d3a38669bd24.png)
 
 For example, the heat map shows that the 'U3_61' signal correspond probably to another signal of L-valine.
 
