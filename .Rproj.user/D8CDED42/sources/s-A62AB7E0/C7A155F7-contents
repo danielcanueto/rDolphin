@@ -1,0 +1,29 @@
+
+#It seems the package "impute" gives problems to be installed through Github. So it is installed before rDolphin.
+source("https://bioconductor.org/biocLite.R")
+biocLite("impute")
+#To install rDolphin
+install.packages("devtools") #installation of package necessary to install rDolphin from Github
+devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE) #installs rDolphin
+
+#Load the package
+library(rDolphin)
+
+#Change the Parameters file path and output path by the ones in your computer
+parameters_path="C:/Users/Usuario/Dropbox/RamirezN_replication/Parameters_RamirezN.csv"
+output_path="C:/Users/Usuario/Downloads" #choose the one you prefer
+
+
+# Open the 'Parameters_RamirezN.csv' file and change the paths by the paths in your computer with a Text Editor (for example, Notepad; NOT EXCEL)
+
+#Import the data and perform the profiling
+imported_data=import_data(parameters_path)
+profiling=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+profiling_improv=autorun_improv(imported_data,profiling$final_output,profiling$useful_data,imported_data$ROI_data,"reimplementation","all")
+
+#Output the data
+write_plots(output_path,profiling_improv$final_output,imported_data,profiling_improv$useful_data)
+write_info(output_path,profiling_improv$final_output,imported_data$ROI_data)
+
+
+
