@@ -42,7 +42,7 @@ reac=reactiveValues(cho=NA)
 	reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check=reactiveprogramdata$imported_data$ROI_data
 	reactiveprogramdata$list=seq(nrow(reactiveprogramdata$ROI_data))
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$useful_data=reactiveprogramdata$imported_data$ROI_data=NULL
-	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect")
+	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge (ppm)","ROI right edge (ppm)","Quantification Mode","Metabolite","Quantification Signal","Chemical shift (ppm)","Chemical shift tolerance (ppm)","Half bandwidth (Hz)","Multiplicity","J coupling (Hz)","Roof effect")
 	reactiveprogramdata$validation_data=list(alarmmatrix=reactiveprogramdata$final_output)
 	reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,1)
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
@@ -125,7 +125,7 @@ reset("file2")
       print('Not possible to load the session. Please revise your choice.')
       return(NULL)
     })
-    colnames(reactiveprogramdata$ROI_data)=c("ROI left edge","ROI right edge","Quantification Mode","Metabolite","Quantification Signal","Chemical shift","Chemical shift tolerance","Half bandwidth","Multiplicity","J coupling","Roof effect")
+	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge (ppm)","ROI right edge (ppm)","Quantification Mode","Metabolite","Quantification Signal","Chemical shift (ppm)","Chemical shift tolerance (ppm)","Half bandwidth (Hz)","Multiplicity","J coupling (Hz)","Roof effect")
 if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,input$select_validation)
 
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
