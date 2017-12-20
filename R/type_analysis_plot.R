@@ -14,8 +14,8 @@
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' load("MTBLS242_subset_example.RData")
-#' type_analysis_plot(quantification_variables$final_output$quantification,quantification_variables$final_output,imported_data,'boxplot')
+#' load("MTBLS242_subset_profiling_data.RData")
+#' type_analysis_plot(profiling_data$final_output$quantification,profiling_data$final_output,imported_data,'boxplot')
 
 
 type_analysis_plot = function(data,final_output,imported_data,type=c('boxplot','pca','dendrogram_heatmap')) {

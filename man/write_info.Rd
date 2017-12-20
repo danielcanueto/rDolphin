@@ -21,6 +21,6 @@ Writing of quantification and quality information of fitting of signals
 }
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-load("MTBLS242_subset_example.RData")
-write_info('output_info',quantification_variables$final_output,imported_data$ROI_data)
+load("MTBLS242_subset_profiling_data.RData")
+write_info('output_info',profiling_data$final_output,imported_data$ROI_data)
 }

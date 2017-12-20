@@ -10,8 +10,8 @@
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' load("MTBLS242_subset_example.RData")
-#' validation_data=validation(quantification_variables$final_output,quantification_variables$alarmmatrix,5)
+#' load("MTBLS242_subset_profiling_data.RData")
+#' validation_data=validation(profiling_data$final_output,profiling_data$alarmmatrix,5)
 
 
 

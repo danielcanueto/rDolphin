@@ -188,17 +188,17 @@ observeEvent(input$folder, {
    #Automatic quantification of all ROIs in all spectra
   observeEvent(input$autorun, {
     tryCatch({
-    quantification_variables = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data)
-    reactiveprogramdata$final_output=quantification_variables$final_output
-    reactiveprogramdata$useful_data=quantification_variables$useful_data
+    profiling_data = autorun(reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$useful_data,reactiveprogramdata$ROI_data)
+    reactiveprogramdata$final_output=profiling_data$final_output
+    reactiveprogramdata$useful_data=profiling_data$useful_data
 
     reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarmmatrix,input$select_validation)
 
     },
     error = function(e) {
       print('Error. Please explain the issue in the Github page if necessary.')
-      quantification_variables=NA
-      return(quantification_variables)
+      profiling_data=NA
+      return(profiling_data)
     })
   })
   #Alignment of signals

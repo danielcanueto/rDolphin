@@ -12,9 +12,9 @@
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-#' load("MTBLS242_subset_example.RData")
+#' load("MTBLS242_subset_profiling_data.RData")
 #' #Not run:
-#' #write_plots('quantification_plots',quantification_variables$final_output,imported_data,quantification_variables$useful_data)
+#' #write_plots('quantification_plots',profiling_data$final_output,imported_data,profiling_data$useful_data)
 
 
 write_plots = function(path,final_output,imported_data,useful_data) {

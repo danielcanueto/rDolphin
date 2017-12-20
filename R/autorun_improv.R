@@ -17,8 +17,8 @@
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' # Not run:
-#' # quantification_variables=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
-#' # quantification_variables_2=autorun_improv(imported_data,quantification_variables$final_output,quantification_variables$useful_data,imported_data$ROI_data,"correction","outliers")
+#' # profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' # profiling_data_2=autorun_improv(imported_data,profiling_data$final_output,profiling_data$useful_data,imported_data$ROI_data,"correction","outliers")
 
 
 #TODO: Choose criteria to repeat only individual quantification and all signals of all spectra.
@@ -225,12 +225,12 @@ tec[,apply(tec,2,function(x)all(is.na(x)))]=final_output$quantification[,apply(t
 }
  }
   print("Done!")
-  quantification_variables=list(final_output=final_output,useful_data=useful_data,
+  profiling_data=list(final_output=final_output,useful_data=useful_data,
                                 predicted_shift=predicted_shift,predicted_width=predicted_width,
                                 predicted_intensity=predicted_intensity,max_width=max_width,
                                 min_width=min_width,max_shift=max_shift,min_shift=min_shift,
                                 max_intensity=max_intensity,min_intensity=min_intensity)
-  return(quantification_variables)
+  return(profiling_data)
 }
 
 
