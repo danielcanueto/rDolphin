@@ -16,7 +16,7 @@ fitting_prep_integration = function(Xdata,Ydata,program_parameters,created_basel
   #Preallocation of parameters to optimize into a matrix of features
   FeaturesMatrix = matrix(NA, (BGSigNum), 12)
 
-  #Finding of maximum intensity and shift tolerance of every background signal
+  #Finding of maximum intensity and $chemical_shift tolerance of every background signal
   if (BGSigNum>0) {
     BGSigrightlimits = seq(Xdata[1]-0.005, Xdata[ROIlength]+0.005, length = BGSigNum) -
       0.005

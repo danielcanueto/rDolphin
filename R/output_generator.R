@@ -1,5 +1,5 @@
 
-#Calculation of output variables (quantification, fitting_error,shift,signal_area_ratio,intensity, half bandwidth) and plot variables
+#Calculation of output variables (quantification, fitting_error,$chemical_shift,signal_area_ratio,intensity, half bandwidth) and plot variables
 
 
 output_generator = function(signals_to_quantify,
@@ -53,9 +53,9 @@ if (sum(subregion_signals)==0) normalized_rmse=100
                                               F])*buck_step
   output_data$quantification[-signals_to_quantify]=NA
 
-  output_data$shift = signals_parameters[2, !BGsignals]
+  output_data$chemical_shift = signals_parameters[2, !BGsignals]
   output_data$intensity=signals_parameters[1, !BGsignals]
-  output_data$half_band_width=signals_parameters[3,!BGsignals ]
+  output_data$half_bandwidth=signals_parameters[3,!BGsignals ]
   dummy=list(output_data=output_data,error1=error1)
   return(dummy)
 }

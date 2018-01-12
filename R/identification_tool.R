@@ -11,7 +11,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' identification_tool(imported_data$dataset,imported_data$ppm,c(1,0.995),'spearman')
+#' identification_tool(dataset,ppm,c(1,0.995),'spearman')
 
 
 
@@ -31,12 +31,12 @@ identification_tool= function(dataset,ppm,limits,method) {
 
 
 Ydata = apply(dataset,2,median)
-ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "correlation",range = c(0, max(Ydata)))
-az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(Ydata)-1))
 p=plot_ly()%>%
   add_lines(x=~ppm,y = ~Ydata,name='Median spectrum')%>%
   add_lines(x=~ppm,y = ~cor_values, name='Correlation',yaxis = "y2")%>%
-  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))),yaxis=az, yaxis2 = ay)
-
+  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
+p2 <- plot_ly(x=~ppm)%>%add_lines(y =cor_values, name='correlation value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
+  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))))
+p <- subplot(p, p2,nrows=2,heights=c(0.75,0.25),margin=0,shareX = T)
 return(p)
 }

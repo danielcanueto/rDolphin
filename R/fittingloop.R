@@ -90,7 +90,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       # bbb=ifelse((iter+1)%%3/3==0,1,(iter+1)%%3/3)
       # s0[which(seq_along(s0)%%5==2)]=lb[which(seq_along(s0)%%5==2)] + (ub[which(seq_along(s0)%%5==2)] - lb[which(seq_along(s0)%%5==2)]) * runif(1,min=aaa,max=bbb)
 
-      #During the first two iterations, find the peaks on the region of the spectrum. If the number of peaks is the same that the expected on the ROI and the location is similar, the signals are located where there are the peaks with minimum shift tolerance.
+      #During the first two iterations, find the peaks on the region of the spectrum. If the number of peaks is the same that the expected on the ROI and the location is similar, the signals are located where there are the peaks with minimum $chemical_shift tolerance.
       peaks_xdata = peakdet(c(Ydata[1],diff(Ydata)), program_parameters$peakdet_minimum*0.1*max(1e-10,max(Ydata)),Xdata)
 
       if (iter<4&length(peaks_xdata$maxtab$val)>0) {
@@ -140,7 +140,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
           worsterror = errorprov
         }
       } else {
-        #If in the first two iterations the procedure of finding peaks is not effective enough, the irignal chemical shift and chemical shift tolerance of every signal is maintained
+        #If in the first two iterations the procedure of finding peaks is not effective enough, the irignal chemical $chemical_shift and chemical $chemical_shift tolerance of every signal is maintained
         set.seed(iter);nls.out <-
           minpack.lm::nls.lm(
             par = s0,
@@ -188,11 +188,11 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
     }
     if (length(bins)==0) bins=seq_along(Ydata)
 
-    #Correction of half_band_width and j-coupling
+    #Correction of half_bandwidth and j-coupling
     iter = 0
     error22=error2=error1
     errorprov = error1=3000
-    #Only half_band_width and j-coupling will have different lower und upper bounds.
+    #Only half_bandwidth and j-coupling will have different lower und upper bounds.
     change_indexes=which(seq_along(lb)%%5!=3 & seq_along(lb)%%5!=4 & seq_along(lb)%%5!=0)
     lb[change_indexes]=ub[change_indexes]=signals_parameters[change_indexes]
     while (iter < 3) {
@@ -234,7 +234,7 @@ fittingloop = function(FeaturesMatrix,Xdata,Ydata,program_parameters) {
       }
     }
 
-    #If half_band_width and j-coup change improves fitting
+    #If half_bandwidth and j-coup change improves fitting
 
 
     iterrep = iterrep + 1

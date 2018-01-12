@@ -109,7 +109,7 @@ tabPanel("ROI Profiles",value = "tab2",
       plotlyOutput(outputId = "stocsy_plot"),
       fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapareadata",height="1100px"),
-      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical shift, so you can analyze relationships between spectra and between signals."))),
+      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical $chemical_shift, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapshiftdata"))
   )))
 

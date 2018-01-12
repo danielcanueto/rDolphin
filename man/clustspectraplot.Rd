@@ -2,7 +2,7 @@
 % Please edit documentation in R/clustspectraplot.R
 \name{clustspectraplot}
 \alias{clustspectraplot}
-\title{Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical shift tolerance...).}
+\title{Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical $chemical_shift tolerance...).}
 \usage{
 clustspectraplot(imported_data)
 }
@@ -10,10 +10,10 @@ clustspectraplot(imported_data)
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 }
 \value{
-Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical shift, half bandwidth, etc.
+Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical $chemical_shift, half bandwidth, etc.
 }
 \description{
-Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical shift tolerance...).
+Creation of plotly figure of subset of representative spectra of the dataset. The plot generated helps to determine the best parameters for quantification (e.g. number of signals to fit, chemical $chemical_shift tolerance...).
 }
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))

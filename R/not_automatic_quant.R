@@ -15,7 +15,7 @@
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[1:2,],imported_data$useful_data)
+#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$useful_data)
 
 
 not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,useful_data,interface=F) {
@@ -41,8 +41,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       signals_codes = signals_names = rep(NA,nrow(ROI_profile))
   j = 1
   for (i in seq(nrow(ROI_profile))) {
-    k = which(imported_data$signals_names == paste(ROI_profile[i,
-      4],ROI_profile[i,5],sep='_'))
+    k = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
+      4],ROI_profile[i,5],sep='_')))
 
     signals_codes[j] = imported_data$signals_codes[k]
     signals_names[j] = as.character(imported_data$signals_names[k])
@@ -121,8 +121,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       dim(signals_parameters) = c(5, length(signals_parameters)/5)
       rownames(signals_parameters) = c(
         'intensity',
-        'shift',
-        'half_band_width',
+        '$chemical_shift',
+        'half_bandwidth',
         'gaussian',
         'J_coupling'
       )
@@ -143,8 +143,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       # dim(signals_parameters_2) = c(5, length(signals_parameters_2)/5)
       # rownames(signals_parameters_2) = c(
       #   'intensity',
-      #   'shift',
-      #   'half_band_width',
+      #   '$chemical_shift',
+      #   'half_bandwidth',
       #   'gaussian',
       #   'J_coupling'
       # )
@@ -176,8 +176,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         dim(signals_parameters) = c(5, length(signals_parameters)/5)
         rownames(signals_parameters) = c(
           'intensity',
-          'shift',
-          'half_band_width',
+          '$chemical_shift',
+          'half_bandwidth',
           'gaussian',
           'J_coupling'
         )
@@ -196,8 +196,8 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
         # dim(signals_parameters_2) = c(5, length(signals_parameters_2)/5)
         # rownames(signals_parameters_2) = c(
         #   'intensity',
-        #   'shift',
-        #   'half_band_width',
+        #   '$chemical_shift',
+        #   'half_bandwidth',
         #   'gaussian',
         #   'J_coupling'
         # )
@@ -219,12 +219,12 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
 
       #Generation of the dataframe with the final output variables
       results_to_save = data.frame(
-        shift = output_data$shift,
+        chemical_shift = output_data$chemical_shift,
         quantification = output_data$quantification,
         signal_area_ratio = output_data$signal_area_ratio,
         fitting_error = output_data$fitting_error,
         intensity = output_data$intensity,
-        half_band_width = output_data$half_band_width
+        half_bandwidth = output_data$half_bandwidth
       )
 
       plot_data = rbind(
@@ -238,7 +238,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       rownames(plot_data) = c("signals_sum",
         "baseline_sum",
         "fitted_sum",
-        as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
+        make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
       plotdata2 = data.frame(Xdata,
         Ydata,
@@ -252,7 +252,7 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       )
       plot_title = paste(imported_data$Experiments[spectrum_index],"- ROI ",ROI_profile[1,1],"-",ROI_profile[1,2],"ppm")
 colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow'))
-      p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
+      p=plot_ly(plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>% layout(title = plot_title,xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'), yaxis = list(range=c(0,max(Ydata)),title = "Intensity (arbitrary unit)"))
         for (i in 4:nrow(plot_data)) {
           plotdata5 =  data.frame(Xdata=Xdata, variable=rownames(plot_data)[i] ,value=plot_data[i,])
 
@@ -262,9 +262,9 @@ colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow
 
     signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
     if (fitting_type == "Clean Fitting") {
-      colnames(signals_parameters)=paste(ROI_profile[,4],ROI_profile[,5],sep='_')
+      colnames(signals_parameters)=make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_'))
     } else {
-      colnames(signals_parameters)=c(paste(ROI_profile[,4],ROI_profile[,5],sep='_'),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
+      colnames(signals_parameters)=c(make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
     }
 
     # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
@@ -306,11 +306,6 @@ if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
     }
 
 	    if (identical(ind,seq(nrow(imported_data$dataset))))  setTxtProgressBar(pb, spectrum_index)
-    # if (fitting_type == "Clean Sum" || fitting_type == "Baseline Sum"&&identical(ind,seq(nrow(imported_data$dataset)))) {
-    #
-    #   dummy=integration_error(ROI_data,useful_data,final_output,signals_codes)
-    #   resulting_data$useful_data=dummy$useful_data
-    #   resulting_data$final_output=dummy$final_output
 
     }
 	if (interface == T) {

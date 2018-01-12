@@ -44,8 +44,8 @@ import_data = function(parameters_path) {
   Metadata=dummy[,-1,drop=F]
 
   #Import of ROI profiles and generation of names and codes of signals
-  ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)[,1:11]
-  signals_names=paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_')
+  ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)
+  signals_names=make.names(paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_'))
   signals_codes = 1:length(signals_names)
 
 
@@ -53,19 +53,22 @@ import_data = function(parameters_path) {
   freq = as.numeric(as.character(import_profile[10, 2]))
   biofluid=import_profile[12, 2]
   jres_path=as.character(import_profile[13, 2])
-  try(source(as.character(import_profile[14, 2])),silent=T)
-  if (!exists("program_parameters")) program_parameters=fitting_variables()
+  program_parameters=fitting_variables()
 
+  if (class(try(source(as.character(import_profile[14, 2]))))!="try-error") {
+    rm(program_parameters)
+    source(as.character(import_profile[14, 2]))
+}
 #Creation of repository adapted to biofluid
   repository=data.frame(data.table::fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
-  biofluid_column=which(gsub('.conc.','',colnames(repository))==biofluid)
+  biofluid_column=which(gsub('.times','',colnames(repository))==biofluid)
   if (length(biofluid_column)==0) {
         times=rowSums(repository[,25:36])
     repository=cbind(repository[order(times,decreasing = T),c(1:3,5:7)],rep(NA,length(times)),times[order(times,decreasing = T)])
     colnames(repository)[c(7,8)]=c('Conc','Times')
   } else {
   repository=repository[repository[,biofluid_column]!=0,]
-  repository=repository[order(repository[,biofluid_column],decreasing = T),c(1:3,5:7,biofluid_column+c(0,12))]
+  repository=repository[order(repository[,biofluid_column],decreasing = T),c(1:3,5:7,biofluid_column+c(-12,0))]
 }
 
 
@@ -209,7 +212,6 @@ import_data = function(parameters_path) {
     notnormalizeddataset=imported_data$dataset*norm_factor
 
 
-    # if (dim(imported_data$dataset)==2) dummy=NA
   }
 
   imported_data$dataset[is.na(imported_data$dataset)]=min(abs(imported_data$dataset)[abs(imported_data$dataset)>0])
@@ -255,25 +257,20 @@ import_data = function(parameters_path) {
 
   }
 
-  #Adaptation of data to magnitudes similar to 1. To be removed in the future.
-  secondfactor=quantile(imported_data$dataset,0.9,na.rm=T)
-  imported_data$dataset=imported_data$dataset/secondfactor
-  norm_factor=norm_factor*secondfactor
+  # #Adaptation of data to magnitudes similar to 1. To be removed in the future.
+  # secondfactor=quantile(imported_data$dataset,0.9,na.rm=T)
+  # imported_data$dataset=imported_data$dataset/secondfactor
+  # norm_factor=norm_factor*secondfactor
 
 
   imported_data$dataset=imported_data$dataset[,which(apply(imported_data$dataset,2,function(x) all(is.na(x)))==F),drop=F]
   imported_data$dataset[is.na(imported_data$dataset)]=0
 
   imported_data$ppm=imported_data$ppm[which(!is.na(imported_data$ppm))]
-  # if (imported_data$ppm[1]<imported_data$ppm[2]) {
-    # imported_data$ppm=rev(imported_data$ppm)
-    # imported_data$dataset=t(apply(imported_data$dataset,1,rev))
-  # }
+
   #Storage of parameters needed to perform the fit in a single variable to return.
 
   imported_data$buck_step = params$buck_step
-  imported_data$metadata_path = metadata_path
-  imported_data$parameters_path = parameters_path
   imported_data$signals_names = signals_names
   imported_data$signals_codes = signals_codes
   imported_data$Experiments = Experiments
@@ -288,7 +285,7 @@ import_data = function(parameters_path) {
 
   #creation of list with the different final outputs
   dummy=matrix(NaN,nrow(imported_data$dataset),length(imported_data$signals_names),dimnames=list(imported_data$Experiments,imported_data$signals_names))
-  imported_data$final_output = list(quantification= dummy,signal_area_ratio = dummy,fitting_error = dummy, shift = dummy,intensity = dummy, half_band_width = dummy)
+  imported_data$final_output = list(quantification= dummy,signal_area_ratio = dummy,fitting_error = dummy, chemical_shift = dummy,intensity = dummy, half_bandwidth = dummy)
 
   #creation of list of necessary parameters to load quantifications and evaluate quality of them
   imported_data$useful_data=vector('list',length(imported_data$Experiments))
@@ -298,20 +295,7 @@ import_data = function(parameters_path) {
       imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=imported_data$ROI_data[j,],program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
     }}
 
-	# dummy = which(is.na(imported_data$ROI_data[, 1]))
-    # if (length(dummy)==0) dummy=dim(imported_data$ROI_data)[1]+1
-    # lal=which(duplicated(imported_data$ROI_data[-dummy,1:2])==F)
-    # imported_data$ROI_separator = cbind(lal, c(lal[-1] - 1, dim(imported_data$ROI_data[-dummy,])[1]))
-  # export_path=file.path(dirname(as.character(import_profile[6, 2])),"input_data")
-  #Useful data about conditions of import of data. TO BE REARRANGED
-  # dir.create(export_path,showWarnings = FALSE)
-  # fwrite(as.data.frame(imported_data$params),file=file.path(imported_data$export_path, 'initial_params.csv'))
-  # fwrite(as.data.frame(imported_data$dataset),file=file.path(export_path, 'initial_dataset.csv'))
-  # fwrite(as.data.frame(notnormalizeddataset),file=file.path(export_path, 'notnormalizeddataset.csv'))
-  # fwrite(as.data.frame(norm_factor),file=file.path(export_path, 'norm_factor.csv'))
-  # if ("not_loaded_experiments" %in% names(imported_data)&&length(imported_data$not_loaded_experiments)>0)
-  #   fwrite(as.data.frame(imported_data$not_loaded_experiments),file=file.path(export_path, 'not_loaded_experiments.csv'),col.names = F)
-  print('Done!')
+print('Done!')
   return(imported_data)
 
 }

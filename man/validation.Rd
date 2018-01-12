@@ -2,7 +2,7 @@
 % Please edit documentation in R/validation.R
 \name{validation}
 \alias{validation}
-\title{Creation of matrix to validate quantifications, with information of difference with predicted shift, signal to total area ratio, fitting error, and difference with expected relative intensity}
+\title{Creation of matrix to validate quantifications, with information of signal to total area ratio, fitting error, and difference with expected chemical $chemical_shift, half bandwidth or intensity}
 \usage{
 validation(final_output, alarmmatrix, validation_type)
 }
@@ -11,13 +11,13 @@ validation(final_output, alarmmatrix, validation_type)
 
 \item{alarmmatrix}{List with quantifications and indicators of quality of quantification.}
 
-\item{validation_type}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical shift, 4: half bandwidth, 5: outliers, 6: relative intensity of signals of same metabolite)}
+\item{validation_type}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical $chemical_shift, 4: half bandwidth, 5: intensity)}
 }
 \value{
 Matrix with data required
 }
 \description{
-Creation of matrix to validate quantifications, with information of difference with predicted shift, signal to total area ratio, fitting error, and difference with expected relative intensity
+Creation of matrix to validate quantifications, with information of signal to total area ratio, fitting error, and difference with expected chemical $chemical_shift, half bandwidth or intensity
 }
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))

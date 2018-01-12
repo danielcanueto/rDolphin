@@ -8,7 +8,7 @@
 #' @return Analysis plot
 #' @export type_analysis_plot
 #' @import plotly
-#' @import missForest
+#' @import missRanger
 #' @import heatmaply
 #' @import reshape2
 #'
@@ -40,7 +40,7 @@ plot_ly(boxplotdata, x = ~Signal, y = ~Value, color = ~Metadata, type = "box") %
   layout(boxmode='group',margin=m)
 }, pca = {
 a=cbind(scale(data),imported_data$Metadata)
-a=missForest::missForest(a)$ximp
+a=missRanger::missRanger(as.data.frame(a))
 b=prcomp(a[,-c(ncol(a)-1,ncol(a))])
 carsDf2 <- data.frame(b$rotation)
 carsDf <- data.frame(b$x,metadata=imported_data$Metadata)
@@ -56,6 +56,6 @@ print(p)
   data=as.data.frame(scale(data))
 ind=apply(data,2,function(x)!all(is.na(x)))
 data=data[,ind]
-heatmaply::heatmaply(data) %>% layout(height=500,width=500)
+heatmaply::heatmaply(data) %>% layout(height=1000,width=1000)
 })
 }

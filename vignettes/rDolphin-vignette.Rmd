@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra datasets and outputs several indicators of quality of quantification and identification for each signal area quantification. To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin splits the spectrum into Regions of Interest (ROIs). Each ROI has a specific method of quantification (integration or deconvolution; with or without baseline fitting), a list of signals to quantify and a list of signal parameters to monitor (e.g. the chemical shift variability).
+rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra datasets and outputs several indicators of quality of quantification and identification for each signal area quantification. To perform a reliable automatic profiling, resilient to the multiple factors that can incorporate variability to a dataset, rDolphin splits the spectrum into Regions of Interest (ROIs). Each ROI has a specific method of quantification (integration or deconvolution; with or without baseline fitting), a list of signals to quantify and a list of signal parameters to monitor (e.g. the chemical $chemical_shift variability).
 
 In addition, rDolphin comes with tools to load individual quantifications to be evaluated and updated or to perform different kinds of exploratory analyses. For researchers with non-expert programming skills, the package incorporates a Shiny GUI.
 
@@ -180,31 +180,34 @@ shows the fitting error in every signal quantification. And this command:
 View(validation(profiling_data$final_output,profiling_data$alarmmatrix,3)$shownmatrix)
 
 ```
-shows the difference between the expected chemical shift and the calculated chemical shift in every signal quantification.
+shows the difference between the expected chemical $chemical_shift and the calculated chemical $chemical_shift in every signal quantification.
 
 
 
-If the user wants to load the information and the plot of these suspicious quantifications, he can do it through the  `load_quantification` function. Run these commands to load the lineshape fitting with most fitting error of 'Valine-2':
+If the user wants to load the information and the plot of these suspicious quantifications, he can do it through the  `load_quantification` function.
+Run these commands to load the lineshape fitting of the TSP signal in the first spectrum:
 ```
-loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=23,col=4),imported_data$ROI_data)
+loaded_quantification=load_quantification(profiling_data$useful_data,imported_data,profiling_data$final_output,list(row=1,col=1),imported_data$ROI_data)
 loaded_quantification$plot
-loaded_quantification$qualitypar
 ```
+![](https://user-images.githubusercontent.com/21126465/34836095-1f1f184a-f6f7-11e7-8d0c-0c1cb737f8c2.png)
 
-![](https://user-images.githubusercontent.com/21126465/33806333-059d973c-ddc7-11e7-8f56-f4ba5d472764.png)
-
-You can try if repeating this quantification can firther optimize the results, through the `not_automatic_quant` function):
+One can see that the signal should have even more half bandwidth than the large one already assigned. This effect is caused by the binding of TSP to protein.
+If one is still interested in quantifying the TSP signal area, it seems better to perform an integration of thi signal for example from 0.1 to -0.015 ppm.
+Change the TSP ROI profile in 'ROI_data' to adapt it to this new fitting type.
 ```
-updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,23,imported_data$ROI_data[3:4,,drop=F],imported_data$useful_data)
+imported_data$ROI_data[1,1:3]=c(0.1,-0.15,"Clean Sum")
+```
+And now perform the individual TSP quantification in this first spectrum through the `not_automatic_quant` function:
+```
+updated_profiling_data=not_automatic_quant(imported_data,imported_data$final_output,1,imported_data$ROI_data[1,,drop=F],imported_data$useful_data)
 ```
 And compare the results:
 ```
-loaded_updated_quantification=load_quantification(updated_profiling_data$useful_data,imported_data,updated_profiling_data$final_output,list(row=23,col=4),imported_data$ROI_data)
+loaded_updated_quantification=load_quantification(updated_profiling_data$useful_data,imported_data,updated_profiling_data$final_output,list(row=1,col=1),imported_data$ROI_data)
 loaded_updated_quantification$plot
-loaded_updated_quantification$qualitypar
 ```
-
-![](https://user-images.githubusercontent.com/21126465/33806332-05828d52-ddc7-11e7-9e01-990307c3287c.png)
+![](https://user-images.githubusercontent.com/21126465/34836096-1f38e356-f6f7-11e7-85f3-09e22d1a6f93.png)
 
 If satisfied with the repeated lineshape fitting, the `updated_profiling_data` already contains the updated quantification.
 

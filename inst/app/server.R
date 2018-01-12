@@ -319,7 +319,7 @@ observeEvent(input$folder, {
 
     reactiveprogramdata$info=c()
     reactiveROItestingdata$signpar <- rbind(rep(NA,7),rep(NA,7))
-    colnames(reactiveROItestingdata$signpar)=c("intensity",	"shift",	"half_band_width",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
+    colnames(reactiveROItestingdata$signpar)=c("intensity",	"$chemical_shift",	"half_bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
     rownames(reactiveROItestingdata$qualitypar)=NULL
 
@@ -355,8 +355,8 @@ observeEvent(input$folder, {
     if (!is.null(reactivequantdata$method1$results_to_save)) {
       reactiveprogramdata$plot=reactivequantdata$method1$p
       #reactivequantdata$stop3=1
-      reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio)
-      colnames(reactiveROItestingdata$qualitypar)=c('Quantification','Fitting Error','Signal/total area ratio')
+      reactiveROItestingdata$qualitypar=round(cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio),4)
+      colnames(reactiveROItestingdata$qualitypar)=c('Quantification (arbitrary unit)','Fitting Error','Signal/total area ratio')
       ind=which(reactiveprogramdata$ROIdata_subset[,5]>0)+3
 
       rownames(reactiveROItestingdata$qualitypar)=rownames(reactivequantdata$method1$plot_data)[ind]
@@ -582,7 +582,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   observeEvent(input$add_hmdb_signal, {
     tryCatch({
     dummy=reactiveprogramdata$imported_data$repository[input$repository2_rows_selected,]
-    dummy=c(dummy[,3]+0.02,dummy[,3]-0.02,'Baseline Fitting',dummy[,1],1,dummy[,3],median(reactiveprogramdata$ROI_data_check[,7]),median(reactiveprogramdata$ROI_data_check[,8]),dummy[,4],dummy[,5],0,dummy[,6])
+    dummy=c(dummy[,3]+0.02,dummy[,3]-0.02,'Baseline Fitting',dummy[,1],1,dummy[,3],median(reactiveprogramdata$ROI_data_check[,7]),median(reactiveprogramdata$ROI_data_check[,8]),dummy[,4],dummy[,5],0,dummy[,6],dummy[,2])
     if (dummy[9]=='d') {
       dummy[9]=2
     } else if (dummy[9]=='t') {
@@ -593,7 +593,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
     if (is.na(as.numeric(dummy[10])))  dummy[10]=0
     dummy=as.list(dummy)
-    dummy[-c(3,4)]=as.numeric(dummy[-c(3,4)])
+    dummy[-c(3,4,12)]=as.numeric(dummy[-c(3,4,12)])
 
     reactiveprogramdata$ROI_data_check=rbind(reactiveprogramdata$ROI_data_check,dummy)
     }, error = function(e) {
@@ -608,7 +608,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
   observeEvent(input$add_signal, {
     tryCatch({
-      dummy=c(rep(NA,4),apply(reactiveprogramdata$ROI_data_check[,5:11],2,function(x)median(x,na.rm=T)))
+      dummy=c(rep(NA,4),apply(reactiveprogramdata$ROI_data_check[,5:11],2,function(x)median(x,na.rm=T)),NA)
       reactiveprogramdata$ROI_data_check=rbind(reactiveprogramdata$ROI_data_check,dummy)
     }, error = function(e) {
       print('Error. Please explain the issue in the Github page.')
@@ -645,11 +645,11 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       new_fitting_error[,trel]=reactiveprogramdata$final_output$fitting_error[,reactiveprogramdata$list]
       new_intensity[,trel]=reactiveprogramdata$final_output$intensity[,reactiveprogramdata$list]
       new_signal_area_ratio[,trel]=reactiveprogramdata$final_output$signal_area_ratio[,reactiveprogramdata$list]
-      new_shift[,trel]=reactiveprogramdata$final_output$shift[,reactiveprogramdata$list]
-      new_width[,trel]=reactiveprogramdata$final_output$half_band_width[,reactiveprogramdata$list]
+      new_shift[,trel]=reactiveprogramdata$final_output$chemical_shift[,reactiveprogramdata$list]
+      new_width[,trel]=reactiveprogramdata$final_output$half_bandwidth[,reactiveprogramdata$list]
       new_Area[,trel]=reactiveprogramdata$final_output$quantification[,reactiveprogramdata$list]
-      new_shown_matrix[,trel]=reactiveprogramdata$validation_data$shownmatrix[,reactiveprogramdata$list]
-      for (j in 1:length(new_validation_data)) new_validation_data[[j]][,trel]=reactiveprogramdata$validation_data$alarmmatrix[[j]][,reactiveprogramdata$list]
+      new_shown_matrix[,trel]=as.matrix(reactiveprogramdata$validation_data$shownmatrix[,reactiveprogramdata$list])
+      for (j in 1:length(new_validation_data)) new_validation_data[[j]][,trel]=as.matrix(reactiveprogramdata$validation_data$alarmmatrix[[j]][,reactiveprogramdata$list])
       for (j in 1:length(new_useful_data)) new_useful_data[[j]][trel]=reactiveprogramdata$useful_data[[j]][reactiveprogramdata$list]
       # for (j in 1:length(new_useful_data)) new_useful_data[[j]][setdiff(seq(nrow(reactiveprogramdata$ROI_data_check)),trel)]=list(Ydata=NA,Xdata=NA,ROI_profile=NA,program_parameters=NA,plot_data=NA,FeaturesMatrix=NA,signals_parameters=NA,results_to_save=NA,error1=1000000)
 
@@ -679,8 +679,8 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       reactiveprogramdata$final_output$fitting_error=new_fitting_error
       reactiveprogramdata$final_output$intensity=new_intensity
       reactiveprogramdata$final_output$signal_area_ratio=new_signal_area_ratio
-      reactiveprogramdata$final_output$shift=new_shift
-      reactiveprogramdata$final_output$half_band_width=new_width
+      reactiveprogramdata$final_output$chemical_shift=new_shift
+      reactiveprogramdata$final_output$half_bandwidth=new_width
       reactiveprogramdata$final_output$quantification=new_Area
       reactiveprogramdata$useful_data=new_useful_data
       reactiveprogramdata$ROI_data=reactiveprogramdata$ROI_data_check
@@ -762,7 +762,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
 
 
-  #Dengrogran heatmaps for quantification and chemical shift
+  #Dengrogran heatmaps for quantification and chemical $chemical_shift
   tryCatch(output$dendheatmapareadata <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
@@ -776,7 +776,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   tryCatch(output$dendheatmapshiftdata <- renderPlotly({
     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
 
-    tryCatch({suppressWarnings(suppressMessages(type_analysis_plot(reactiveprogramdata$final_output$shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')))
+    tryCatch({suppressWarnings(suppressMessages(type_analysis_plot(reactiveprogramdata$final_output$chemical_shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')))
   }, error = function(e) {
     print('Error. Please explain the issue in the Github page.')
     return(NULL)

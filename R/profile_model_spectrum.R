@@ -1,8 +1,8 @@
 #' Automatic quantification in the model spectrum of the dataset using the information located in the ROI patterns file, with associated p values for every bin. The reulting information can be useful to analyze possible new ROIs to profile or modification of existing ones.
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param ROI_data ROIs data.
-
+#' @param ROI_data ROI data to check.
+#' @param spectrum_index By default, NA and a spectrum model is calculated. If specified, the profiling in the spectrum specified is performed.
 #'
 #' @return plotly figure with performed fitting for every ROI and p value for every bin
 #' @export profile_model_spectrum
@@ -26,9 +26,9 @@ profile_model_spectrum = function(imported_data, ROI_data,spectrum_index=NA) {
     lal=which(duplicated(ROI_data[-dummy,1:2])==F)
     ROI_separator = cbind(lal, c(lal[-1] - 1, dim(ROI_data[-dummy,])[1]))
 
-  # indicators=matrix(NA,nrow(ROI_data),2,dimnames=list(imported_data$signals_names)))
-  total_signals_parameters=matrix(NA,nrow(ROI_data),9,dimnames=list(imported_data$signals_names))
-  colnames(total_signals_parameters)=c("intensity",	" chemical shift",	"half_band_width",	"gaussian %",	"J coupling",	"multiplicities",	"roof_effect","fitting error","signal / total area ratio")
+  total_signals_parameters=matrix(NA,nrow(ROI_data),9,
+            dimnames=list(paste(ROI_data[,4],ROI_data[,5],sep='_')))
+  colnames(total_signals_parameters)=c("intensity",	" chemical $chemical_shift",	"half_bandwidth",	"gaussian %",	"J coupling",	"multiplicities",	"roof_effect","fitting error","signal / total area ratio")
 if (is.na(spectrum_index)) {
   quartile_spectrum = as.numeric(apply(imported_data$dataset, 2, function(x)
     quantile(x, 0.75,na.rm=T)))
@@ -78,7 +78,7 @@ if (is.na(spectrum_index)) {
 
       integration_variables = integration(program_parameters$clean_fit, Xdata,Ydata,program_parameters$buck_step)
 
-      total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
+      total_signals_parameters[signals_codes,]=c(integration_variables$results_to_save$intensity,integration_variables$results_to_save$chemical_shift,rep(NA,5),integration_variables$results_to_save$fitting_error,integration_variables$results_to_save$signal_area_ratio)
 
 
       #preparation of output
@@ -113,8 +113,8 @@ if (is.na(spectrum_index)) {
       dim(signals_parameters) = c(5, length(signals_parameters)/5)
       rownames(signals_parameters) = c(
         'intensity',
-        'shift',
-        'half_band_width',
+        '$chemical_shift',
+        'half_bandwidth',
         'gaussian',
         'J_coupling'
       )
@@ -141,14 +141,17 @@ if (is.na(spectrum_index)) {
   }
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
 
-  ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "p value",range = c(0, max(as.numeric(imported_data$dataset[spectrum_index, ]))))
-  az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(as.numeric(imported_data$dataset[spectrum_index, ]))-1))
   p=plot_ly()%>%
     add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),name='Model spectrum')%>%
     add_lines(x=~imported_data$ppm,y = ~fitted_data,name='Fitted spectrum',fill='tozeroy')%>%
-  add_lines(x=~imported_data$ppm,y = ~p_value_bucketing,name='p value', yaxis = "y2",line = list(color = 'rgba(255, 0, 0, 1)'))%>%
-    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=az, yaxis2 = ay)
+    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
+  p2 <- plot_ly(x=~imported_data$ppm)%>%add_lines(y =p_value_bucketing, name='p value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
+    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))))
+  p <- subplot(p, p2,nrows=2,heights=c(0.95,0.05),margin=0,shareX = T)
+
   dummy=list(p=p,total_signals_parameters=round(total_signals_parameters,4),ROI_data=ROI_data)
+
+
   return(dummy)
   print("DOne!")
 }
