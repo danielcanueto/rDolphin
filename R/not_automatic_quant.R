@@ -5,23 +5,23 @@
 #' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param ind Experiment to quantify.
 #' @param ROI_profile Information of signals to fit in ROI
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param interface Is the function being used with the Shiny GUI or not? By default F.
 #'
-#' @return Output depends on if the function is being used or not in the interface. If not in the interface, list with updated final_output and useful_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
-#' @export not_automatic_quant
+#' @return Output depends on if the function is being used or not in the interface. If not in the interface, list with updated final_output and reproducibility_data variables. If in the interface, necessary parameters to evaluate quality of the quantification before confiramtion by the user.
+#' @export individual_profiling
 #' @import baseline
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$useful_data)
+#' resulting_data=individual_profiling(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$reproducibility_data)
 
 
-not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,useful_data,interface=F) {
+individual_profiling = function(imported_data, final_output,ind,ROI_profile,reproducibility_data,interface=F) {
   print('Performing the quantification...')
 
-  resulting_data=list(final_output=final_output,useful_data=useful_data)
+  resulting_data=list(final_output=final_output,reproducibility_data=reproducibility_data)
 
   if (identical(ind,seq(nrow(imported_data$dataset)))) pb <- txtProgressBar(1, length(ind), style=3)
 
@@ -38,15 +38,11 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
     program_parameters$clean_fit="N"
   }
   signals_to_quantify = which(ROI_profile[, 5] >0)
-      signals_codes = signals_names = rep(NA,nrow(ROI_profile))
-  j = 1
+  signals_codes = signals_names = rep(NA,nrow(ROI_profile))
   for (i in seq(nrow(ROI_profile))) {
-    k = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
+    signals_codes[i] = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
       4],ROI_profile[i,5],sep='_')))
-
-    signals_codes[j] = imported_data$signals_codes[k]
-    signals_names[j] = as.character(imported_data$signals_names[k])
-    j = j + 1
+    signals_names[i] = as.character(imported_data$signals_names[signals_codes[i]])
   }
 
   for (spectrum_index in ind) {
@@ -77,13 +73,13 @@ not_automatic_quant = function(imported_data, final_output,ind,ROI_profile,usefu
       # resulting_data$integration_parameters=integration_parameters
       #Generation of output variables specific of every quantification
 	if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F) {
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
-        # resulting_data$useful_data[[spectrum_index]][[signals_codes]]$integration_parameters=integration_parameters
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
-        resulting_data$useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
+        # resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$integration_parameters=integration_parameters
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
         resulting_data$final_output = save_output(
           spectrum_index,
@@ -267,21 +263,21 @@ colors=c(I('red'),I('blue'),I('black'),I('brown'),I('cyan'),I('green'),I('yellow
       colnames(signals_parameters)=c(make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),paste('baseline_signal',seq(ncol(signals_parameters)-nrow(ROI_profile)),sep='_'))
     }
 
-    # if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
+    # if (resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[1]]]$error1>0.8*error1) {
 
     # }
 if (identical(ind,seq(nrow(imported_data$dataset)))| interface ==F)  {
-	# if (resulting_data$useful_data[[spectrum_index]][[signals_codes[1]]]$error1>error1) {
+	# if (resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[1]]]$error1>error1) {
       for (i in seq_along(signals_codes)) {
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
-        resulting_data$useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
+        resulting_data$reproducibility_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
 
 
       }

@@ -4,10 +4,10 @@
 \alias{load_quantification}
 \title{Load quantification}
 \usage{
-load_quantification(useful_data, imported_data, final_output, info, ROI_data)
+load_quantification(reproducibility_data, imported_data, final_output, info, ROI_data)
 }
 \arguments{
-\item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
+\item{reproducibility_data}{List with necessary information to load quantifications on the Shiny GUI.}
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
@@ -26,6 +26,6 @@ Load quantification
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$useful_data)
-loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=4),imported_data$ROI_data)
+resulting_data=individual_profiling(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$reproducibility_data)
+loaded_quantification=load_quantification(resulting_data$reproducibility_data,imported_data,resulting_data$final_output,list(row=1,col=4),imported_data$ROI_data)
 }

@@ -3,13 +3,13 @@
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
 #' @param improvement_option If "correction", quantifications are updated taking into account the predicted signal parameters. If "reimplemetation", profiling is repeated using the prediction information.
 #' @param level How extensive should be the improvement? If "all", all quantifications are changed. If "outliers", quantifications whoss signal parameters behave as outliers are changed (please take into account that only the quantifications will be updated). If a number is introduced, the quantifications with a higher fitting error than the number specified are repeated.
 #'
-#' @return List with updated final_output and useful_data variables.
-#' @export autorun_improv
+#' @return List with updated final_output and reproducibility_data variables.
+#' @export automatic_profiling_improv
 #' @import baseline
 #' @import robustbase
 #' @import caret
@@ -19,13 +19,13 @@
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' # Not run:
-#' # profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
-#' # profiling_data_2=autorun_improv(imported_data,profiling_data$final_output,profiling_data$useful_data,imported_data$ROI_data,"correction","outliers")
+#' # load(file.path(system.file(package = "rDolphin"),"extdata","MTBLS242_subset_profiling_data.RData"))
+#' # profiling_data_2=automatic_profiling_improv(imported_data,profiling_data$final_output,profiling_data$reproducibility_data,imported_data$ROI_data)
 
 
 #TODO: Choose criteria to repeat only individual quantification and all signals of all spectra.
 
-autorun_improv = function(imported_data, final_output,useful_data,ROI_data,improvement_option='reimplementation',level='outliers') {
+automatic_profiling_improv = function(imported_data, final_output,reproducibility_data,ROI_data,improvement_option='reimplementation',level='outliers') {
 print("Starting maximization of profiling data quality using information of original profiling...")
   print("Now estimating the predicted signal parameters with confidence intervals...")
   sink("aux");
@@ -137,12 +137,12 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 
         results_to_save=dummy$results_to_save
         #Generation of useful variables specific of every quantification
-        useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
-        useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
-        useful_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
-        useful_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
-        useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
-        useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
+        reproducibility_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
+        reproducibility_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
+        reproducibility_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
         #If the quantification is through fitting with or without baseline
       } else if (fitting_type == "Clean Fitting" || fitting_type ==
@@ -195,15 +195,15 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 
         #Generation of useful variables specific of every quantification
         for (i in seq_along(signals_codes)) {
-          useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
-          useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
-          useful_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
-          useful_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
-          useful_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
           }
      }
 
@@ -234,7 +234,7 @@ tec[,apply(tec,2,function(x)all(is.na(x)))]=final_output$quantification[,apply(t
 }
  }
   print("Done!")
-  profiling_data=list(final_output=final_output,useful_data=useful_data,
+  profiling_data=list(final_output=final_output,reproducibility_data=reproducibility_data,
                                 predicted_shift=predicted_shift,predicted_width=predicted_width,
                                 predicted_intensity=predicted_intensity,max_width=max_width,
                                 min_width=min_width,max_shift=max_shift,min_shift=min_shift,

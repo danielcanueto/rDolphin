@@ -4,7 +4,7 @@
 \alias{write_plots}
 \title{Import of variables stored in the parameters file and of the dataset to quantify}
 \usage{
-write_plots(path, final_output, imported_data, useful_data)
+write_plots(path, final_output, imported_data, reproducibility_data)
 }
 \arguments{
 \item{path}{Path where plots are stored inside a created 'plots' folder}
@@ -13,7 +13,7 @@ write_plots(path, final_output, imported_data, useful_data)
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
+\item{reproducibility_data}{List with necessary information to load quantifications on the Shiny GUI.}
 }
 \value{
 Plots in pdf files
@@ -25,5 +25,5 @@ Import of variables stored in the parameters file and of the dataset to quantify
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 load("MTBLS242_subset_profiling_data.RData")
 #Not run:
-#write_plots('quantification_plots',profiling_data$final_output,imported_data,profiling_data$useful_data)
+#write_plots('quantification_plots',profiling_data$final_output,imported_data,profiling_data$reproducibility_data)
 }

@@ -25,15 +25,11 @@ signals_int = function(imported_data, final_output,spectrum_index,signals_introd
 
       signals_to_quantify = which(ROI_profile[, 5] >0)
       signals_codes = signals_names = rep(NA,nrow(ROI_profile))
-      j = 1
-      for (i in seq(nrow(ROI_profile))) {
-        k = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
-          4],ROI_profile[i,5],sep='_')))
-
-        signals_codes[j] = imported_data$signals_codes[k]
-        signals_names[j] = as.character(imported_data$signals_names[k])
-        j = j + 1
-      }
+  for (i in seq(nrow(ROI_profile))) {
+    signals_codes[i] = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
+      4],ROI_profile[i,5],sep='_')))
+    signals_names[i] = as.character(imported_data$signals_names[signals_codes[i]])
+  }
 
       # program_parameters$clean_fit = clean_fit
 experiment_name = imported_data$Experiments[[spectrum_index]]

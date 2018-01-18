@@ -3,15 +3,15 @@
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
 #' @return Plotly figure with the median spectrum for each group of spectra
-#' @export medianplot
+#' @export median_plot
 #' @import reshape2
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' median_plot=medianplot(imported_data)
+#' median_plot=median_plot(imported_data)
 
-medianplot = function(imported_data) {
+median_plot = function(imported_data) {
   types=unique(imported_data$Metadata[,2])
   mediandataset=matrix(NA,length(types),ncol(imported_data$dataset))
   for (i in 1:length(types)) mediandataset[i,]=apply(imported_data$dataset[which(imported_data$Metadata[,2]==types[i]),,drop=F],2,median)

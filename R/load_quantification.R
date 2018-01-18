@@ -1,6 +1,6 @@
 #' Load quantification
 #'
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param info List with 'row' and 'column' indicating spectrum and signal to load.
@@ -14,19 +14,19 @@
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' resulting_data=not_automatic_quant(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$useful_data)
-#' loaded_quantification=load_quantification(resulting_data$useful_data,imported_data,resulting_data$final_output,list(row=1,col=4),imported_data$ROI_data)
+#' resulting_data=individual_profiling(imported_data,imported_data$final_output,c(1,4),imported_data$ROI_data[3:4,],imported_data$reproducibility_data)
+#' loaded_quantification=load_quantification(resulting_data$reproducibility_data,imported_data,resulting_data$final_output,list(row=1,col=4),imported_data$ROI_data)
 
 
 
-load_quantification=function(useful_data,imported_data,final_output,info,ROI_data) {
+load_quantification=function(reproducibility_data,imported_data,final_output,info,ROI_data) {
   loaded_quantification=list()
 row=info$row
 col=info$col
-Xdata=useful_data[[row]][[col]]$Xdata
-Ydata=useful_data[[row]][[col]]$Ydata
-plot_data=useful_data[[row]][[col]]$plot_data
-ROI_profile=useful_data[[row]][[col]]$ROI_profile
+Xdata=reproducibility_data[[row]][[col]]$Xdata
+Ydata=reproducibility_data[[row]][[col]]$Ydata
+plot_data=reproducibility_data[[row]][[col]]$plot_data
+ROI_profile=reproducibility_data[[row]][[col]]$ROI_profile
 
 rownames(plot_data) = c("signals_sum",
                         "baseline_sum",
@@ -56,8 +56,8 @@ loaded_quantification$ROIpar=ROI_profile
 loaded_quantification$signpar=matrix(NA,2,7)
 colnames(loaded_quantification$signpar)=c("intensity",	"$chemical_shift",	"half bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
 
-if (!is.null(useful_data[[row]][[col]]$signals_parameters)) {
-  loaded_quantification$signpar=t(useful_data[[row]][[col]]$signals_parameters)
+if (!is.null(reproducibility_data[[row]][[col]]$signals_parameters)) {
+  loaded_quantification$signpar=t(reproducibility_data[[row]][[col]]$signals_parameters)
   if (is.null(rownames(loaded_quantification$signpar))) {
   if (ROI_profile[1,3]=="Baseline Fitting") {
     rownames(loaded_quantification$signpar)=c(make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('baseline signal',nrow(loaded_quantification$signpar)-nrow(ROI_profile)))

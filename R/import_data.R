@@ -46,8 +46,6 @@ import_data = function(parameters_path) {
   #Import of ROI profiles and generation of names and codes of signals
   ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)
   signals_names=make.names(paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_'))
-  signals_codes = 1:length(signals_names)
-
 
 #Other necessary variables
   freq = as.numeric(as.character(import_profile[10, 2]))
@@ -271,8 +269,6 @@ import_data = function(parameters_path) {
   #Storage of parameters needed to perform the fit in a single variable to return.
 
   imported_data$buck_step = params$buck_step
-  imported_data$signals_names = signals_names
-  imported_data$signals_codes = signals_codes
   imported_data$Experiments = Experiments
   imported_data$ROI_data = ROI_data
   imported_data$freq = freq
@@ -288,11 +284,11 @@ import_data = function(parameters_path) {
   imported_data$final_output = list(quantification= dummy,signal_area_ratio = dummy,fitting_error = dummy, chemical_shift = dummy,intensity = dummy, half_bandwidth = dummy)
 
   #creation of list of necessary parameters to load quantifications and evaluate quality of them
-  imported_data$useful_data=vector('list',length(imported_data$Experiments))
-  for (i in seq_along(imported_data$useful_data)) imported_data$useful_data[[i]]=vector('list',length(imported_data$signals_codes))
-  for (i in seq_along(imported_data$useful_data)) {
-    for (j in seq_along(imported_data$useful_data[[i]])) {
-      imported_data$useful_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=imported_data$ROI_data[j,],program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
+  imported_data$reproducibility_data=vector('list',length(imported_data$Experiments))
+  for (i in seq_along(imported_data$reproducibility_data)) imported_data$reproducibility_data[[i]]=vector('list',length(imported_data$signals_names))
+  for (i in seq_along(imported_data$reproducibility_data)) {
+    for (j in seq_along(imported_data$reproducibility_data[[i]])) {
+      imported_data$reproducibility_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=imported_data$ROI_data[j,],program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
     }}
 
 print('Done!')

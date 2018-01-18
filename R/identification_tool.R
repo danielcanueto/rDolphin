@@ -2,7 +2,7 @@
 #'
 #' @param dataset Dataset
 #' @param ppm ppm axis
-#' @param limits Left and right edges of the region to correlate with the rest of spectrum.
+#' @param driver_peak_edges Left and right edges of the driver peak to correlate with the rest of spectrum.
 #' @param method Method ('pearson','spearman','ransy').
 #'
 #' @return interactive plot
@@ -15,8 +15,8 @@
 
 
 
-identification_tool= function(dataset,ppm,limits,method) {
-  ROI_buckets = which.min(abs(as.numeric(limits[1])-ppm)):which.min(abs(as.numeric(limits[2])-ppm))
+identification_tool= function(dataset,ppm,driver_peak_edges,method) {
+  ROI_buckets = which.min(abs(as.numeric(driver_peak_edges[1])-ppm)):which.min(abs(as.numeric(driver_peak_edges[2])-ppm))
 
   if (method=='ransy') {
     #Loosely based on equivalent function in 'muma' R package

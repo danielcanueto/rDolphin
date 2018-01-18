@@ -3,24 +3,35 @@
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
 #' @param optimization By default TRUE. If TRUE, profiling quality is maximized through the analysis og signals parameters, with the tradeoff of additional computing time.
-#' @param spectra_to_fit By default NA, and all spectra are profiled. If a vector of spectra is provided, profiling is limited to this vector.
+#' @param spectra_to_profile By default NA, and all spectra are profiled. If a vector of spectra is provided, profiling is limited to this vector.
 #'
-#' @return List with updated final_output and useful_data variables.
-#' @export autorun
+#' @return List with updated final_output and reproducibility_data variables.
+#' @export automatic_profiling
 #' @import baseline
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' # Not run:
-#' # profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
+#' # profiling_data=automatic_profiling(imported_data,imported_data$ROI_data)
 
 
-autorun = function(imported_data, final_output,useful_data,ROI_data,optimization=TRUE,spectra_to_fit=NA) {
+automatic_profiling = function(imported_data, ROI_data,optimization=TRUE,spectra_to_profile=NA) {
 
+  signals_names=make.names(paste(ROI_data[,4],ROI_data[,5],sep='_'))
+	dummy=matrix(NaN,nrow(imported_data$dataset),length(signals_names),dimnames=list(imported_data$Experiments,signals_names))
+  final_output = list(quantification= dummy,signal_area_ratio = dummy,fitting_error = dummy, chemical_shift = dummy,intensity = dummy, half_bandwidth = dummy)
+
+  #creation of list of necessary parameters to load quantifications and evaluate quality of them
+  reproducibility_data=vector('list',length(imported_data$Experiments))
+  for (i in seq_along(reproducibility_data)) reproducibility_data[[i]]=vector('list',length(signals_names))
+  for (i in seq_along(reproducibility_data)) {
+    for (j in seq_along(reproducibility_data[[i]])) {
+      reproducibility_data[[i]][[j]]=list(Ydata=NULL,Xdata=NULL,ROI_profile=imported_data$ROI_data[j,],program_parameters=NULL,plot_data=NULL,FeaturesMatrix=NULL,signals_parameters=NULL,results_to_save=NULL,error1=1000000)
+    }}
   print('Be patient. Gonna take a while. You should be writing, meanwhile.')
 
   #Splitting of ROI data into individual ROIs to be quantified
@@ -66,8 +77,8 @@ autorun = function(imported_data, final_output,useful_data,ROI_data,optimization
 
     #Quantification for every spectrum
     pb   <- txtProgressBar(1, nrow(imported_data$dataset), style=3)
-    if (is.na(spectra_to_fit)) spectra_to_fit=1:nrow(imported_data$dataset)
-    for (spectrum_index in spectra_to_fit) {
+    if (is.na(spectra_to_profile)) spectra_to_profile=1:nrow(imported_data$dataset)
+    for (spectrum_index in spectra_to_profile) {
 
       #Preparation of necessary variables to store figures and information of the fitting
       Ydata = as.numeric(imported_data$dataset[spectrum_index, ROI_buckets])
@@ -85,12 +96,12 @@ autorun = function(imported_data, final_output,useful_data,ROI_data,optimization
 
         results_to_save=dummy$results_to_save
         #Generation of useful variables specific of every quantification
-        useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
-        useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
-        useful_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
-        useful_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
-        useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
-        useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
+        reproducibility_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
+        reproducibility_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
+        reproducibility_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
         #If the quantification is through fitting with or without baseline
       } else if (fitting_type == "Clean Fitting" || fitting_type ==
@@ -143,15 +154,15 @@ autorun = function(imported_data, final_output,useful_data,ROI_data,optimization
 
         #Generation of useful variables specific of every quantification
         for (i in seq_along(signals_codes)) {
-          useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
-          useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
-          useful_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
-          useful_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
-          useful_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
           }
      }
 
@@ -164,8 +175,8 @@ autorun = function(imported_data, final_output,useful_data,ROI_data,optimization
   }
 
 
-  if (optimization==TRUE) {
-  optimized_profiling_data=autorun_improv(imported_data,final_output,useful_data,ROI_data)
+  if (optimization==TRUE&length(spectra_to_profile)>20) {
+  optimized_profiling_data=automatic_profiling_improv(imported_data,final_output,reproducibility_data,ROI_data)
   nn=optimized_profiling_data$final_output$fitting_error-final_output$fitting_error
   no=boxplot.stats(nn)$stats[5]
   ind=which(nn>no)
@@ -174,13 +185,13 @@ autorun = function(imported_data, final_output,useful_data,ROI_data,optimization
   }
   for (i in 1:nrow(optimized_profiling_data$final_output$fitting_error)) {
     ind=which(nn[i,]>no)
-    if (length(ind)>0) optimized_profiling_data$useful_data[[i]][ind]=useful_data[[i]][ind]
+    if (length(ind)>0) optimized_profiling_data$reproducibility_data[[i]][ind]=reproducibility_data[[i]][ind]
   }
   final_output=optimized_profiling_data$final_output
-  useful_data=optimized_profiling_data$useful_data
+  reproducibility_data=optimized_profiling_data$reproducibility_data
   }
 
-  profiling_data=list(final_output=final_output,useful_data=useful_data)
+  profiling_data=list(final_output=final_output,reproducibility_data=reproducibility_data)
 
   print("Done!")
 

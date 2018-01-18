@@ -2,19 +2,19 @@
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #'
-#' @return Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical $chemical_shift, half bandwidth, etc.
-#' @export clustspectraplot
+#' @return Plotly figure with subset of spectra that represent different kinds of spectra that can be found on the dataset depending on chemical shift, half bandwidth, etc.
+#' @export exemplars_plot
 #' @import apcluster
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-#' clusterplot=clustspectraplot(imported_data)
+#' plot=exemplars_plot(imported_data)
 
 
 
 
-clustspectraplot = function(imported_data) {
+exemplars_plot = function(imported_data) {
 
   if (nrow(imported_data$dataset)>10) {
   scaled_roi=scale(imported_data$dataset[ , sort(colMeans(imported_data$dataset),decreasing=T,index.return=T)$ix[1:(ncol(imported_data$dataset)/3)],drop=F])
