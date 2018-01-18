@@ -1,0 +1,48 @@
+ROI left edge,ROI right edge,Quantification Mode,Metabolite,Quantification Signal,Chemical shift,Chemical shift tolerance,Half bandwidth,Multiplicity,J coupling,Roof effect,Relative intensity,HMDB code
+0.04,-0.07,Clean Fitting,TSP,1,-0.026,0.015,9.5,1,0,0,1,
+1.06,0.915,Baseline Fitting,L-Isoleucine,1,1.003,0.002,1.2,2,7.14,0,1,HMDB00172
+1.06,0.915,Baseline Fitting,L-Valine,2,0.985,0.002,1.2,2,7,0,1,HMDB00883
+1.06,0.915,Baseline Fitting,L-Valine,1,1.0356,0.002,1.2,2,7.05,0,1,HMDB00883
+1.06,0.915,Baseline Fitting,L-Leucine,1,0.955,0.002,1.2,3,5.897,0,1,HMDB00687
+1.06,0.915,Baseline Fitting,L-Isoleucine,2,0.933,0.002,1.2,3,7.414,0,0.9159,HMDB00172
+1.08,1.05,Baseline Fitting,Isobutyric acid,1,1.0666,0.002,1.2,2,7.2,0,1,HMDB01873
+1.128,1.102,Baseline Fitting,2-oxoisovaleric acid,1,1.1152,0.002,1.4,2,6.9,0,1,HMDB00019
+1.21,1.18,Baseline Fitting,3-Hydroxybutyric acid,1,1.1948,0.002,1.2,2,6.262,0,1,HMDB00357
+1.35,1.3,Baseline Fitting,L-Lactic acid,1,1.3234,0.002,1.4,2,6.96,0,1,HMDB00190
+1.5,1.447,Baseline Fitting,L-Alanine,1,1.4756,0.002,1.4,2,7.28,0,1,HMDB00161
+1.77,1.65,Baseline Sum,U1_72,1,1.72,0.002,1.4,1,0,0,1,
+1.92,1.905,Baseline Fitting,Acetic acid,1,1.913,0.003,1.4,1,0,0,1,HMDB00042
+2.0484,2.025,Baseline Sum,N-Ac-Glycoprotein_signals,1,2.038,0.002,1.4,1,0,0,1,
+2.16,2.1,Baseline Sum,L-Glutamine,2,2.12,0.002,1.4,1,0,0,1,HMDB00641
+2.24,2.21,Baseline Fitting,Acetone,1,2.226,0.002,1.4,1,0,0,1,HMDB01659
+2.305,2.26,Baseline Fitting,3-Hydroxybutyric acid,2,2.277,0.002,1.5,1,0,0,1,HMDB00357
+2.305,2.26,Baseline Fitting,3-Hydroxybutyric acid,3,2.2928,0.002,1,2,6,0,1,HMDB00357
+2.359,2.334,Baseline Sum,L-Glutamic acid,1,2.356,0.005,1.2,1,0,0,NA,HMDB00148
+2.38,2.353,Baseline Fitting,Pyruvic acid,1,2.3664,0.003,1,1,0,0,1,HMDB00243
+2.475,2.425,Baseline Sum,L-Glutamine,1,2.465,0.002,1.5,1,0,0,1,HMDB00641
+2.56,2.5,Baseline Fitting,Citric acid,2,2.531,0.003,1.1,2,15.5,-0.2,1,HMDB00094
+2.7,2.62,Baseline Fitting,Citric acid,1,2.6764,0.005,1.1,2,15.36,0.35,1,HMDB00094
+2.7,2.62,Baseline Fitting,L-Methionine,1,2.644,0.003,1.4,3,7.2,0,1,HMDB00696
+2.87,2.84,Baseline Fitting,U2_85,1,2.856,0.003,1,2,7.74,0,1,
+3.048,3.004,Baseline Fitting,Creatine,1,3.034,0.003,1.4,1,0,0,1,HMDB00064
+3.048,3.004,Baseline Fitting,Creatinine,2,3.039,0.002,1.4,1,0,0,1,HMDB00562
+3.048,3.004,Baseline Fitting,L-Lysine,1,3.0274,0.004,2,3,7.8,0,1,HMDB00182
+3.165,3.13,Baseline Fitting,U3_15,1,3.1472,0.002,1.2,1,0,0,1,
+3.365,3.35,Baseline Fitting,Methanol,1,3.358,0.001,1,1,0,0,1,HMDB01875
+3.365,3.35,Baseline Fitting,U3_346,0,3.356,0.001,1,1,0,0,1,
+3.57,3.51,Baseline Fitting,Glycine,1,3.5576,0.002,1,1,0,0,1,HMDB00123
+3.57,3.51,Baseline Fitting,D-Glucose,4,3.5264,0.002,1.2,2,3.8,0,1.19,HMDB00122
+3.57,3.51,Baseline Fitting,D-Glucose,5,3.5424,0.002,1.2,2,3.8,0,1.41,HMDB00122
+3.62,3.57,Baseline Fitting,L-Threonine,1,3.583,0.003,1.2,2,4.6,0.3,1,HMDB00167
+3.62,3.57,Baseline Fitting,L-Valine,3,3.608,0.003,1,2,4.6,0,1,HMDB00883
+3.805,3.78,Baseline Fitting,L-Alanine,2,3.792,0.003,1,1,0,0,1,HMDB00161
+4.06,4.035,Baseline Fitting,Creatinine,1,4.048,0.002,1.4,1,0,0,0.43,HMDB00562
+4.14,4.07,Baseline Fitting,L-Lactic acid,2,4.106,0.002,1.2,4,7,0,1,HMDB00190
+5.195,5.17,Baseline Fitting,D-Mannose,1,5.1824,0.002,1.2,2,1.55,0,1,HMDB00169
+5.25,5.22,Baseline Fitting,D-Glucose,1,5.2332,0.002,1.2,2,3.677,0,2.22,HMDB00122
+6.91,6.885,Baseline Sum,L-Tyrosine,2,6.895,0.002,2,2,8.8,0,1,HMDB00158
+7.085,7.045,Baseline Fitting,1-Methylhistidine,2,7.063,0.01,2,1,0,0,1,HMDB00001
+7.205,7.18,Baseline Sum,L-Tyrosine,1,7.192,0.002,2,2,8.8,0,0.75,HMDB00158
+7.448,7.402,Baseline Sum,L-Phenylalanine,1,7.426,0.006,2,3,7.2,1,1.25,HMDB00159
+7.82,7.76,Baseline Fitting,1-Methylhistidine,1,7.79,0.025,2.4,1,0,0,1,HMDB00001
+8.465,8.445,Baseline Fitting,Formic acid,1,8.455,0.002,1.2,1,0,0,1,HMDB00142

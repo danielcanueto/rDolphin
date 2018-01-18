@@ -1,5 +1,7 @@
 # rDolphin
 
+
+
 ## Please run these commands in the R console to install the package:
 
 1. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
@@ -9,9 +11,18 @@
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 
 
+## NOTE: a (still unstable) development version has been prepared so to be ready for use after near publication of the package. The use of this development version is strongly encouraged as the performance and naming have been improved. This development version will soon replace the current main version. To install this development version, replace
+2. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`      
+during the installation isntruccions by:
+2. `devtools::install_github("danielcanueto/rDolphin",ref='development_version', build_vignettes = TRUE)`
+
+
+
 ## Introduction to the package:
 
-For a quick look to the capabilitites of the package, examples of sessions of profiling of MTBLS1 and MTBLS242 Metabolights data sets are available on the next links:
+A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An (still not updated to last changes) introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
+
+For a quick look to the capabilities of the Shiny GUI, examples of sessions of profiling of MTBLS1, MTBLS237 and MTBLS374 Metabolights data sets are available on the next links:
 
 MTBLS1: https://www.dropbox.com/s/k0x8enlonpr2njo/MTBLS1_example.RData?dl=0
 
@@ -19,8 +30,9 @@ MTBLS237: https://www.dropbox.com/s/08kjxpd08vo9tq9/MTBLS237_example.RData?dl=0
 
 To load e.g. the MTBLS1 profiling session, run “rDolphin_GUI()” to open the GUI and click on the "Resume a saved session" button on the left panel. 
 
+The ROI profiles of fecal extract, blood and urine are available on the "extdata" folder inside the package folder.
 
-A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
+
 
 ## Tab Images of MTBLS1 session:
 
