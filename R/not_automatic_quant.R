@@ -40,9 +40,9 @@ individual_profiling = function(imported_data, final_output,ind,ROI_profile,repr
   signals_to_quantify = which(ROI_profile[, 5] >0)
   signals_codes = signals_names = rep(NA,nrow(ROI_profile))
   for (i in seq(nrow(ROI_profile))) {
-    signals_codes[i] = which(imported_data$signals_names == make.names(paste(ROI_profile[i,
+    signals_codes[i] = which(colnames(final_output$quantification) == make.names(paste(ROI_profile[i,
       4],ROI_profile[i,5],sep='_')))
-    signals_names[i] = as.character(imported_data$signals_names[signals_codes[i]])
+    signals_names[i] = as.character(colnames(final_output$quantification)[signals_codes[i]])
   }
 
   for (spectrum_index in ind) {

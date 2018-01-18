@@ -4,7 +4,8 @@
 \alias{save_roi_testing}
 \title{Saving of results in interface in individual quantification}
 \usage{
-save_roi_testing(provisional_data, imported_data, final_output, reproducibility_data)
+save_roi_testing(provisional_data, imported_data, final_output,
+  reproducibility_data)
 }
 \arguments{
 \item{provisional_data}{List with elements to save.}

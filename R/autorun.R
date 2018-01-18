@@ -2,13 +2,11 @@
 #' Automatic quantification of signals for all experiments using the information located in the ROI patterns file.
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
-#' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
 #' @param optimization By default TRUE. If TRUE, profiling quality is maximized through the analysis og signals parameters, with the tradeoff of additional computing time.
 #' @param spectra_to_profile By default NA, and all spectra are profiled. If a vector of spectra is provided, profiling is limited to this vector.
 #'
-#' @return List with updated final_output and reproducibility_data variables.
+#' @return List with final_output (with metabolite signal relative concentrations and quality indicators) and reproducibility_data (with the necessary data to reproduce the profiling performed).
 #' @export automatic_profiling
 #' @import baseline
 #'

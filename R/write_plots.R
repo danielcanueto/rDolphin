@@ -2,7 +2,6 @@
 #'
 #' @param export_path Path where plots are stored inside a created 'plots' folder
 #' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param signals_to_plot Vector of indexes of signals in ROI data to plot. By default, NA and all figures are outputted.
 #' @return Plots in pdf files

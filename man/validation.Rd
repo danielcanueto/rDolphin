@@ -2,22 +2,22 @@
 % Please edit documentation in R/validation.R
 \name{validation}
 \alias{validation}
-\title{Creation of matrix to validate quantifications, with information of signal to total area ratio, fitting error, and difference with expected chemical $chemical_shift, half bandwidth or intensity}
+\title{Estimation of quality indicators, with signal to total area ratio, fitting error, and difference between expected and found signal parameter values.}
 \usage{
-validation(final_output, alarm_matrix, validation_type)
+validation(final_output, alarm_matrix = NA, validation_type)
 }
 \arguments{
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 
-\item{alarm_matrix}{List with quantifications and indicators of quality of quantification.}
+\item{alarm_matrix}{List of previous indicators.}
 
-\item{validation_type}{Type of valdiation to perform (1: fitting error, 2: signal area ratio, 3: chemical $chemical_shift, 4: half bandwidth, 5: intensity)}
+\item{validation_type}{Type of validation to perform (1: fitting error, 2: signal total area ratio, 3: difference expected-obtained chemical shift, 4: difference expected-obtained half bandwidth, 5: difference expected-obtained intensity)}
 }
 \value{
-Matrix with data required
+List with estimated indicators, matrix to show in GUI, and breaks and colors to prepare a different color for each cell of the matrix.
 }
 \description{
-Creation of matrix to validate quantifications, with information of signal to total area ratio, fitting error, and difference with expected chemical $chemical_shift, half bandwidth or intensity
+Estimation of quality indicators, with signal to total area ratio, fitting error, and difference between expected and found signal parameter values.
 }
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
