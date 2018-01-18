@@ -27,7 +27,6 @@
 automatic_profiling_improv = function(imported_data, final_output,reproducibility_data,ROI_data,improvement_option='reimplementation',level='outliers') {
 print("Starting maximization of profiling data quality using information of original profiling...")
   print("Now estimating the predicted signal parameters with confidence intervals...")
-  sink("aux");
   predicted_info=rf_pred(final_output$half_bandwidth,final_output$fitting_error)
 predicted_width=as.matrix(predicted_info$predicted_matrix)
 
@@ -59,7 +58,6 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   max_intensity[!is.finite(max_intensity)]=NA
   min_intensity[!is.finite(min_intensity)]=NA
   min_intensity[min_intensity<0]=0
-  sink(NULL);
   print("Beginning the maximization of profiling data quality according to the option selected...")
 
 

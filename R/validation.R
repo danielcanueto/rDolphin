@@ -18,7 +18,6 @@
 
 validation = function(final_output,alarm_matrix=NA,validation_type) {
 print("Updating the chosen validation method...")
-  sink(type='message');
   #If some required information does not exist yet, it is created
   if (is.na(alarm_matrix)) {
   alarm_matrix=final_output
@@ -104,7 +103,6 @@ for (i in seq(length(alarm_matrix))) alarm_matrix[[i]][,]=NA
   alarm_matrix=lapply(alarm_matrix,as.matrix)
   shown_matrix=as.matrix(shown_matrix)
 validationdata=list(alarm_matrix=alarm_matrix,shown_matrix=shown_matrix,brks=brks,clrs=clrs)
-sink(NULL);
 print("Done!")
 
 return(validationdata)

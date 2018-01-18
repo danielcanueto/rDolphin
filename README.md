@@ -4,17 +4,18 @@
 
 ## Please run these commands in the R console to install the package:
 
-1. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
-2. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
-3. `library(rDolphin)`          #loads rDolphin
+1. `source("https://bioconductor.org/biocLite.R"); biocLite("impute"); biocLite("MassSpecWavelet")` #installation of packages that cannot be installed from Github
+2. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
+3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+4. `library(rDolphin)`          #loads rDolphin
 
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 
 
 ## NOTE: a (still unstable) development version has been prepared so to be ready for use after near publication of the package. The use of this development version is strongly encouraged as the performance and naming have been improved. This development version will soon replace the current main version. To install this development version, replace
-2. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`      
-during the installation isntruccions by:
-2. `devtools::install_github("danielcanueto/rDolphin",ref='development_version', build_vignettes = TRUE)`
+`devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`      
+during the installation instruccions by:
+`devtools::install_github("danielcanueto/rDolphin",ref='development_version', build_vignettes = TRUE)`
 
 
 
