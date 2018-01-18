@@ -1,1 +1,0 @@
-asd=profiling_names_corrected$final_output$shift[,!is.na(profiling_names_corrected$final_output$shift[1,])]
