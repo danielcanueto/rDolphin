@@ -29,6 +29,8 @@ Imports:
 	heatmaply,
 	ggplot2,
 	caret,
+	e1071,
+	elasticnet,
 	gridExtra,
 	stringr,
 	MassSpecWavelet,
