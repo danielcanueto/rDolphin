@@ -1,9 +1,9 @@
 Parameter,Value
 nmr folder path,
-excel data path,Dataset_MTBLS242_15spectra_5groups.csv
-Metadata path (csv format),Metadata_MTBLS242_15spectra_5groups.csv
 1D data index,
 proc_no,
+spectra dataset path,Dataset_MTBLS242_15spectra_5groups.csv
+Metadata path (csv format),Metadata_MTBLS242_15spectra_5groups.csv
 ROI patterns file,ROI_profiles_MTBLS242_15spectra_5groups.csv
 Normalization (0=No;1=Eretic; 2=TSP; 3=Creatinine; 4=Spectra Sum; 5=PQN),0
 Alignment (0=No;1=Glucose; 2=TSP; 3=Formate),1

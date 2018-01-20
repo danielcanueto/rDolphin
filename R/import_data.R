@@ -31,7 +31,7 @@ import_data = function(parameters_path) {
     gsub("\\\\", "/", x)))
 
   #Getting the names of experiments, signals and ROIs to quantify and use
-  metadata_path = as.character(import_profile[3, 2])
+  metadata_path = as.character(import_profile[5, 2])
 
   dummy = read.delim(
     metadata_path,
@@ -135,11 +135,11 @@ import_data = function(parameters_path) {
 
   #Variables only necessary for reading Bruker files
   bruker_path = import_profile[1, 2]
-  expno = as.character(import_profile[4, 2])
-  processingno = as.character(import_profile[5, 2])
+  expno = as.character(import_profile[2, 2])
+  processingno = as.character(import_profile[3, 2])
 
   #Variables only necessary for reading dataset in csv format
-  dataset_path = as.character(import_profile[2, 2])
+  dataset_path = as.character(import_profile[4, 2])
 
   #If data comes from csv dataset
   if (bruker_path == '' || expno == '' || processingno == '') {
