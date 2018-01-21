@@ -140,12 +140,14 @@ if (is.na(spectrum_index)) {
 
   }
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
+  p_value_bucketing[p_value_bucketing>0.1]=0.1
+  p_value_bucketing= matrix(p_value_bucketing,1,length(p_value_bucketing))
 
   p=plot_ly()%>%
     add_lines(x=~imported_data$ppm,y = ~as.numeric(imported_data$dataset[spectrum_index, ]),name='Model spectrum')%>%
     add_lines(x=~imported_data$ppm,y = ~fitted_data,name='Fitted spectrum',fill='tozeroy')%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
-  p2 <- plot_ly(x=~imported_data$ppm)%>%add_lines(y =p_value_bucketing, name='p value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
+  p2 <- plot_ly(x=~imported_data$ppm,z =p_value_bucketing, colorscale = "Greys", type = "heatmap")%>%
     layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))))
   p <- subplot(p, p2,nrows=2,heights=c(0.95,0.05),margin=0,shareX = T)
 

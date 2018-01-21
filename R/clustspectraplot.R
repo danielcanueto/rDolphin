@@ -49,6 +49,9 @@ ind=seq(nrow(imported_data$dataset))
   # for (i in 1:nrow(original_roi))   visual_roi[i,]=original_roi[i,]+(i-1)*mean(original_roi)
 
   p_value_bucketing=as.vector(p_values(imported_data$dataset,imported_data$Metadata))
+  p_value_bucketing[p_value_bucketing>0.1]=0.1
+
+  p_value_bucketing= matrix(p_value_bucketing,1,length(p_value_bucketing))
 
   p=plot_ly(x=~imported_data$ppm)
   shade=as.character(seq(0.2,1,length.out = nrow(visual_roi)))
@@ -56,8 +59,7 @@ ind=seq(nrow(imported_data$dataset))
         p=p%>%add_lines(y = visual_roi[i,],name=imported_data$Experiments[ ind[i]],line = list(color = paste('rgba(0, 0, 255,',shade[i],')',sep='')))
     }
   p=p%>%layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
-  p2 <- plot_ly(x=~imported_data$ppm)%>%add_lines(y =p_value_bucketing, name='p value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
-    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))))
+  p2 <- plot_ly(x=~imported_data$ppm,z =p_value_bucketing, colorscale = "Greys", type = "heatmap")%>%    layout(xaxis=list(title='ppm',range=c(max(imported_data$ppm),min(imported_data$ppm))))
   p <- subplot(p, p2,nrows=2,heights=c(0.95,0.05),margin=0,shareX = T)
 
 

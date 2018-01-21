@@ -80,7 +80,7 @@ write_plots = function(export_path,final_output,reproducibility_data,signals_to_
     }
       gridExtra::grid.arrange(grid::rectGrob(), grid::rectGrob())
       ml <- gridExtra::marrangeGrob(p, top = colnames(final_output$quantification)[ind2],nrow=3, ncol=1)
-      ggplot2::ggsave(file.export_path(export_path,paste(colnames(final_output$quantification)[ind2],".pdf",sep='')),  ml)
+      ggplot2::ggsave(file.path(export_path,"plots",paste(colnames(final_output$quantification)[ind2],".pdf",sep='')),  ml)
 
     setTxtProgressBar(pb, ind2)
 

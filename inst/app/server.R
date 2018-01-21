@@ -582,7 +582,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   observeEvent(input$add_hmdb_signal, {
     tryCatch({
     dummy=reactiveprogramdata$imported_data$repository[input$repository2_rows_selected,]
-    dummy=c(dummy[,3]+0.02,dummy[,3]-0.02,'Baseline Fitting',dummy[,1],1,dummy[,3],median(reactiveprogramdata$ROI_data_check[,7]),median(reactiveprogramdata$ROI_data_check[,8]),dummy[,4],dummy[,5],0,dummy[,6],dummy[,2])
+    dummy=c(dummy[,3]+0.02,dummy[,3]-0.02,'Baseline Fitting',dummy[,1],1,dummy[,3],median(reactiveprogramdata$ROI_data_check[,7]),median(reactiveprogramdata$ROI_data_check[,8]),dummy[,4],dummy[,5],0,dummy[,2])
     if (dummy[9]=='d') {
       dummy[9]=2
     } else if (dummy[9]=='t') {
@@ -625,7 +625,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   observeEvent(input$save_changes, {
     tryCatch({
       if (any(duplicated(reactiveprogramdata$ROI_data_check[,4:5])==T)) {
-        print("Revise duplicated names.")
+        print("Revise duplicated signal IDs.")
         return(NULL)
       }
 
