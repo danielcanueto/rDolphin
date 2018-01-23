@@ -12,13 +12,6 @@
 If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
 
 
-## NOTE: a (still unstable) development version has been prepared so to be ready for use after near publication of the package. The use of this development version is strongly encouraged as the performance and naming have been improved. This development version will soon replace the current main version. To install this development version, replace
-`devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`      
-during the installation instruccions by:
-`devtools::install_github("danielcanueto/rDolphin",ref='development_version', build_vignettes = TRUE)`
-
-
-
 ## Introduction to the package:
 
 A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An (still not updated to last changes) introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
