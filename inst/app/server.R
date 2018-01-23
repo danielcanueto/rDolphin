@@ -696,6 +696,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
       ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
       reactiveprogramdata$select_options=1:length(ROI_names)
       names(reactiveprogramdata$select_options)=ROI_names
+      print('ROI profiles modified.')
 
     updateSelectInput(session, "select",
       choices = reactiveprogramdata$select_options,selected = input$x1_rows_selected
