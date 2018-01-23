@@ -4,7 +4,7 @@
 \alias{type_plot}
 \title{Type of analysis plot}
 \usage{
-type_plot(imported_data, ROI_limits, rows_selected, medianplot, clusterplot)
+type_plot(imported_data, ROI_limits, rows_selected, median_plot, clusterplot)
 }
 \arguments{
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
@@ -13,7 +13,7 @@ type_plot(imported_data, ROI_limits, rows_selected, medianplot, clusterplot)
 
 \item{rows_selected}{Rows selected in GUi table.}
 
-\item{medianplot}{Meidan plot}
+\item{median_plot}{Meidan plot}
 
 \item{clusterplot}{Cluster plot}
 }

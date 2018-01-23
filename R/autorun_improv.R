@@ -3,29 +3,31 @@
 #'
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param useful_data List with necessary information to load quantifications on the Shiny GUI.
+#' @param reproducibility_data List with necessary information to load quantifications on the Shiny GUI.
 #' @param ROI_data ROIs data.
 #' @param improvement_option If "correction", quantifications are updated taking into account the predicted signal parameters. If "reimplemetation", profiling is repeated using the prediction information.
 #' @param level How extensive should be the improvement? If "all", all quantifications are changed. If "outliers", quantifications whoss signal parameters behave as outliers are changed (please take into account that only the quantifications will be updated). If a number is introduced, the quantifications with a higher fitting error than the number specified are repeated.
 #'
-#' @return List with updated final_output and useful_data variables.
-#' @export autorun_improv
+#' @return List with final_output (with metabolite signal relative concentrations and quality indicators) and reproducibility_data (with the necessary data to reproduce the profiling performed).
+#' @export automatic_profiling_improv
 #' @import baseline
-#' @import robustbase
+#' @import caret
+#' @import missRanger
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
 #' # Not run:
-#' # profiling_data=autorun(imported_data,imported_data$final_output,imported_data$useful_data,imported_data$ROI_data)
-#' # profiling_data_2=autorun_improv(imported_data,profiling_data$final_output,profiling_data$useful_data,imported_data$ROI_data,"correction","outliers")
+#' # load(file.path(system.file(package = "rDolphin"),"extdata","MTBLS242_subset_profiling_data.RData"))
+#' # profiling_data_2=automatic_profiling_improv(imported_data,profiling_data$final_output,profiling_data$reproducibility_data,imported_data$ROI_data)
 
 
 #TODO: Choose criteria to repeat only individual quantification and all signals of all spectra.
 
-autorun_improv = function(imported_data, final_output,useful_data,ROI_data,improvement_option,level) {
-print("Starting maximization of profiling quality using information of original profiling...")
-predicted_info=rf_pred(final_output$half_band_width)
+automatic_profiling_improv = function(imported_data, final_output,reproducibility_data,ROI_data,improvement_option='reimplementation',level='outliers') {
+print("Starting maximization of profiling data quality using information of original profiling...")
+  print("Now estimating the predicted signal parameters with confidence intervals...")
+  predicted_info=rf_pred(final_output$half_bandwidth,final_output$fitting_error)
 predicted_width=as.matrix(predicted_info$predicted_matrix)
 
   max_width=as.matrix(predicted_info$upper_bound_matrix)
@@ -35,7 +37,7 @@ predicted_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]))
 min_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*0.75))
 max_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*1.25))
 
-predicted_info=rf_pred(final_output$shift)
+predicted_info=rf_pred(final_output$chemical_shift,final_output$fitting_error)
 predicted_shift=as.matrix(predicted_info$predicted_matrix)
 max_shift=as.matrix(predicted_info$upper_bound_matrix)
 min_shift=as.matrix(predicted_info$lower_bound_matrix)
@@ -47,7 +49,7 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   min_shift[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,6]-ROI_data[ind,7]))
   }
 
-  predicted_info=rf_pred_intensity(final_output$intensity,ROI_data[,4])
+  predicted_info=rf_pred_intensity(final_output$intensity,ROI_data[,4],final_output$fitting_error)
   predicted_intensity=as.matrix(predicted_info$predicted_matrix)
   max_intensity=as.matrix(predicted_info$upper_bound_matrix)
   min_intensity=as.matrix(predicted_info$lower_bound_matrix)
@@ -56,23 +58,25 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   max_intensity[!is.finite(max_intensity)]=NA
   min_intensity[!is.finite(min_intensity)]=NA
   min_intensity[min_intensity<0]=0
+  print("Beginning the maximization of profiling data quality according to the option selected...")
+
 
   quantifications_to_repeat=matrix(0,nrow(predicted_width),ncol(predicted_width))
   if (level=="all") quantifications_to_repeat[,]=1
 	if (is.numeric(level)) quantifications_to_repeat[which(final_output$fitting_error>level)]=1
 	if (level=="outliers") {
-pal1=pal2=pal3=matrix(1,nrow(predicted_width),ncol(predicted_width))
-for (i in 1:ncol(final_output$shift)) {
-indexes=intersect(which(!is.na(predicted_shift[,i])),which(!is.na(final_output$shift[,i])))
-if (length(indexes)>0) pal1[indexes,i]=robustbase::lmrob(predicted_shift[indexes,i]~final_output$shift[indexes,i])$rweights
-indexes=intersect(which(!is.na(predicted_width[,i])),which(!is.na(final_output$width[,i])))
-if (length(indexes)>0) pal2[indexes,i]=robustbase::lmrob(predicted_width[indexes,i]~final_output$half_band_width[indexes,i])$rweights
-indexes=intersect(which(!is.na(predicted_intensity[,i])),which(!is.na(final_output$intensity[,i])))
-if (length(indexes)>0) pal3[indexes,i]=robustbase::lmrob(predicted_intensity[indexes,i]~final_output$intensity[indexes,i])$rweights
-}
-pal=pal1+pal2+pal3
-for (i in 1:ncol(quantifications_to_repeat)) quantifications_to_repeat[pal[,i] %in% boxplot.stats(pal[,i])$out,i]=1
-
+	  outlier_indicator=sapply(which(!is.na(predicted_shift)),
+	             function(x)findInterval(final_output$chemical_shift[x],
+	                                     c(min_shift[x],max_shift[x])))
+	  if (length(outlier_indicator)>0) quantifications_to_repeat[which(!is.na(predicted_shift))][sapply(outlier_indicator,function(x)x==0|x==2)]=1
+	  outlier_indicator=sapply(which(!is.na(predicted_width)),
+	             function(x)findInterval(final_output$half_bandwidth[x],
+	                                     c(min_width[x],max_width[x])))
+	  if (length(outlier_indicator)>0) quantifications_to_repeat[which(!is.na(predicted_width))][sapply(outlier_indicator,function(x)x==0|x==2)]=1
+	  outlier_indicator=sapply(which(!is.na(predicted_intensity)),
+	             function(x)findInterval(final_output$intensity[x],
+	                                     c(min_intensity[x],max_intensity[x])))
+	  if (length(outlier_indicator)>0) quantifications_to_repeat[which(!is.na(predicted_intensity))][sapply(outlier_indicator,function(x)x==0|x==2)]=1
 }
 
 if (improvement_option=='reimplementation') {  #Splitting of ROI data into individual ROIs to be quantified
@@ -115,6 +119,7 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 
 
 	index_to_use_3=which(rowSums(quantifications_to_repeat[,ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],drop=F])>0)
+	pb   <- txtProgressBar(1, nrow(imported_data$dataset), style=3)
 
     #Quantification for every spectrum
     for (spectrum_index in index_to_use_3) {
@@ -129,12 +134,12 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 
         results_to_save=dummy$results_to_save
         #Generation of useful variables specific of every quantification
-        useful_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
-        useful_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
-        useful_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
-        useful_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
-        useful_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
-        useful_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
+        reproducibility_data[[spectrum_index]][[signals_codes]]$ROI_profile=ROI_profile
+        reproducibility_data[[spectrum_index]][[signals_codes]]$plot_data=dummy$plot_data
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Xdata=Xdata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$Ydata=Ydata
+        reproducibility_data[[spectrum_index]][[signals_codes]]$results_to_save=results_to_save
+        reproducibility_data[[spectrum_index]][[signals_codes]]$error1=results_to_save$fitting_error
 
         #If the quantification is through fitting with or without baseline
       } else if (fitting_type == "Clean Fitting" || fitting_type ==
@@ -161,7 +166,7 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
         fitted_signals = signal_fitting(signals_parameters,
           Xdata_2,multiplicities,roof_effect,program_parameters$freq)
                dim(signals_parameters) = c(5, length(signals_parameters)/5)
-        rownames(signals_parameters) = c('intensity','shift','half_band_width','gaussian','J_coupling')
+        rownames(signals_parameters) = c('intensity','$chemical_shift','half_bandwidth','gaussian','J_coupling')
         signals_parameters=rbind(signals_parameters,multiplicities,roof_effect)
 
         #Generation of output data about the fitting and of the necessary variables for the generation ofa figure
@@ -171,36 +176,37 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 
         #Generation of the dataframe with the final output variables
         results_to_save = data.frame(
-          shift = output_data$shift,
+          chemical_shift = output_data$chemical_shift,
           quantification = output_data$quantification,
           signal_area_ratio = output_data$signal_area_ratio,
           fitting_error = output_data$fitting_error,
           intensity = output_data$intensity,
-          half_band_width = output_data$half_band_width
+          half_bandwidth = output_data$half_bandwidth
         )
 
         #Generation of the figure data
         plot_data = rbind(output_data$signals_sum,output_data$baseline_sum,output_data$fitted_sum,output_data$signals)
         plot_data = plot_data[,ROI_buckets]
 
-         rownames(plot_data) = c("signals_sum","baseline_sum","fitted_sum",as.character(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
+         rownames(plot_data) = c("signals_sum","baseline_sum","fitted_sum",make.names(paste(ROI_profile[,4],ROI_profile[,5],sep='_')),rep('additional signal',dim(plot_data)[1]-length(ROI_profile[,4])-3))
 
         #Generation of useful variables specific of every quantification
         for (i in seq_along(signals_codes)) {
-          useful_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
-          useful_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
-          useful_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
-          useful_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
-          useful_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
-          useful_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$ROI_profile=ROI_profile
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$program_parameters=program_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$plot_data=plot_data
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$error1=error1
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$FeaturesMatrix=FeaturesMatrix
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$signals_parameters=signals_parameters
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Xdata=Xdata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$Ydata=Ydata
+          reproducibility_data[[spectrum_index]][[signals_codes[i]]]$results_to_save=results_to_save
           }
      }
 
       #Generation of output variables specific of every quantification
       final_output = save_output(spectrum_index,signals_codes,results_to_save,imported_data$buck_step,final_output)
+      setTxtProgressBar(pb, spectrum_index)
 
       }
 
@@ -212,9 +218,9 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
 prova_intensity=predicted_intensity
 prova_intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]=final_output$intensity[,apply(predicted_intensity,2,function(x)all(is.na(x)))]
 prova_shift=predicted_shift
-prova_shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]=final_output$shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]
+prova_shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]=final_output$chemical_shift[,apply(predicted_shift,2,function(x)all(is.na(x)))]
 prova_width=predicted_width
-prova_width[,apply(predicted_width,2,function(x)all(is.na(x)))]=final_output$half_band_width[,apply(predicted_width,2,function(x)all(is.na(x)))]
+prova_width[,apply(predicted_width,2,function(x)all(is.na(x)))]=final_output$half_bandwidth[,apply(predicted_width,2,function(x)all(is.na(x)))]
 
 tec=sapply(seq(length(prova_intensity)),function(x)sum(peakpvoigt(c(prova_intensity[x],prova_shift[x],prova_width[x]*0.5/600.2,0),imported_data$ppm))*imported_data$buck_step)
 dim(tec)=dim(prova_intensity)
@@ -225,7 +231,7 @@ tec[,apply(tec,2,function(x)all(is.na(x)))]=final_output$quantification[,apply(t
 }
  }
   print("Done!")
-  profiling_data=list(final_output=final_output,useful_data=useful_data,
+  profiling_data=list(final_output=final_output,reproducibility_data=reproducibility_data,
                                 predicted_shift=predicted_shift,predicted_width=predicted_width,
                                 predicted_intensity=predicted_intensity,max_width=max_width,
                                 min_width=min_width,max_shift=max_shift,min_shift=min_shift,
@@ -243,7 +249,7 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
   max_intensity[spectrum_index,signal_index][is.na(max_intensity[spectrum_index,signal_index])]=max(Ydata)
 
   colnames(initial_fit_parameters) = c(
-	"quantification_or_not",
+    "quantification_or_not",
     "positions",
     "shift_tolerance",
     "widths",
@@ -257,7 +263,7 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 
   #Calculation of number of background signals, if baseline fitting is performed
   BGSigNum = ifelse(program_parameters$clean_fit == 'N', max(round(abs(Xdata[1] -
-                                                                        Xdata[ROIlength]) * program_parameters$BGdensity), 3), 0)
+                                                                         Xdata[ROIlength]) * program_parameters$BGdensity), 3), 0)
 
   #Preallocation of parameters to optimize into a matrix of features
   FeaturesMatrix = matrix(NA, (signals_to_fit + BGSigNum), 12)
@@ -295,7 +301,7 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 
   FeaturesMatrix[initial_fit_parameters$multiplicities==1, 9:10] = 0
 
-  #Finding of maximum intensity and shift tolerance of every background signal
+  #Finding of maximum intensity and chemical shift tolerance of every background signal
   if (BGSigNum>0) {
     BGSigrightlimits = seq(Xdata[1]-0.005, Xdata[ROIlength]+0.005, length = BGSigNum) -
       0.005
@@ -334,9 +340,9 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 
     # optimization of baseline parameters , to be sure that the algorithm doesn ot try ti fot spurious signals as basleine
     FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix),2] = fittingloop_bg(FeaturesMatrix[(signals_to_fit + 1):nrow(FeaturesMatrix),],
-                                Xdata,
-                                created_baseline,
-                                program_parameters)$BG_intensities
+                                                                                 Xdata,
+                                                                                 created_baseline,
+                                                                                 program_parameters)$BG_intensities
 
 
   }
@@ -344,96 +350,82 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 
   return(FeaturesMatrix)
 }
-rf_pred_intensity=function(initial_matrix,lolo) {
-  samples2=sample(nrow(initial_matrix),nrow(initial_matrix)*0.5)
-  lol2=initial_matrix
-  analyzed_signals=which(apply(lol2,2,function(x)! all(is.na(x)))==T)
-  lol2=missForest::missForest(lol2[,analyzed_signals])$ximp
-
-  hent=hent2=hent3=as.data.frame(matrix(NA,nrow(lol2),ncol(lol2)))
-  stop=0
-  while(stop==0) {
-    samples2=replicate(30,sample(nrow(lol2),0.4*nrow(lol2)))
-    if (all(table(samples2)>=5)) stop=1
-  }
-  for (i in seq(ncol(lol2))) {
-    sed=which(lolo[analyzed_signals]==lolo[analyzed_signals][i])
+rf_pred_intensity=function(initial_matrix,met_names,fitting_error) {
+  fitting_error=fitting_error
+  modified_matrix=initial_matrix
+  colnames(modified_matrix)=make.names(colnames(modified_matrix))
+  dummy=which(apply(modified_matrix,2,function(x)! all(is.na(x)))==T)
+  for (i in dummy) modified_matrix[fitting_error[,i] %in%
+                                     boxplot.stats(fitting_error[,i])$out,i]=NA
+  dummy2=missRanger::missRanger(as.data.frame(modified_matrix[,dummy]))
+  modified_matrix[,dummy]=as.matrix(dummy2)
+  analyzed_signals=which(apply(modified_matrix,2,function(x)length(which(is.na(x))))<0.1*nrow(modified_matrix))
+  predicted_matrix=lower_bound_matrix=upper_bound_matrix=as.data.frame(matrix(NA,nrow(modified_matrix),ncol(modified_matrix)))
+  ctrl <- caret::trainControl(method = "boot632",number=18,savePredictions="all")
+  for (i in analyzed_signals) {
+    sed=intersect(which(met_names==met_names[i]),analyzed_signals)
     if (length(sed)==1) next
-    tel=prcomp(scale(lol2[,sed]))$x
-    st=matrix(NA,nrow(lol2),30)
+    tel=cbind(modified_matrix[,setdiff(sed,i)],prcomp(scale(modified_matrix[,sed]))$x[,1])
+    ind3=which(abs(cor(modified_matrix[,i],tel,method='spearman'))>0.7)
+    if (length(ind3)==0) next
+    tel=tel[,ind3]
+    training_data=data.frame(y=modified_matrix[,i],scale(tel))
+    plsFit <- caret::train(y ~ .,data = training_data,method = "rf",trControl = ctrl)
+    iii=plsFit$pred
+    ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),
+                                                                 sd=sd(iii$pred[iii$rowIndex==x],na.rm=T)),c(0.025,0.5,0.975),na.rm=T))
 
-    for (j in 1:30) {
-      lol3=data.frame(y=lol2[,i],tel)
-      model=ranger::ranger(y ~.,lol3[-samples2[,j],])
-      st[samples2[,j],j]=predict(model,lol3[samples2[,j],])$predictions
-    }
-    st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,],na.rm=T),sd(st[x,],na.rm=T))))
-    hent[,i]=apply(st,1,function(x)quantile(x,0.5,na.rm=T))
-    hent2[,i]=apply(st,1,function(x)quantile(x,0.025,na.rm=T))
-    hent3[,i]=apply(st,1,function(x)quantile(x,0.975,na.rm=T))
-  }
-
-
-
-
-  if (length(analyzed_signals)<ncol(initial_matrix)) {
-    predicted_matrix=lower_bound_matrix=upper_bound_matrix=matrix(NA,nrow(initial_matrix),ncol(initial_matrix))
-    predicted_matrix[,analyzed_signals]=as.matrix(hent)
-    lower_bound_matrix[,analyzed_signals]=as.matrix(hent2)
-    upper_bound_matrix[,analyzed_signals]=as.matrix(hent3)
-
-  } else {
-    predicted_matrix=hent
-    lower_bound_matrix=hent2
-    upper_bound_matrix=hent3
+    predicted_matrix[,i]=ff[2,]
+    lower_bound_matrix[,i]=ff[1,]
+    upper_bound_matrix[,i]=ff[3,]
 
   }
-
-  output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
-  return(output)
-}
-rf_pred=function(initial_matrix) {
-
-  lol2=initial_matrix
-  analyzed_signals=which(apply(lol2,2,function(x)! all(is.na(x)))==T)
-  lol2=missForest::missForest(lol2[,analyzed_signals])$ximp
-
-  hent=hent2=hent3=as.data.frame(matrix(NA,nrow(lol2),ncol(lol2)))
-  tel=prcomp(scale(lol2))$x[,1:20]
-  stop=0
-  while(stop==0) {
-    samples2=replicate(30,sample(nrow(lol2),0.4*nrow(lol2)))
-    if (all(table(samples2)>=5)) stop=1
-  }
-  for (i in seq(ncol(lol2))) {
-    st=matrix(NA,nrow(lol2),30)
-
-    for (j in 1:30) {
-      lol3=data.frame(y=lol2[,i],tel)
-    model=ranger::ranger(y ~.,lol3[-samples2[,j],])
-            st[samples2[,j],j]=predict(model,lol3[samples2[,j],])$predictions
-    }
-    st=t(sapply(seq(nrow(hent)),function(x)rnorm(1000,mean(st[x,],na.rm=T),sd(st[x,],na.rm=T))))
-    hent[,i]=apply(st,1,function(x)quantile(x,0.5,na.rm=T))
-    hent2[,i]=apply(st,1,function(x)quantile(x,0.025,na.rm=T))
-    hent3[,i]=apply(st,1,function(x)quantile(x,0.975,na.rm=T))
-  }
-
-
-
-
-  if (length(analyzed_signals)<ncol(initial_matrix)) {
-    predicted_matrix=lower_bound_matrix=upper_bound_matrix=matrix(NA,nrow(initial_matrix),ncol(initial_matrix))
-    predicted_matrix[,analyzed_signals]=as.matrix(hent)
-    lower_bound_matrix[,analyzed_signals]=as.matrix(hent2)
-    upper_bound_matrix[,analyzed_signals]=as.matrix(hent3)
-
-  } else {
-    predicted_matrix=hent
-    lower_bound_matrix=hent2
-    upper_bound_matrix=hent3
-
+  if (all(is.na(predicted_matrix))==F) {
+  predicted_matrix=missRanger::missRanger(predicted_matrix)
+  lower_bound_matrix=missRanger::missRanger(lower_bound_matrix)
+  upper_bound_matrix=missRanger::missRanger(upper_bound_matrix)
   }
   output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
   return(output)
 }
+
+rf_pred=function(initial_matrix,fitting_error) {
+  fitting_error=fitting_error
+  modified_matrix=initial_matrix
+  colnames(modified_matrix)=make.names(colnames(modified_matrix))
+  modified_matrix=jitter(modified_matrix,0.00001)
+  dummy=which(apply(modified_matrix,2,function(x) all(is.finite(x)))==T)
+
+  for (i in dummy) {
+    modified_matrix[fitting_error[,i] %in%
+                      boxplot.stats(fitting_error[,i])$out,i]=NA
+  }
+  dummy2=missRanger::missRanger(as.data.frame(modified_matrix[,dummy]))
+  modified_matrix[,dummy]=as.matrix(dummy2)
+  analyzed_signals=which(apply(modified_matrix,2,function(x) all(is.finite(x)))==T)
+  predicted_matrix=lower_bound_matrix=upper_bound_matrix=as.data.frame(matrix(NA,nrow(modified_matrix),ncol(modified_matrix)))
+  ctrl <- caret::trainControl(method = "boot632",number=18,savePredictions="all")
+  for (i in analyzed_signals) {
+    training_data=data.frame(y=modified_matrix[,i],scale(modified_matrix[,setdiff(analyzed_signals,i)]))
+    plsFit <- caret::train(y ~ .,data = training_data,method = "lasso",trControl = ctrl)
+    ind=which(varImp(plsFit)$importance$Overall>30)
+    if (length(ind==1)) ind=order(varImp(plsFit)$importance$Overall,decreasing=T)[1:2]
+    training_data=data.frame(y=modified_matrix[,i],scale(modified_matrix[,setdiff(analyzed_signals,i)][,ind]))
+    plsFit <- caret::train(y ~ .,data = training_data,method = "ranger",trControl = ctrl)
+    iii=plsFit$pred
+    ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),
+                                                                 sd=sd(iii$pred[iii$rowIndex==x],na.rm=T)),c(0.025,0.5,0.975),na.rm=T))
+    predicted_matrix[,i]=ff[2,]
+    lower_bound_matrix[,i]=ff[1,]
+    upper_bound_matrix[,i]=ff[3,]
+  }
+
+
+  predicted_matrix=missRanger::missRanger(predicted_matrix)
+  lower_bound_matrix=missRanger::missRanger(lower_bound_matrix)
+  upper_bound_matrix=missRanger::missRanger(upper_bound_matrix)
+
+  output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
+  return(output)
+}
+

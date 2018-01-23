@@ -16,27 +16,27 @@
 
 write_info = function(export_path, final_output,ROI_data) {
   dir.create(export_path)
-  write.csv(final_output$quantification,
+  write.csv(rbind(ROI_data[,12],final_output$quantification),
     file.path(export_path,
       "quantification.csv"))
-  write.csv(final_output$shift,
+  write.csv(rbind(ROI_data[,12],final_output$chemical_shift),
     file.path(export_path,
-      "shift.csv"))
-  write.csv(final_output$half_band_width,
+      "chemical_shift.csv"))
+  write.csv(rbind(ROI_data[,12],final_output$half_bandwidth),
     file.path(export_path,
-      "half_band_width.csv"))
+      "half_bandwidth.csv"))
   write.csv(
-    final_output$signal_area_ratio,
+    rbind(ROI_data[,12],final_output$signal_area_ratio),
     file.path(export_path,
       "signal_area_ratio.csv")
   )
   write.csv(
-    final_output$fitting_error,
+    rbind(ROI_data[,12],final_output$fitting_error),
     file.path(export_path,
       "fitting_error.csv")
   )
   write.csv(
-    final_output$intensity,
+	rbind(ROI_data[,12],final_output$intensity),
     file.path(export_path,
       "intensity.csv")
   )

@@ -3,12 +3,12 @@ integration = function(clean_fit, Xdata, Ydata,buck_step,interface='F') {
 
   #preallocation of results_to_save
   results_to_save = list(
-    shift = NA,
+    chemical_shift = NA,
     quantification = NA,
     signal_area_ratio = NA,
     fitting_error = NA,
     intensity = NA,
-    half_band_width = NA
+    half_bandwidth = NA
   )
 
   baseline = rep(0,length(Xdata))
@@ -35,13 +35,9 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   results_to_save$signal_area_ratio = tryCatch((sum(integrated_signal[p1:p2]) / sum(Ydata[p1:p2])) *
     100,error = function(e) NaN, silent=T)
 
-  # d=ccf(Ydata,Ydatamedian,type = 'covariance',plot = FALSE)
-  # so=(1+max(abs(d$lag[which.max(d$acf)]))):(length(Ydata)-max(abs(d$lag[which.max(d$acf)])))
-  # results_to_save$fitting_error=summary(lm(Ydatamedian[so]~Ydata [so]))$sigma/max(Ydatamedian[so])
-  results_to_save$half_band_width = NaN
-#
-#   peaks = peakdet(integrated_signal, 0.2*max(0.000001,max(integrated_signal)))
-#   results_to_save$shift = mean(Xdata[peaks$maxtab$pos])
+  
+  results_to_save$half_bandwidth = NaN
+
   wer=which.min(abs(cumulative_area-0.5))
   if (cumulative_area[wer]>0.5) {
     wer=c(max(1,wer-1),wer)
@@ -50,8 +46,8 @@ baseline[which((baseline-Ydata)>0)]=Ydata[which((baseline-Ydata)>0)]
   }
   wer2=(0.5-cumulative_area[wer[1]])/diff(cumulative_area[wer])
   if (wer[1]==wer[2]) wer2=0
-  results_to_save$shift = Xdata[wer[1]]-wer2*diff(Xdata[wer])
-  if(results_to_save$shift == Inf) results_to_save$shift=mean(Xdata)
+  results_to_save$chemical_shift = Xdata[wer[1]]-wer2*diff(Xdata[wer])
+  if(results_to_save$chemical_shift == Inf) results_to_save$chemical_shift=mean(Xdata)
 
 
 p=''
@@ -64,7 +60,7 @@ plotdata = data.frame(Xdata, signal = integrated_signal)
   plotdata5 = reshape2::melt(plotdata4, id = "Xdata")
   p=plot_ly(plotdata,x = ~Xdata, y = ~signal, type = 'scatter', color= 'Signal',mode = 'lines', fill = 'tozeroy') %>% add_trace(data=plotdata3,x=~Xdata,y=~value,color=~variable,type='scatter',mode='lines',fill=NULL) %>%
     layout(xaxis = list(range=c(Xdata[1],Xdata[length(Xdata)]),title = 'ppm'),
-      yaxis = list(range=c(0,max(Ydata)),title = 'Intensity'))
+      yaxis = list(range=c(0,max(Ydata)),title = "Intensity (arbitrary unit)"))
   }
   plot_data=rbind(integrated_signal,baseline,integrated_signal+baseline,integrated_signal)
 

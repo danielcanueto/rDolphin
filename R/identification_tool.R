@@ -2,7 +2,7 @@
 #'
 #' @param dataset Dataset
 #' @param ppm ppm axis
-#' @param limits Left and right edges of the region to correlate with the rest of spectrum.
+#' @param driver_peak_edges Left and right edges of the driver peak to correlate with the rest of spectrum.
 #' @param method Method ('pearson','spearman','ransy').
 #'
 #' @return interactive plot
@@ -15,8 +15,8 @@
 
 
 
-identification_tool= function(dataset,ppm,limits,method) {
-  ROI_buckets = which.min(abs(as.numeric(limits[1])-ppm)):which.min(abs(as.numeric(limits[2])-ppm))
+identification_tool= function(dataset,ppm,driver_peak_edges,method) {
+  ROI_buckets = which.min(abs(as.numeric(driver_peak_edges[1])-ppm)):which.min(abs(as.numeric(driver_peak_edges[2])-ppm))
 
   if (method=='ransy') {
     #Loosely based on equivalent function in 'muma' R package
@@ -31,12 +31,12 @@ identification_tool= function(dataset,ppm,limits,method) {
 
 
 Ydata = apply(dataset,2,median)
-ay <- list(tickfont = list(color = "red"),overlaying = "y",side = "right",title = "correlation",range = c(0, max(Ydata)))
-az = list(title = "Intensity (arbitrary unit)",range = c(-1, max(Ydata)-1))
 p=plot_ly()%>%
   add_lines(x=~ppm,y = ~Ydata,name='Median spectrum')%>%
   add_lines(x=~ppm,y = ~cor_values, name='Correlation',yaxis = "y2")%>%
-  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))),yaxis=az, yaxis2 = ay)
-
+  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
+p2 <- plot_ly(x=~ppm)%>%add_lines(y =cor_values, name='correlation value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
+  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))))
+p <- subplot(p, p2,nrows=2,heights=c(0.75,0.25),margin=0,shareX = T)
 return(p)
 }

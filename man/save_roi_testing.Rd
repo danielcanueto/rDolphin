@@ -4,7 +4,8 @@
 \alias{save_roi_testing}
 \title{Saving of results in interface in individual quantification}
 \usage{
-save_roi_testing(provisional_data, imported_data, final_output, useful_data)
+save_roi_testing(provisional_data, imported_data, final_output,
+  reproducibility_data)
 }
 \arguments{
 \item{provisional_data}{List with elements to save.}
@@ -13,10 +14,10 @@ save_roi_testing(provisional_data, imported_data, final_output, useful_data)
 
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 
-\item{useful_data}{List with necessary information to load quantifications on the Shiny GUI.}
+\item{reproducibility_data}{List with necessary information to load quantifications on the Shiny GUI.}
 }
 \value{
-List with updated final_output and useful_data variables.
+List with updated final_output and reproducibility_data variables.
 }
 \description{
 Saving of results in interface in individual quantification

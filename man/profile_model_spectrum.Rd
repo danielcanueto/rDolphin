@@ -4,12 +4,14 @@
 \alias{profile_model_spectrum}
 \title{Automatic quantification in the model spectrum of the dataset using the information located in the ROI patterns file, with associated p values for every bin. The reulting information can be useful to analyze possible new ROIs to profile or modification of existing ones.}
 \usage{
-profile_model_spectrum(imported_data, ROI_data)
+profile_model_spectrum(imported_data, ROI_data, spectrum_index = NA)
 }
 \arguments{
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{ROI_data}{ROIs data.}
+\item{ROI_data}{ROI data to check.}
+
+\item{spectrum_index}{By default, NA and a spectrum model is calculated. If specified, the profiling in the spectrum specified is performed.}
 }
 \value{
 plotly figure with performed fitting for every ROI and p value for every bin

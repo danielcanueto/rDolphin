@@ -59,7 +59,7 @@ fitting_prep = function(Xdata,Ydata,initial_fit_parameters,program_parameters,cr
 
   FeaturesMatrix[initial_fit_parameters$multiplicities==1, 9:10] = 0
 
-  #Finding of maximum intensity and shift tolerance of every background signal
+  #Finding of maximum intensity and $chemical_shift tolerance of every background signal
   if (BGSigNum>0) {
     BGSigrightlimits = seq(Xdata[1]-0.005, Xdata[ROIlength]+0.005, length = BGSigNum) -
       0.005

@@ -30,12 +30,12 @@ shinyUI(fluidPage(
 
                                   ),
                                   mainPanel(
-                                    shinyjs::hidden(actionButton('autorun', 'Autorun all spectra', class = "btn-primary")),
+                                    shinyjs::hidden(actionButton('automatic_profiling', 'Autorun all spectra', class = "btn-primary")),
                                     shinyjs::hidden(actionButton('alignment', 'Alignment of signals')),
                                     shinyjs::hidden(actionButton('model_spectrum', 'Profile model spectrum again')),
 
                                     fluidRow(column(width = 12, h4())),
-                                    plotlyOutput("autorun_plot"),
+                                    plotlyOutput("automatic_profiling_plot"),
                                     div(dataTableOutput("sp"), style = "font-size:80%")
   ))),
                        #Second tab
@@ -58,7 +58,7 @@ tabPanel("ROI Profiles",value = "tab2",
           actionButton("action", label = "Check quantification"),
           actionButton("save_results", label = "Save quantification"),
           actionButton("remove_q", label = "Remove quantification"),
-          actionButton("autorun_signal", label = "ROI autorun"),
+          actionButton("automatic_profiling_signal", label = "ROI automatic_profiling"),
           actionButton("save_profile", label = "Save ROI profile"),
           fluidRow(column(width = 12, h4("Select ROI"))),
           uiOutput("moreControls"),
@@ -109,7 +109,7 @@ tabPanel("ROI Profiles",value = "tab2",
       plotlyOutput(outputId = "stocsy_plot"),
       fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of quantification, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapareadata",height="1100px"),
-      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical shift, so you can analyze relationships between spectra and between signals."))),
+      fluidRow(column(width = 12, h4("Here you have the dendrogram heatmap of chemical $chemical_shift, so you can analyze relationships between spectra and between signals."))),
       plotlyOutput(outputId = "dendheatmapshiftdata"))
   )))
 
