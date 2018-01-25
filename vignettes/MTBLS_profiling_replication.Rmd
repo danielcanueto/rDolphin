@@ -1,0 +1,53 @@
+---
+title: "Reproduction of the automatic profiling of Metabolights datasets"
+author: "Daniel Canueto"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Introduction to rDolphin"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra datasets and outputs several indicators of quality of quantification and identification for each signal area quantification. Additional information of the installation and the different possibilities enabled by rDolphin are in the `Introduction to rDolphin` vignette available here:
+
+https://github.com/danielcanueto/rDolphin/blob/master/vignettes/rDolphin-vignette.Rmd
+
+In this vignette we will show how to replicate the automatic profiling of three Metabolights datasets of human samples of urine (MTBLS1), blood (MTBLS374) and faecal extract (MTBLS237).
+
+
+1. Download and unzip the contents of this Dropbox link.
+
+https://www.dropbox.com/s/9jte1axjcku4y8d/MTBLS_studies_replication.rar?dl=0
+
+2. Take a look to the three folders inside the unzipped folder. They correspond to three different Metabolights experiments:
+
+* MTBLS1: human urine.
+* MTBLS237: faecal extract.
+* MTBLS374: blood.
+
+Each folder has an `input` folder with the necessary data to load so to perform the automatic profiling of the study data set. Further details about these input files are available in the `Introduction to rDolphin` vignette and in this Google Doc:
+
+https://docs.google.com/document/d/1t--gF5mCBNhbGvn53vKth2nlTzucLx55EfUWIgrMh_o/edit?usp=sharing
+
+3. Change the working directory in R by the one of the unzipped dropbox folder:
+
+```
+setwd("UNZIPPED_DROPBOX_FOLDER_PATH")
+```
+
+4. Load `rDolphin`:
+```
+library(rDolphin)
+```
+
+5. Run the next commands so to perform the profiling of the MTBLS1 dataset:
+
+```
+imported_data=import_data("MTBLS1\\input\\Parameters_MTBLS1.csv") #import of the necessary data before automatic profiling
+median_plot=median_plot(imported_data) #visualization of differences caused by the sample type along the spectrum
+profiling_data=automatic_profiling(imported_data,imported_data$ROI_data) # automatic profilnig of the spectra dataset
+write_info("MTBLS1\\output",profiling_data$final_output,imported_data$ROI_data) # export of quantification data and of quality indicators in 'output' folder
+write_plots("MTBLS1\\output",profiling_data$final_output,profiling_data$reproducibility_data)
+save(imported_data,profiling_data,file="MTBLS1\\output\\MTBLS1_console_profiling.RData")  # export of figures of each quantification in 'output' folder
+```
+6. To perform the profiling of the MTBLS237 and MTBLS374 datasets, in step 5 change 'MTBLS1' by the right dataset name.

@@ -14,7 +14,16 @@ If, at some moment, the installation fails, probably the reason is a missing dep
 
 ## Introduction to the package:
 
-A vignette is available for the use of functions outside the GUI and can be run with this command `browseVignettes("rDolphin")`. An (still not updated to last changes) introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
+A vignette is available for the use of functions through the R console (we recommend the use of RStudio or a similar program):
+
+https://github.com/danielcanueto/rDolphin/blob/master/vignettes/rDolphin-vignette.Rmd
+
+A vignette is available for the replication of different Metabolights studies of human urine, blood and faecal extract:
+
+https://github.com/danielcanueto/rDolphin/blob/master/vignettes/MTBLS_profiling_replication.Rmd
+
+
+An (still not updated to last changes) introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
 
 For a quick look to the capabilities of the Shiny GUI, examples of sessions of profiling of MTBLS1 (urine), MTBLS237 (faecal extract) and MTBLS374 (blood) Metabolights data sets are available on the next links:
 
