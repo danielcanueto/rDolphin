@@ -27,11 +27,11 @@ An (still not updated to last changes) introductory tutorial for the use of rDol
 
 For a quick look to the capabilities of the Shiny GUI, examples of sessions of profiling of MTBLS1 (urine), MTBLS237 (faecal extract) and MTBLS374 (blood) Metabolights data sets are available on the next links:
 
-MTBLS1: https://www.dropbox.com/s/k0x8enlonpr2njo/MTBLS1_example.RData?dl=0
+MTBLS1: https://www.dropbox.com/s/k483tfn59e66mkb/MTBLS1_GUI_session.RData?dl=0
 
-MTBLS237: https://www.dropbox.com/s/08kjxpd08vo9tq9/MTBLS237_example.RData?dl=0
+MTBLS237: https://www.dropbox.com/s/08kjxpd08vo9tq9/MTBLS237_GUI_session.RData?dl=0
 
-MTBLS374: https://www.dropbox.com/s/nj59fheh903vzpu/MTBLS374_example.RData?dl=0
+MTBLS374: https://www.dropbox.com/s/nj59fheh903vzpu/MTBLS374_GUI_session.RData?dl=0
 
 To load e.g. the MTBLS1 profiling session, run “rDolphin_GUI()” to open the GUI and click on the "Resume a saved session" button on the left panel. 
 
