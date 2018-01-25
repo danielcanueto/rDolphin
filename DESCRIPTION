@@ -33,7 +33,6 @@ Imports:
 	elasticnet,
 	gridExtra,
 	stringr,
-	MassSpecWavelet,
 	speaq,
 	knitr,
 	rmarkdown
