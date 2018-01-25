@@ -46,9 +46,14 @@ The introduction will show how to perform in the R console the profiling of a su
 
 A link to an online document showing how to perform similar steps through the Shiny GUI is available in the Readme file of the Github website: https://github.com/danielcanueto/rDolphin.
 
-## Import of necessary data
+1. Download and unzip the contents of this Dropbox link.
+2. Take a look to the three folders inside the unzipped folder. They correspond to three different Metabolights experiments:
+* MTBLS1: human urine.
+* MTBLS237: faecal extract.
+* MTBLS374: blood.
 
-In the `extdata` folder of the package there is the necessary information to load a dataset of 30 spectra of MTBLS242. Run this command to find the path where this information is located on your computer:
+
+Each one has an `input` folder with the next components
 ```
 file.path(system.file(package = "rDolphin"),"extdata")
 ```
