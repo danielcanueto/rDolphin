@@ -65,6 +65,8 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   if (level=="all") quantifications_to_repeat[,]=1
 	if (is.numeric(level)) quantifications_to_repeat[which(final_output$fitting_error>level)]=1
 	if (level=="outliers") {
+	  tryCatch({
+
 	  outlier_indicator=sapply(which(!is.na(predicted_shift)),
 	             function(x)findInterval(final_output$chemical_shift[x],
 	                                     c(min_shift[x],max_shift[x])))
@@ -77,7 +79,9 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
 	             function(x)findInterval(final_output$intensity[x],
 	                                     c(min_intensity[x],max_intensity[x])))
 	  if (length(outlier_indicator)>0) quantifications_to_repeat[which(!is.na(predicted_intensity))][sapply(outlier_indicator,function(x)x==0|x==2)]=1
-}
+
+	  }, error=function(e)quantifications_to_repeat[,]=1)
+	  }
 
 if (improvement_option=='reimplementation') {  #Splitting of ROI data into individual ROIs to be quantified
 	dummy = which(is.na(ROI_data[, 1]))

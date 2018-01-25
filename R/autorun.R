@@ -173,7 +173,7 @@ automatic_profiling = function(imported_data, ROI_data,optimization=TRUE,spectra
   }
 
 
-  if (optimization==TRUE&length(spectra_to_profile)>20) {
+  if (optimization==TRUE&length(spectra_to_profile)>20&nrow(ROI_data)>20) {
   optimized_profiling_data=automatic_profiling_improv(imported_data,final_output,reproducibility_data,ROI_data)
   nn=optimized_profiling_data$final_output$fitting_error-final_output$fitting_error
   no=boxplot.stats(nn)$stats[5]

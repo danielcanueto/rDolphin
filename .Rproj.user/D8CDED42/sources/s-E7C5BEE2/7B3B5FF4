@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1516872350857.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7B3B5FF4",
+    "lastKnownWriteTime" : 1516871917,
+    "last_content_update" : 1516871917,
+    "path" : "~/GitHub/rDolphin/R/write_plots.R",
+    "project_path" : "R/write_plots.R",
+    "properties" : {
+        "cursorPosition" : "19,48",
+        "scrollLine" : "10"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

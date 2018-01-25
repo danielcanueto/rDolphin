@@ -167,7 +167,7 @@ Go to the `extdata` folder mentioned in `Import of necessary data` and you will 
 
 To output in your computer PDFs with plots of every quantification, run this command:
 ```
-write_plots(file.path(system.file(package = "rDolphin"),"extdata"),profiling_data$final_output,imported_data,profiling_data$reproducibility_data)
+write_plots(file.path(system.file(package = "rDolphin"),"extdata"),profiling_data$final_output,profiling_data$reproducibility_data)
 ```
 A `plots` folder is stored in the `extdata` folder mentioned in `Import of necessary data`. You can see a PDF file for every signal with all quantifications.
 

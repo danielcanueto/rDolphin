@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1516881383411.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2474894031",
+    "id" : "BA9213A1",
+    "lastKnownWriteTime" : 1516881590,
+    "last_content_update" : 1516881590520,
+    "path" : "~/GitHub/rDolphin/R/autorun.R",
+    "project_path" : "R/autorun.R",
+    "properties" : {
+        "cursorPosition" : "19,54",
+        "scrollLine" : "12"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
