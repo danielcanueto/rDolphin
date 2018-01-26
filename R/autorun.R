@@ -172,7 +172,7 @@ automatic_profiling = function(imported_data, ROI_data,optimization=TRUE,spectra
 
   }
 
-
+tryCatch({
   if (optimization==TRUE&length(spectra_to_profile)>20&nrow(ROI_data)>20) {
   optimized_profiling_data=automatic_profiling_improv(imported_data,final_output,reproducibility_data,ROI_data)
   nn=optimized_profiling_data$final_output$fitting_error-final_output$fitting_error
@@ -188,7 +188,7 @@ automatic_profiling = function(imported_data, ROI_data,optimization=TRUE,spectra
   final_output=optimized_profiling_data$final_output
   reproducibility_data=optimized_profiling_data$reproducibility_data
   }
-
+},error=function(e)NA)
   profiling_data=list(final_output=final_output,reproducibility_data=reproducibility_data)
 
   print("Done!")
