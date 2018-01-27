@@ -22,6 +22,9 @@ A vignette is available for the replication of different Metabolights studies of
 
 https://github.com/danielcanueto/rDolphin/blob/master/vignettes/MTBLS_profiling_replication.Rmd
 
+Available ROI profiles of fecal extract, blood and urine are available on the "extdata" folder inside the package folder.
+
+------
 
 An (still not updated to last changes) introductory tutorial for the use of rDolphin inside the GUI is available on this link: https://docs.google.com/document/d/12OJHLgs4dbboBQJHUP0YExfIeZQV8l7n4HQmkWZBWwo/edit
 
@@ -34,9 +37,6 @@ MTBLS237: https://www.dropbox.com/s/08kjxpd08vo9tq9/MTBLS237_GUI_session.RData?d
 MTBLS374: https://www.dropbox.com/s/nj59fheh903vzpu/MTBLS374_GUI_session.RData?dl=0
 
 To load e.g. the MTBLS1 profiling session, run “rDolphin_GUI()” to open the GUI and click on the "Resume a saved session" button on the left panel. 
-
-The ROI profiles of fecal extract, blood and urine are available on the "extdata" folder inside the package folder.
-
 
 
 ## Tab Images of MTBLS1 session:
