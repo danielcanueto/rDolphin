@@ -33,6 +33,9 @@ for (i in seq(length(alarm_matrix))) alarm_matrix[[i]][,]=NA
 
   if (length(modified_signals_indexes)>0) {
 
+  lol=apply(final_output$intensity,2,function(x)length(unique(x)))
+
+    if (length(which(lol>0.5*nrow(final_output$intensity)))>10) {
   #Imputation of missing values
   final_output$half_bandwidth=suppressWarnings(tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$half_bandwidth))),error=function(e) final_output$half_bandwidth))
   final_output$chemical_shift[final_output$chemical_shift==Inf]=NA
@@ -60,6 +63,9 @@ for (i in seq(length(alarm_matrix))) alarm_matrix[[i]][,]=NA
     shift3=data.frame(y=final_output$intensity[,i],d=final_output$intensity[,setdiff(valid_indexes,i)])
     alarm_matrix$intensity[,i]=predict(ranger::ranger(y~.,data=shift3,mtry=3),shift3)$predictions/final_output$intensity[,i]
   }
+    } else {
+      print("Not possible to predict the chemical shift, half bandwidth or intensity because of not enough data")
+    }
 
   alarm_matrix$fitting_error=final_output$fitting_error
   alarm_matrix$signal_area_ratio=final_output$signal_area_ratio

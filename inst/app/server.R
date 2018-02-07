@@ -355,7 +355,7 @@ observeEvent(input$folder, {
     if (!is.null(reactivequantdata$method1$results_to_save)) {
       reactiveprogramdata$plot=reactivequantdata$method1$p
       #reactivequantdata$stop3=1
-      reactiveROItestingdata$qualitypar=round(cbind(reactivequantdata$method1$results_to_save$quantification,reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio),4)
+      reactiveROItestingdata$qualitypar=cbind(reactivequantdata$method1$results_to_save$quantification,round(reactivequantdata$method1$results_to_save$fitting_error,reactivequantdata$method1$results_to_save$signal_area_ratio),4)
       colnames(reactiveROItestingdata$qualitypar)=c('Quantification (arbitrary unit)','Fitting Error','Signal/total area ratio')
       ind=which(reactiveprogramdata$ROIdata_subset[,5]>0)+3
 
@@ -428,6 +428,7 @@ observeEvent(input$folder, {
     reactiveprogramdata$ROI_data[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveprogramdata$ROI_data_check[ROI_separator[ind, 1]:ROI_separator[ind, 2],]=reactiveprogramdata$ROIdata_subset
     ROI_names=paste(reactiveprogramdata$ROI_data[ROI_separator[, 1],1],reactiveprogramdata$ROI_data[ROI_separator[, 1],2])
     names(reactiveprogramdata$select_options)=ROI_names
+    print("ROI Profile saved.")
     },error=function(e) {print('Error. Please explain the issue on the Github website')})
     })
 
@@ -639,7 +640,7 @@ if (length(input$fit_selection_cell_clicked)<1) return()
 
       new_validation_data=rep(list(matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))), length(reactiveprogramdata$validation_data$alarm_matrix))
       names(new_validation_data)=names(reactiveprogramdata$validation_data$alarm_matrix)
-      new_shown_matrix=new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_')))
+      new_shown_matrix=new_fitting_error=new_intensity=new_signal_area_ratio=new_shift=new_width=new_Area=matrix(NA,nrow(reactiveprogramdata$final_output$signal_area_ratio),nrow(reactiveprogramdata$ROI_data_check),dimnames=list(reactiveprogramdata$imported_data$Experiments,make.names(paste(reactiveprogramdata$ROI_data_check[,4],reactiveprogramdata$ROI_data_check[,5],sep='_'))))
       new_useful_data=reactiveprogramdata$reproducibility_data
       for (i in 1:length(new_useful_data)) new_useful_data[[i]]=vector("list", nrow(reactiveprogramdata$ROI_data_check))
       new_fitting_error[,trel]=reactiveprogramdata$final_output$fitting_error[,reactiveprogramdata$list]
