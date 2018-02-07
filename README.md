@@ -1,6 +1,6 @@
 # rDolphin
 
-
+Thanks to Paul Driscoll and Rico Rueedi for their valuable comments.
 
 ## Please run these commands in the R console to install the package:
 
