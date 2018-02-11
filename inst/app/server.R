@@ -131,12 +131,7 @@ if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
     reactiveprogramdata$list=seq(nrow(reactiveprogramdata$ROI_data))
 
-    #Names of ROIS are prepared
-# 	dummy=tryCatch({roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
-#   }, error = function(e) {
-# 	print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
-# 	return(dummy=NULL)
-# 	})
+
     dummy=NULL
 	dummy=roifunc(reactiveprogramdata$ROI_data,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$Experiments)
 
@@ -222,16 +217,7 @@ observeEvent(input$folder, {
     })
   })
 
-  #Peak analysis. UNSTABLE!!!
-  # observeEvent(input$peak_analysis, {
-  #   if (is.null(reactiveprogramdata$alignment_check)) {
-  #     print('Before analysing peaks, I have to align them. Then I\'ll analyze them')
-  #     dummy=alignment(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$buck_step)
-  #     peak_analysis(dummy,reactiveprogramdata$imported_data$ppm,reactiveprogramdata$imported_data$freq,reactiveprogramdata$imported_data$export_path,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$repository,reactiveprogramdata$originaldataset)
-  #   } else {
-  #     peak_analysis(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,reactiveprogramdata$imported_data$freq,reactiveprogramdata$imported_data$export_path,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$repository,reactiveprogramdata$originaldataset)
-  #   }
-  # })
+
 
   #Plot where quantification of model spectrum amnd p values for every bucket are stored
   output$automatic_profiling_plot <- renderPlotly({
@@ -278,22 +264,9 @@ observeEvent(input$folder, {
 
 	#Analysis of ROI edition. If edition is not correct (for example, there are characters in a numeric input), the edition is rejected and shown with red colour. If correct, the change is accepted with green colour.
 	#TODO: it seems sometiems the edition fails if the change was too quick. Revise possible ways to control it.
-    output$ROIdata <-   DT::renderDataTable(  reactiveprogramdata$ROIdata_subset, selection = 'none', rownames = FALSE)
+    output$ROIdata <-   DT::renderDataTable(  datatable(reactiveprogramdata$ROIdata_subset, selection = 'none', rownames = FALSE,,editable = T))
+})
 
-    proxy_ROIdata = dataTableProxy('ROIdata')
-
-    observeEvent(input$ROIdata_cell_edit, {
-      info2 = input$ROIdata_cell_edit
-      i2 = info2$row
-      j2 = info2$col + 1
-      v2 = info2$value
-      if (!is.na(reac$cho)) {
-        reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
-      replaceData(proxy_ROIdata, reactiveprogramdata$ROIdata_subset, resetPaging = FALSE, rownames = FALSE)
-      }
-      reac$cho=1
-      })
-  })
 
   #Selection of spectra, or of cluster or median plots
   observeEvent(input$x1_rows_selected, {
@@ -438,7 +411,7 @@ observeEvent(input$folder, {
   #Spectra table.
   # output$x1 = tryCatch({DT::renderDataTable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),server = TRUE)},error=function(e){})
   tryCatch({
-  output$x1 = DT::renderDataTable(datatable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1))%>% formatStyle(0,target="row",color=styleEqual(1:2,c("red","blue")))
+  output$x1 = DT::renderDataTable(datatable(reactiveprogramdata$spectra , selection = list(mode = 'multiple', selected = 1),editable = T)%>% formatStyle(0,target="row",color=styleEqual(1:2,c("red","blue")))
   )},error=function(e){})
 
 
@@ -473,18 +446,9 @@ observeEvent(input$folder, {
 
 
   #Direct edition of parameters before quantification
-  output$directedition <-   DT::renderDataTable(reactiveROItestingdata$signpar, selection = 'none', rownames = T)
+  output$directedition <-   DT::renderDataTable(datatable(reactiveROItestingdata$signpar, selection = 'none', rownames = T,editable=T))
 
-  proxy_directedition = dataTableProxy('directedition')
 
-  observeEvent(input$directedition_cell_edit, {
-    info = input$directedition_cell_edit
-    i = info$row
-    j = info$col
-    v = info$value
-    reactiveROItestingdata$signpar[i, j] <<- DT:::coerceValue(v, reactiveROItestingdata$signpar[i, j])
-    replaceData(proxy_directedition, reactiveROItestingdata$signpar, resetPaging = FALSE, rownames = FALSE)
-  })
   #Quantification after direct edition of paramters
   observeEvent(input$direct_edition, {
     if (all(is.na(reactiveROItestingdata$signpar))) {
@@ -528,7 +492,7 @@ observeEvent(input$folder, {
 	if (as.numeric(input$select_validation)>0) {
     tryCatch({
       reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
-    output$fit_selection = DT::renderDataTable({ datatable(round(reactiveprogramdata$validation_data$shown_matrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(reactiveprogramdata$validation_data$shown_matrix), backgroundColor = styleInterval(reactiveprogramdata$validation_data$brks, reactiveprogramdata$validation_data$clrs))
+    output$fit_selection = DT::renderDataTable({ datatable(round(reactiveprogramdata$validation_data$shown_matrix,4),selection = list(mode = 'single', target = 'cell'),editable = T) %>% formatStyle(colnames(reactiveprogramdata$validation_data$shown_matrix), backgroundColor = styleInterval(reactiveprogramdata$validation_data$brks, reactiveprogramdata$validation_data$clrs))
     })},error=function(e) {
       print("Not enough data to model it.")
     })
@@ -708,41 +672,10 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   })
 
   #ROI Profiles table
-  output$roi_profiles  = DT::renderDataTable(reactiveprogramdata$ROI_data_check, selection = 'multiple', rownames = FALSE,options=list(pageLength = 100,
-                                             lengthMenu = c(50,100)))
+  output$roi_profiles  = DT::renderDataTable(datatable(reactiveprogramdata$ROI_data_check, selection = 'multiple', rownames = FALSE,options=list(pageLength = 100,
+                                             lengthMenu = c(50,100)),editable=T))
 
-  proxy_roi_profiles = dataTableProxy('roi_profiles')
 
-  observeEvent(input$roi_profiles_cell_edit, {
-    info = input$roi_profiles_cell_edit
-    i = info$row
-    j = info$col + 1
-    v = info$value
-    reactiveprogramdata$ROI_data_check[i, j] <<- DT:::coerceValue(v, reactiveprogramdata$ROI_data_check[i, j])
-    replaceData(proxy_roi_profiles, reactiveprogramdata$ROI_data_check, resetPaging = FALSE, rownames = FALSE)
-  })
-#
-#   ## FIFTH TAB REACTIVE OUTPUTS
-#
-#   #Boxplot plot
-#   output$plot_p_value_2 <- renderPlotly({
-#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='boxplot')
-#     }, error = function(e) {
-#       print('Error. Please explain the issue in the Github page.')
-#       return(NULL)
-#     })
-#   })
-#   #PCA plot
-#   output$pcascores <- renderPlotly({
-#     if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-#
-#     tryCatch({type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='pca')
-#   }, error = function(e) {
-#     print('Generation of Regions of Interest not possible. Please explain the issue in the Github page.')
-#     return(NULL)
-#   })
-#   })
 
   ## SIXTH TAB REACTIVE OUTPUTS
 
