@@ -2,9 +2,11 @@ suppressMessages(library(shiny))
 suppressMessages(library(plotly))
 suppressMessages(library(DT))
 suppressMessages(library(shinyjs))
-
+css <- "
+.shiny-output-error { visibility: hidden; }
+.shiny-output-error:before {visibility: hidden; }"
 shinyUI(fluidPage(
-
+  tags$style(type="text/css", css),
   shinyjs::useShinyjs(),
   titlePanel("rDolphin GUI"),
   #First tab
