@@ -174,7 +174,7 @@ if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation
 
 observeEvent(input$folder, {
   tryCatch({
-    write_plots(input$caption,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,reactiveprogramdata$reproducibility_data)},
+    write_plots(input$caption,reactiveprogramdata$final_output,reactiveprogramdata$reproducibility_data)},
     error= function(e) {       print('Not possible to generate the plot folder. Please check that you have permissions for the path specified.')
 
 })})

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1518071670002.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "59749815",
+    "id" : "BC6D2B61",
+    "lastKnownWriteTime" : 1518071751,
+    "last_content_update" : 1518071751,
+    "path" : "~/GitHub/rDolphin/R/import_data.R",
+    "project_path" : "R/import_data.R",
+    "properties" : {
+        "cursorPosition" : "51,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
