@@ -319,7 +319,7 @@ observeEvent(input$folder, {
 
     reactiveprogramdata$info=c()
     reactiveROItestingdata$signpar <- rbind(rep(NA,7),rep(NA,7))
-    colnames(reactiveROItestingdata$signpar)=c("intensity",	"$chemical_shift",	"half_bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof_effect")
+    colnames(reactiveROItestingdata$signpar)=c("intensity",	"chemical_shift",	"half bandwidth",	"gaussian",	"J_coupling",	"multiplicities",	"roof effect")
     reactiveROItestingdata$qualitypar <- rbind(rep(NA,3),rep(NA,3))
     rownames(reactiveROItestingdata$qualitypar)=NULL
 
