@@ -176,16 +176,16 @@ A `plots` folder is stored in the `extdata` folder mentioned in `Import of neces
 
 The `validation` function allows to analyse possible wrong identifications or quantifications. For example, this command:
 ```
-View(validation(profiling_data$final_output,profiling_data$alarm_matrix,1)$shown_matrix)
+View(validation(profiling_data$final_output,1)$shown_matrix)
 
 ```
 shows the fitting error in every signal quantification. And this command:
 
 ```
-View(validation(profiling_data$final_output,profiling_data$alarm_matrix,3)$shown_matrix)
+View(validation(profiling_data$final_output,3)$shown_matrix)
 
 ```
-shows the difference between the expected chemical $chemical_shift and the calculated chemical $chemical_shift in every signal quantification.
+shows the difference between the expected chemical shift and the calculated chemical shift in every signal quantification.
 
 
 

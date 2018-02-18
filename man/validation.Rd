@@ -4,12 +4,12 @@
 \alias{validation}
 \title{Estimation of quality indicators, with signal to total area ratio, fitting error, and difference between expected and found signal parameter values.}
 \usage{
-validation(final_output, alarm_matrix = NA, validation_type)
+validation(final_output, validation_type, alarm_matrix = NA)
 }
 \arguments{
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 
-\item{alarm_matrix}{List of previous indicators.}
+\item{alarm_matrix}{Optional list of previous indicators to update.By default NA.}
 
 \item{validation_type}{Type of validation to perform (1: fitting error, 2: signal total area ratio, 3: difference expected-obtained chemical shift, 4: difference expected-obtained half bandwidth, 5: difference expected-obtained intensity)}
 }
@@ -22,5 +22,5 @@ Estimation of quality indicators, with signal to total area ratio, fitting error
 \examples{
 setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 load("MTBLS242_subset_profiling_data.RData")
-validation_data=validation(profiling_data$final_output,profiling_data$alarm_matrix,5)
+validation_data=validation(profiling_data$final_output,5)
 }

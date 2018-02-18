@@ -44,7 +44,7 @@ reac=reactiveValues(cho=NA)
 	reactiveprogramdata$imported_data$final_output=reactiveprogramdata$imported_data$reproducibility_data=reactiveprogramdata$imported_data$ROI_data=NULL
 	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge (ppm)","ROI right edge (ppm)","Quantification Mode","Metabolite","Quantification Signal","Chemical shift (ppm)","Chemical shift tolerance (ppm)","Half bandwidth (Hz)","Multiplicity","J coupling (Hz)","Roof effect")
 	reactiveprogramdata$validation_data=list(alarm_matrix=reactiveprogramdata$final_output)
-	reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,1)
+	reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,1,reactiveprogramdata$validation_data$alarm_matrix)
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
 	print('Automatic quantification of model spectrum not possible.')
 	})
@@ -117,7 +117,7 @@ reac=reactiveValues(cho=NA)
       for (i in 1:length(plo)) reactiveprogramdata[[plo[i]]]=savedreactivedata[[plo[i]]]
       p=plot_ly(x=reactiveprogramdata$imported_data$ppm,y=reactiveprogramdata$dataset)
       reactiveprogramdata$plot$dependencies=reactiveprogramdata$automatic_profiling_plot$dependencies=reactiveprogramdata$clusterplot$dependencies=reactiveprogramdata$median_plot$dependencies=p$dependencies
-      reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,1)
+      reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,1,reactiveprogramdata$validation_data$alarm_matrix)
 
       rm(savedreactivedata)
 reset("file2")
@@ -126,7 +126,7 @@ reset("file2")
       return(NULL)
     })
 	colnames(reactiveprogramdata$ROI_data)=c("ROI left edge (ppm)","ROI right edge (ppm)","Quantification Mode","Metabolite","Quantification Signal","Chemical shift (ppm)","Chemical shift tolerance (ppm)","Half bandwidth (Hz)","Multiplicity","J coupling (Hz)","Roof effect")
-if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
+if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$validation_data$alarm_matrix)
 
     reactiveprogramdata$ROI_data_check=reactiveprogramdata$ROI_data
     reactiveprogramdata$list=seq(nrow(reactiveprogramdata$ROI_data))
@@ -192,7 +192,7 @@ observeEvent(input$folder, {
     reactiveprogramdata$final_output=profiling_data$final_output
     reactiveprogramdata$reproducibility_data=profiling_data$reproducibility_data
 
-    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
+    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$validation_data$alarm_matrix)
 
     },
     error = function(e) {
@@ -377,7 +377,7 @@ observeEvent(input$folder, {
     dummy <- individual_profiling(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, seq(nrow(reactiveprogramdata$imported_data$dataset)),reactiveprogramdata$ROIdata_subset,reactiveprogramdata$reproducibility_data,interface=TRUE)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$reproducibility_data=dummy$reproducibility_data
-    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
+    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$validation_data$alarm_matrix)
 
     },error=function(e) {print('Error. Please explain the issue on the Github website')})
     })
@@ -404,7 +404,7 @@ observeEvent(input$folder, {
     dummy=save_roi_testing(reactivequantdata$method1,reactiveprogramdata$imported_data, reactiveprogramdata$final_output,reactiveprogramdata$reproducibility_data)
     reactiveprogramdata$final_output=dummy$final_output
     reactiveprogramdata$reproducibility_data=dummy$reproducibility_data
-    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
+    reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$validation_data$alarm_matrix)
 
     },error=function(e) {print('Error. Please explain the issue on the Github website')})
       })
@@ -527,7 +527,7 @@ observeEvent(input$folder, {
     if (reactiveprogramdata$beginning==FALSE) return()
 	if (as.numeric(input$select_validation)>0) {
     tryCatch({
-      reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,reactiveprogramdata$validation_data$alarm_matrix,input$select_validation)
+      reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,input$select_validation,reactiveprogramdata$validation_data$alarm_matrix)
     output$fit_selection = DT::renderDataTable({ datatable(round(reactiveprogramdata$validation_data$shown_matrix,4),selection = list(mode = 'single', target = 'cell')) %>% formatStyle(colnames(reactiveprogramdata$validation_data$shown_matrix), backgroundColor = styleInterval(reactiveprogramdata$validation_data$brks, reactiveprogramdata$validation_data$clrs))
     })},error=function(e) {
       print("Not enough data to model it.")

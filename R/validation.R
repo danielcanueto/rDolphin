@@ -1,7 +1,7 @@
 #' Estimation of quality indicators, with signal to total area ratio, fitting error, and difference between expected and found signal parameter values.
 #'
 #' @param final_output List with quantifications and indicators of quality of quantification.
-#' @param alarm_matrix List of previous indicators.
+#' @param alarm_matrix Optional list of previous indicators to update. By default NA.
 #' @param validation_type Type of validation to perform (1: fitting error, 2: signal total area ratio, 3: difference expected-obtained chemical shift, 4: difference expected-obtained half bandwidth, 5: difference expected-obtained intensity)
 #'
 #' @return List with estimated indicators, matrix to show in GUI, and breaks and colors to prepare a different color for each cell of the matrix.
@@ -12,11 +12,11 @@
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
 #' load("MTBLS242_subset_profiling_data.RData")
-#' validation_data=validation(profiling_data$final_output,profiling_data$alarm_matrix,5)
+#' validation_data=validation(profiling_data$final_output,5)
 
 
 
-validation = function(final_output,alarm_matrix=NA,validation_type) {
+validation = function(final_output,validation_type,alarm_matrix=NA) {
 print("Updating the chosen validation method...")
   #If some required information does not exist yet, it is created
   if (is.na(alarm_matrix)) {
@@ -37,10 +37,10 @@ for (i in seq(length(alarm_matrix))) alarm_matrix[[i]][,]=NA
 
     if (length(which(lol>0.5*nrow(final_output$intensity)))>10) {
   #Imputation of missing values
-  final_output$half_bandwidth=suppressWarnings(tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$half_bandwidth))),error=function(e) final_output$half_bandwidth))
+  capture.output(final_output$half_bandwidth<-tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$half_bandwidth))),error=function(e) final_output$half_bandwidth))
   final_output$chemical_shift[final_output$chemical_shift==Inf]=NA
-  final_output$chemical_shift=suppressWarnings(tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$chemical_shift))),error=function(e) final_output$chemical_shift))
-  final_output$intensity=suppressWarnings(tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$intensity))),error=function(e) final_output$intensity))
+  capture.output(final_output$chemical_shift<-tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$chemical_shift))),error=function(e) final_output$chemical_shift))
+  capture.output(final_output$intensity<-tryCatch(as.matrix(missRanger::missRanger(as.data.frame(final_output$intensity))),error=function(e) final_output$intensity))
 
 
   #Chemical $chemical_shift value prediction

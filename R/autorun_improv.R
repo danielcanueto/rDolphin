@@ -27,7 +27,7 @@
 automatic_profiling_improv = function(imported_data, final_output,reproducibility_data,ROI_data,improvement_option='reimplementation',level='outliers') {
 print("Starting maximization of profiling data quality using information of original profiling...")
   print("Now estimating the predicted signal parameters with confidence intervals...")
-  predicted_info=rf_pred(final_output$half_bandwidth,final_output$fitting_error)
+  capture.output(predicted_info<-rf_pred(final_output$half_bandwidth,final_output$fitting_error))
 predicted_width=as.matrix(predicted_info$predicted_matrix)
 
   max_width=as.matrix(predicted_info$upper_bound_matrix)
@@ -37,7 +37,7 @@ predicted_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]))
 min_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*0.75))
 max_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*1.25))
 
-predicted_info=rf_pred(final_output$chemical_shift,final_output$fitting_error)
+capture.output(predicted_info<-rf_pred(final_output$chemical_shift,final_output$fitting_error))
 predicted_shift=as.matrix(predicted_info$predicted_matrix)
 max_shift=as.matrix(predicted_info$upper_bound_matrix)
 min_shift=as.matrix(predicted_info$lower_bound_matrix)
@@ -49,7 +49,7 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   min_shift[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,6]-ROI_data[ind,7]))
   }
 
-  predicted_info=rf_pred_intensity(final_output$intensity,ROI_data[,4],final_output$fitting_error)
+  capture.output(predicted_info<-rf_pred_intensity(final_output$intensity,ROI_data[,4],final_output$fitting_error))
   predicted_intensity=as.matrix(predicted_info$predicted_matrix)
   max_intensity=as.matrix(predicted_info$upper_bound_matrix)
   min_intensity=as.matrix(predicted_info$lower_bound_matrix)
