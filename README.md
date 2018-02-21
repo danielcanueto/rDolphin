@@ -16,7 +16,7 @@ If, at some moment, the installation fails, probably the reason is a missing dep
 
 A vignette is available for the use of functions through the R console (we recommend the use of RStudio or a similar program):
 
-https://github.com/danielcanueto/rDolphin/blob/master/vignettes/rDolphin-vignette.Rmd
+https://github.com/danielcanueto/rDolphin/blob/master/vignettes/rDolphin_introduction.Rmd
 
 A vignette is available for the replication of different Metabolights studies of human urine, blood and faecal extract:
 
