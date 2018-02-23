@@ -6,10 +6,10 @@ Thanks to Paul Driscoll, Naomi Rankin and Rico Rueedi for their valuable comment
 
 1. `source("https://bioconductor.org/biocLite.R"); biocLite("impute"); biocLite("MassSpecWavelet")` #installation of packages that cannot be installed from Github
 2. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
-3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+3. `devtools::install_github("danielcanueto/rDolphin")`           #installs rDolphin
 4. `library(rDolphin)`          #loads rDolphin
 
-If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)` again.
+If, at some moment, the installation fails, probably the reason is a missing dependency. Please read on the console for "there is no package called" messages, install the package required with `install.packages` and run `devtools::install_github("danielcanueto/rDolphin")` again.
 
 
 ## Introduction to the package:

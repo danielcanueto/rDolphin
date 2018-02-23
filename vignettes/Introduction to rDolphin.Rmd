@@ -19,7 +19,7 @@ Please run these commands in the R console (preferably through RStudio) to insta
 
 1. `source("https://bioconductor.org/biocLite.R"); biocLite("impute"); biocLite("MassSpecWavelet")` #installation of packages that cannot be installed from Github
 2. `install.packages("devtools")`    #installation of package necessary to install rDolphin from Github
-3. `devtools::install_github("danielcanueto/rDolphin", build_vignettes = TRUE)`           #installs rDolphin
+3. `devtools::install_github("danielcanueto/rDolphin")`           #installs rDolphin
 4. `library(rDolphin)`          #loads rDolphin
 
 At some moment, you may be asked to install Rtools:
