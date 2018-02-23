@@ -287,10 +287,10 @@ observeEvent(input$folder, {
       i2 = info2$row
       j2 = info2$col + 1
       v2 = info2$value
-      if (!is.na(reac$cho)) {
+      # if (!is.na(reac$cho)) {
         reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
       replaceData(proxy_ROIdata, reactiveprogramdata$ROIdata_subset, resetPaging = FALSE, rownames = FALSE)
-      }
+      # }
       reac$cho=1
       })
   })

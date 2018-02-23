@@ -9,9 +9,9 @@ validation(final_output, validation_type, alarm_matrix = NA)
 \arguments{
 \item{final_output}{List with quantifications and indicators of quality of quantification.}
 
-\item{alarm_matrix}{Optional list of previous indicators to update.By default NA.}
-
 \item{validation_type}{Type of validation to perform (1: fitting error, 2: signal total area ratio, 3: difference expected-obtained chemical shift, 4: difference expected-obtained half bandwidth, 5: difference expected-obtained intensity)}
+
+\item{alarm_matrix}{Optional list of previous indicators to update. By default NA.}
 }
 \value{
 List with estimated indicators, matrix to show in GUI, and breaks and colors to prepare a different color for each cell of the matrix.
