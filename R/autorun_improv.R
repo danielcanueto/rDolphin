@@ -98,7 +98,10 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
     #Preparation of ROI parameters
     ROI_profile = ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
-    if (length(ROI_buckets)<5) next
+    if (length(ROI_buckets)<20) { 
+	print ("Ignoring ROI as width is too small")
+	next
+	}
     if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
 
     #Preparation of program parameters to be sued during fitting, with some variables added to ease interpretability of code
@@ -357,6 +360,7 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 rf_pred_intensity=function(initial_matrix,met_names,fitting_error) {
   fitting_error=fitting_error
   modified_matrix=initial_matrix
+    modified_matrix=jitter(modified_matrix,0.000001*mean(modified_matrix,na.rm=T))
   colnames(modified_matrix)=make.names(colnames(modified_matrix))
   dummy=which(apply(modified_matrix,2,function(x)! all(is.na(x)))==T)
   for (i in dummy) modified_matrix[fitting_error[,i] %in%
@@ -397,7 +401,7 @@ rf_pred=function(initial_matrix,fitting_error) {
   fitting_error=fitting_error
   modified_matrix=initial_matrix
   colnames(modified_matrix)=make.names(colnames(modified_matrix))
-  modified_matrix=jitter(modified_matrix,0.00001)
+  modified_matrix=jitter(modified_matrix,0.000001*mean(modified_matrix,na.rm=T))
   dummy=which(apply(modified_matrix,2,function(x) all(is.finite(x)))==T)
 
   for (i in dummy) {
