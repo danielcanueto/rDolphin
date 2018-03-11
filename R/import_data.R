@@ -21,31 +21,42 @@ import_data = function(parameters_path) {
   params = list()
 
   #Import of parameters from the csv file
-  import_profile = read.delim(
+  tryCatch({import_profile = read.delim(
     parameters_path,
     sep = ',',
     header = T,
     stringsAsFactors = F
-  )
+  )},error=function(cond) {
+    message("The Parameters file could not be read.")
+    return(NA)})
   import_profile = as.data.frame(sapply(import_profile, function(x)
     gsub("\\\\", "/", x)))
 
   #Getting the names of experiments, signals and ROIs to quantify and use
   metadata_path = as.character(import_profile[5, 2])
 
-  dummy = read.delim(
+  tryCatch({dummy = read.delim(
     metadata_path,
     sep = ',',
     header = T,
     stringsAsFactors = F
-  )
+  )},error=function(cond) {
+    message("The Metadata file could not be read")
+    return(NA)})
+
   Experiments=as.character(dummy[,1])
   Experiments = as.vector(Experiments[Experiments != ''])
   Metadata=dummy[,-1,drop=F]
 
+
   #Import of ROI profiles and generation of names and codes of signals
-  ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)
+  tryCatch({ROI_data=read.csv(as.character(import_profile[6, 2]), stringsAsFactors = F)
   ROI_data=ROI_data[order(ROI_data[,6]),1:12]
+  },error=function(cond) {
+  message("The ROI Profiles file could not be read or rightly processed.")
+  return(NA)})
+
+
   signals_names=make.names(paste(ROI_data[which(!is.na(ROI_data[, 1])),4],ROI_data[which(!is.na(ROI_data[, 1])),5],sep='_'))
 if (any(duplicated(signals_names))==T) {
   print("Revise duplicated signal IDs.")
@@ -208,7 +219,11 @@ if (any(duplicated(signals_names))==T) {
     params$expno = expno
     params$processingno = processingno
     params$buck_step = as.numeric(as.character(import_profile[11,2]))
-    imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
+    tryCatch({imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
+    },error=function(cond) {
+      message("The Bruker files could not be read.")
+      return(NA)})
+
     Metadata=Metadata[!Experiments %in% imported_data$not_loaded_experiments,]
     Experiments=Experiments[!Experiments %in% imported_data$not_loaded_experiments]
     norm_factor=imported_data$norm_factor
@@ -331,8 +346,10 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
 
   k2 = 1
   maxspec = length(Experiments)
+  pb   <- txtProgressBar(1, maxspec, style=3)
 
   for (k in 1:maxspec) {
+
     filename = paste(params$dir, Experiments[k], params$expno, "pdata", params$processingno, sep = "/")
     partname = paste(params$dir, Experiments[k], params$expno, sep = "/")
     storedpars = topspin_read_spectrum2(partname, filename,spectrum_borders[2]-0.1, spectrum_borders[1]+0.1)
@@ -467,11 +484,13 @@ Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
          read_spectra = append(read_spectra, as.character(Experiments[k]))
          k2 = k2 + 1
 
+         setTxtProgressBar(pb, k)
 
 
     } else {
       # llista d'objectes no inclosos
       not_loaded_experiments = append(not_loaded_experiments, Experiments[k])
+      print(paste(Experiments[k],"not loaded",sep=" "))
     }
   }
   rownames(dataset) = read_spectra

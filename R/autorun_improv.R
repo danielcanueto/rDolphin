@@ -98,7 +98,7 @@ if (improvement_option=='reimplementation') {  #Splitting of ROI data into indiv
     #Preparation of ROI parameters
     ROI_profile = ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
-    if (length(ROI_buckets)<20) { 
+    if (length(ROI_buckets)<20) {
 	print ("Ignoring ROI as width is too small")
 	next
 	}
@@ -374,11 +374,17 @@ rf_pred_intensity=function(initial_matrix,met_names,fitting_error) {
     sed=intersect(which(met_names==met_names[i]),analyzed_signals)
     if (length(sed)==1) next
     tel=cbind(modified_matrix[,setdiff(sed,i)],prcomp(scale(modified_matrix[,sed]))$x[,1])
-    ind3=which(abs(cor(modified_matrix[,i],tel,method='spearman'))>0.7)
-    if (length(ind3)==0) next
-    tel=tel[,ind3]
+    # ind3=which(abs(cor(modified_matrix[,i],tel,method='spearman'))>0.7)
+    # if (length(ind3)==0) next
+    # tel=tel[,ind3]
     training_data=data.frame(y=modified_matrix[,i],scale(tel))
-    plsFit <- caret::train(y ~ .,data = training_data,method = "rf",trControl = ctrl)
+    if (all(is.na(fitting_error[,i]))) {
+      weights=rep(1,nrow(training_data))
+    } else {
+      weights=1/fitting_error[,i]
+
+    }
+    plsFit <- caret::train(y ~ .,data = training_data,method = "ranger", weights = weights,trControl = ctrl)
     iii=plsFit$pred
     ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),
                                                                  sd=sd(iii$pred[iii$rowIndex==x],na.rm=T)),c(0.025,0.5,0.975),na.rm=T))
@@ -415,10 +421,12 @@ rf_pred=function(initial_matrix,fitting_error) {
   ctrl <- caret::trainControl(method = "boot632",number=18,savePredictions="all")
   for (i in analyzed_signals) {
     training_data=data.frame(y=modified_matrix[,i],scale(modified_matrix[,setdiff(analyzed_signals,i)]))
-    plsFit <- caret::train(y ~ .,data = training_data,method = "lasso",trControl = ctrl)
-    ind=which(varImp(plsFit)$importance$Overall>30)
-    if (length(ind==1)) ind=order(varImp(plsFit)$importance$Overall,decreasing=T)[1:2]
-    training_data=data.frame(y=modified_matrix[,i],scale(modified_matrix[,setdiff(analyzed_signals,i)][,ind]))
+    tel=prcomp(scale(modified_matrix[,setdiff(analyzed_signals,i)]))$x[,1:5]
+    lol=summary(aov(y ~ .,data = training_data))[[1]]$`Pr(>F)`
+    ind=which(lol<0.05)
+    # ind=which(varImp(plsFit)$importance$Overall>30)
+    if (length(ind<2)) ind=order(lol)[1:3]
+    training_data=data.frame(y=modified_matrix[,i],tel,scale(modified_matrix[,setdiff(analyzed_signals,i)][,ind]))
     plsFit <- caret::train(y ~ .,data = training_data,method = "ranger",trControl = ctrl)
     iii=plsFit$pred
     ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),

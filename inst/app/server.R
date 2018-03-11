@@ -347,7 +347,7 @@ observeEvent(input$folder, {
 
 	#The automatic quantification
     reactivequantdata$method1 <- tryCatch({individual_profiling(reactiveprogramdata$imported_data, reactiveprogramdata$final_output, reactiveprogramdata$ind,reactiveprogramdata$ROIdata_subset,reactiveprogramdata$reproducibility_data,interface=TRUE)}, warning = function(w) {},error=function(e) {
-      print("There was a problem. Check the compatibility between the ROI to fit and the current ROI profiles.")
+      print("There was a problem. Check the compatibility between the ROI to fit and the current ROI profiles, or try setting a wider ROI.")
       return(NULL)
       })
 
