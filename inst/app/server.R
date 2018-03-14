@@ -278,23 +278,23 @@ observeEvent(input$folder, {
 
 	#Analysis of ROI edition. If edition is not correct (for example, there are characters in a numeric input), the edition is rejected and shown with red colour. If correct, the change is accepted with green colour.
 	#TODO: it seems sometiems the edition fails if the change was too quick. Revise possible ways to control it.
-    output$ROIdata <-   DT::renderDataTable(  reactiveprogramdata$ROIdata_subset, selection = 'none', rownames = FALSE,editable=T)
+ 
 
-    proxy_ROIdata = dataTableProxy('ROIdata')
-
-    observeEvent(input$ROIdata_cell_edit, {
-      info2 = input$ROIdata_cell_edit
-      i2 = info2$row
-      j2 = info2$col + 1
-      v2 = info2$value
-      # if (!is.na(reac$cho)) {
-        reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
-      replaceData(proxy_ROIdata, reactiveprogramdata$ROIdata_subset, resetPaging = FALSE, rownames = FALSE)
-      # }
-      reac$cho=1
-      })
+    
   })
-
+  
+  output$ROIdata <-   DT::renderDataTable(  reactiveprogramdata$ROIdata_subset, selection = 'none', rownames = FALSE,editable=T)
+  observeEvent(input$ROIdata_cell_edit, {
+    info2 = input$ROIdata_cell_edit
+    i2 = info2$row
+    j2 = info2$col + 1
+    v2 = info2$value
+    # if (!is.na(reac$cho)) {
+    reactiveprogramdata$ROIdata_subset[i2, j2] <<- DT:::coerceValue(v2, reactiveprogramdata$ROIdata_subset[i2, j2])
+    replaceData(dataTableProxy('ROIdata'), reactiveprogramdata$ROIdata_subset, resetPaging = FALSE, rownames = FALSE)
+    # }
+    reac$cho=1
+  })
   #Selection of spectra, or of cluster or median plots
   observeEvent(input$x1_rows_selected, {
     if (reactiveprogramdata$beginning==FALSE) return()

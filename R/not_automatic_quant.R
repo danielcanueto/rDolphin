@@ -26,6 +26,9 @@ individual_profiling = function(imported_data, final_output,ind,ROI_profile,repr
   if (identical(ind,seq(nrow(imported_data$dataset)))) pb <- txtProgressBar(1, length(ind), style=3)
 
   ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
+   if (length(ROI_buckets)<20) { 
+	stop("Ignoring ROI as width is too small")
+	}
   Xdata= as.numeric(imported_data$ppm[ROI_buckets])
   program_parameters=imported_data$program_parameters
   program_parameters$freq = imported_data$freq

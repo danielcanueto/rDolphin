@@ -47,8 +47,11 @@ automatic_profiling = function(imported_data, ROI_data,optimization=TRUE,spectra
     #Preparation of ROI parameters
     ROI_profile = ROI_data[ROI_separator[ROI_index, 1]:ROI_separator[ROI_index, 2],]
     ROI_buckets = which.min(abs(as.numeric(ROI_profile[1, 1])-imported_data$ppm)):which.min(abs(as.numeric(ROI_profile[1, 2])-imported_data$ppm))
-    if (length(ROI_buckets)<5) next
-    if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
+ if (length(ROI_buckets)<20) { 
+	print ("Ignoring ROI as width is too small")
+	next
+	}  
+	if (ROI_buckets[1]>ROI_buckets[2]) ROI_buckets=rev(ROI_buckets)
 
 
     #Preparation of program parameters to be sued during fitting, with some variables added to ease interpretability of code
