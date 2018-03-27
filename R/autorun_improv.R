@@ -33,10 +33,11 @@ predicted_width=as.matrix(predicted_info$predicted_matrix)
   max_width=as.matrix(predicted_info$upper_bound_matrix)
   min_width=as.matrix(predicted_info$lower_bound_matrix)
 ind=which(is.na(predicted_width[1,]))
+if (length(ind)>0) {
 predicted_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]))
 min_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*0.75))
 max_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*1.25))
-
+}
 capture.output(predicted_info<-rf_pred(final_output$chemical_shift,final_output$fitting_error))
 predicted_shift=as.matrix(predicted_info$predicted_matrix)
 max_shift=as.matrix(predicted_info$upper_bound_matrix)
