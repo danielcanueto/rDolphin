@@ -11,8 +11,6 @@
 #' @return List with final_output (with metabolite signal relative concentrations and quality indicators) and reproducibility_data (with the necessary data to reproduce the profiling performed).
 #' @export automatic_profiling_improv
 #' @import baseline
-#' @import caret
-#' @import missRanger
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
@@ -27,8 +25,9 @@
 automatic_profiling_improv = function(imported_data, final_output,reproducibility_data,ROI_data,improvement_option='reimplementation',level='outliers') {
 print("Starting maximization of profiling data quality using information of original profiling...")
   print("Now estimating the predicted signal parameters with confidence intervals...")
-  capture.output(predicted_info<-rf_pred(final_output$half_bandwidth,final_output$fitting_error))
-predicted_width=as.matrix(predicted_info$predicted_matrix)
+  capture.output(predicted_info<-signparpred(final_output$half_bandwidth,fitting_error=final_output$fitting_error))
+
+  predicted_width=as.matrix(predicted_info$predicted_matrix)
 
   max_width=as.matrix(predicted_info$upper_bound_matrix)
   min_width=as.matrix(predicted_info$lower_bound_matrix)
@@ -38,7 +37,8 @@ predicted_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]))
 min_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*0.75))
 max_width[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,8]*1.25))
 }
-capture.output(predicted_info<-rf_pred(final_output$chemical_shift,final_output$fitting_error))
+capture.output(predicted_info<-signparpred(final_output$chemical_shift,fitting_error=final_output$fitting_error))
+
 predicted_shift=as.matrix(predicted_info$predicted_matrix)
 max_shift=as.matrix(predicted_info$upper_bound_matrix)
 min_shift=as.matrix(predicted_info$lower_bound_matrix)
@@ -50,7 +50,9 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   min_shift[,ind]=t(replicate(nrow(predicted_width),ROI_data[ind,6]-ROI_data[ind,7]))
   }
 
-  capture.output(predicted_info<-rf_pred_intensity(final_output$intensity,ROI_data[,4],final_output$fitting_error))
+  capture.output(predicted_info<-signparpred(final_output$intensity,fitting_error=final_output$fitting_error,met_names=ROI_data[,4]))
+
+
   predicted_intensity=as.matrix(predicted_info$predicted_matrix)
   max_intensity=as.matrix(predicted_info$upper_bound_matrix)
   min_intensity=as.matrix(predicted_info$lower_bound_matrix)
@@ -60,6 +62,7 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
   min_intensity[!is.finite(min_intensity)]=NA
   min_intensity[min_intensity<0]=0
   print("Beginning the maximization of profiling data quality according to the option selected...")
+
 
 
   quantifications_to_repeat=matrix(0,nrow(predicted_width),ncol(predicted_width))
@@ -83,6 +86,7 @@ min_shift=as.matrix(predicted_info$lower_bound_matrix)
 
 	  }, error=function(e)quantifications_to_repeat[,]=1)
 	  }
+
 
 if (improvement_option=='reimplementation') {  #Splitting of ROI data into individual ROIs to be quantified
 	dummy = which(is.na(ROI_data[, 1]))
@@ -358,91 +362,3 @@ fitting_prep_2 = function(Xdata,Ydata,initial_fit_parameters,program_parameters,
 
   return(FeaturesMatrix)
 }
-rf_pred_intensity=function(initial_matrix,met_names,fitting_error) {
-  fitting_error=fitting_error
-  modified_matrix=initial_matrix
-    modified_matrix=jitter(modified_matrix,0.000001*mean(modified_matrix,na.rm=T))
-  colnames(modified_matrix)=make.names(colnames(modified_matrix))
-  dummy=which(apply(modified_matrix,2,function(x)! all(is.na(x)))==T)
-  for (i in dummy) modified_matrix[fitting_error[,i] %in%
-                                     boxplot.stats(fitting_error[,i])$out,i]=NA
-  dummy2=missRanger::missRanger(as.data.frame(modified_matrix[,dummy]))
-  modified_matrix[,dummy]=as.matrix(dummy2)
-  analyzed_signals=which(apply(modified_matrix,2,function(x)length(which(is.na(x))))<0.1*nrow(modified_matrix))
-  predicted_matrix=lower_bound_matrix=upper_bound_matrix=as.data.frame(matrix(NA,nrow(modified_matrix),ncol(modified_matrix)))
-  ctrl <- caret::trainControl(method = "boot632",number=18,savePredictions="all")
-  for (i in analyzed_signals) {
-    sed=intersect(which(met_names==met_names[i]),analyzed_signals)
-    if (length(sed)==1) next
-    tel=cbind(modified_matrix[,setdiff(sed,i)],prcomp(scale(modified_matrix[,sed]))$x[,1])
-    # ind3=which(abs(cor(modified_matrix[,i],tel,method='spearman'))>0.7)
-    # if (length(ind3)==0) next
-    # tel=tel[,ind3]
-    training_data=data.frame(y=modified_matrix[,i],scale(tel))
-    if (all(is.na(fitting_error[,i]))) {
-      weights=rep(1,nrow(training_data))
-    } else {
-      weights=1/fitting_error[,i]
-
-    }
-    plsFit <- caret::train(y ~ .,data = training_data,method = "ranger", weights = weights,trControl = ctrl)
-    iii=plsFit$pred
-    ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),
-                                                                 sd=sd(iii$pred[iii$rowIndex==x],na.rm=T)),c(0.025,0.5,0.975),na.rm=T))
-
-    predicted_matrix[,i]=ff[2,]
-    lower_bound_matrix[,i]=ff[1,]
-    upper_bound_matrix[,i]=ff[3,]
-
-  }
-  if (all(is.na(predicted_matrix))==F) {
-  predicted_matrix=missRanger::missRanger(predicted_matrix)
-  lower_bound_matrix=missRanger::missRanger(lower_bound_matrix)
-  upper_bound_matrix=missRanger::missRanger(upper_bound_matrix)
-  }
-  output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
-  return(output)
-}
-
-rf_pred=function(initial_matrix,fitting_error) {
-  fitting_error=fitting_error
-  modified_matrix=initial_matrix
-  colnames(modified_matrix)=make.names(colnames(modified_matrix))
-  modified_matrix=jitter(modified_matrix,0.000001*mean(modified_matrix,na.rm=T))
-  dummy=which(apply(modified_matrix,2,function(x) all(is.finite(x)))==T)
-
-  for (i in dummy) {
-    modified_matrix[fitting_error[,i] %in%
-                      boxplot.stats(fitting_error[,i])$out,i]=NA
-  }
-  dummy2=missRanger::missRanger(as.data.frame(modified_matrix[,dummy]))
-  modified_matrix[,dummy]=as.matrix(dummy2)
-  analyzed_signals=which(apply(modified_matrix,2,function(x) all(is.finite(x)))==T)
-  predicted_matrix=lower_bound_matrix=upper_bound_matrix=as.data.frame(matrix(NA,nrow(modified_matrix),ncol(modified_matrix)))
-  ctrl <- caret::trainControl(method = "boot632",number=18,savePredictions="all")
-  for (i in analyzed_signals) {
-    training_data=data.frame(y=modified_matrix[,i],scale(modified_matrix[,setdiff(analyzed_signals,i)]))
-    tel=prcomp(scale(modified_matrix[,setdiff(analyzed_signals,i)]))$x[,1:5]
-    lol=summary(aov(y ~ .,data = training_data))[[1]]$`Pr(>F)`
-    ind=which(lol<0.05)
-    # ind=which(varImp(plsFit)$importance$Overall>30)
-    if (length(ind<2)) ind=order(lol)[1:3]
-    training_data=data.frame(y=modified_matrix[,i],tel,scale(modified_matrix[,setdiff(analyzed_signals,i)][,ind]))
-    plsFit <- caret::train(y ~ .,data = training_data,method = "ranger",trControl = ctrl)
-    iii=plsFit$pred
-    ff=sapply(seq(nrow(training_data)),function(x)quantile(rnorm(1000,mean=mean(iii$pred[iii$rowIndex==x],na.rm=T),
-                                                                 sd=sd(iii$pred[iii$rowIndex==x],na.rm=T)),c(0.025,0.5,0.975),na.rm=T))
-    predicted_matrix[,i]=ff[2,]
-    lower_bound_matrix[,i]=ff[1,]
-    upper_bound_matrix[,i]=ff[3,]
-  }
-
-
-  predicted_matrix=missRanger::missRanger(predicted_matrix)
-  lower_bound_matrix=missRanger::missRanger(lower_bound_matrix)
-  upper_bound_matrix=missRanger::missRanger(upper_bound_matrix)
-
-  output=list(predicted_matrix=predicted_matrix,lower_bound_matrix=lower_bound_matrix,upper_bound_matrix=upper_bound_matrix)
-  return(output)
-}
-
