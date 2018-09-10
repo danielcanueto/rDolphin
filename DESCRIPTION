@@ -41,5 +41,5 @@ Remotes:
 	rstudio/DT@feature/editor,
 	Bioconductor-mirror/MassSpecWavelet,
 	Bioconductor-mirror/impute
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr, rmarkdown
