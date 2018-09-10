@@ -67,14 +67,21 @@ if (any(duplicated(signals_names))==T) {
   biofluid=import_profile[12, 2]
   jres_path=as.character(import_profile[13, 2])
 
+  if (file.exists(as.character(import_profile[14, 2]))) {
+    prog_par_path=as.character(import_profile[14, 2])
+  } else if (file.exists(file.path(system.file(package = "rDolphin"),"extdata","fitting_variables.csv"))) {
+    prog_par_path=file.path(system.file(package = "rDolphin"),"extdata","fitting_variables.csv")
+  } else {
+    print("Error. Please provide a valid parameters csv file.")
+    return()
+  }
 
-  tryCatch({dummy=read.csv(as.character(import_profile[14, 2]),stringsAsFactors = F,row.names = 1)
-  },error=function(cond) {
-    dummy=read.csv(file.path(system.file(package = "rDolphin"),"extdata","fitting_variables.csv"),stringsAsFactors = F,row.names = 1)
-    })
-  program_parameters=as.list(t(dummy))
-  names(program_parameters)=rownames(dummy)
-dummy2=lapply(program_parameters,as.numeric)
+  program_parameters=read.csv(prog_par_path,
+             stringsAsFactors = F)
+  dummy=program_parameters[,1]
+  program_parameters=as.list(t(program_parameters[,2]))
+  names(program_parameters)=dummy
+dummy2=suppressWarnings(lapply(program_parameters,as.numeric))
 program_parameters[which(!is.na(dummy2))]=dummy2[which(!is.na(dummy2))]
 params$left_spectral_edge=program_parameters$left_spectral_edge
   params$right_spectral_edge=program_parameters$right_spectral_edge

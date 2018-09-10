@@ -4,8 +4,8 @@
 \alias{load_quantification}
 \title{Load quantification}
 \usage{
-load_quantification(reproducibility_data, imported_data, final_output, info,
-  ROI_data)
+load_quantification(reproducibility_data, imported_data, final_output,
+  info, ROI_data)
 }
 \arguments{
 \item{reproducibility_data}{List with necessary information to load quantifications on the Shiny GUI.}
