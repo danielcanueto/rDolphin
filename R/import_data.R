@@ -561,9 +561,9 @@ JTPcalibrateToGlucose <- function(realSpectra, ppm){
 JTPcalibrateToTSP <- function(realSpectra, ppm){
   JTP=list()
   # Locate the target region
-  regionMask = (ppm < 0.1) & (ppm > -0.1)
+  regionMask = (ppm < 0.2) & (ppm > -0.2)
   # nosaltres tenim la part positiva de l'espectre a l'esquerra
-  maskOffset = which(ppm > 0.1)
+  maskOffset = which(ppm > 0.2)
   maskOffset = maskOffset[length(maskOffset)]
 
   # Take the approximate second derivative
