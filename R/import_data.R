@@ -210,7 +210,7 @@ params$left_spectral_edge=program_parameters$left_spectral_edge
               spectra_lag=round((lmn-median(lmn))/params$buck_step)
 
       so=(1+max(abs(spectra_lag))):(length(imported_data$ppm)-max(abs(spectra_lag)))
-      for (i in 1:dim(imported_data$dataset)[1])   imported_data$dataset[i,so-spectra_lag[i]]=imported_data$dataset[i,so]
+      for (i in 1:dim(imported_data$dataset)[1])   imported_data$dataset[i,so+spectra_lag[i]]=imported_data$dataset[i,so]
             }
 	  norm_factor=rep(1,nrow(imported_data$dataset))
       if (params$norm_AREA == 'Y') {
