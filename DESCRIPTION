@@ -37,7 +37,6 @@ Depends:
 	knitr,
 	rmarkdown
 Remotes: 
-	rstudio/DT@feature/editor,
 	Bioconductor-mirror/MassSpecWavelet,
 	Bioconductor-mirror/impute
 RoxygenNote: 6.1.0
