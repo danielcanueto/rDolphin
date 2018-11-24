@@ -12,8 +12,7 @@ ByteCompile: TRUE
 URL: http://github.com/danielcanueto/rDolphin
 BugReports: http://github.com/danielcanueto/rDolphin/issues
 Depends:
-   R (>= 3.3.0)
-Imports:
+	R (>= 3.3.0),
 	minpack.lm,
 	shinyjs,
 	reshape2,
