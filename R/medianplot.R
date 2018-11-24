@@ -4,7 +4,7 @@
 #'
 #' @return Plotly figure with the median spectrum for each group of spectra
 #' @export median_plot
-#' @import reshape2
+#' @import plot_ly
 #'
 #' @examples
 #' setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
