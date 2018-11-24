@@ -2,7 +2,7 @@
 % Please edit documentation in R/signparpred.R
 \name{signparpred}
 \alias{signparpred}
-\title{Prediction of signal parameter information with prediction intervals.}
+\title{Prediction of signal parameter information with confidence intervals.}
 \usage{
 signparpred(initial_matrix, fitting_error = NULL, met_names = NA)
 }
@@ -14,16 +14,15 @@ signparpred(initial_matrix, fitting_error = NULL, met_names = NA)
 \item{met_names}{By default NA. In case of predicting intensity, it enables prediction based  on only signals from the same metabolite. Vector of metabolite associated to each signal whose itensity is predicted.}
 }
 \value{
-List with predicted values and prediction intervals.
+List with predicted values and confidence intervals.
 }
 \description{
-Prediction of signal parameter information with prediction intervals.
+Prediction of signal parameter information with confidence intervals.
 }
 \examples{
 # Not run:
-setwd(paste(system.file(package = "rDolphin"),"extdata",sep='/'))
-imported_data=import_data("Parameters_MTBLS242_15spectra_5groups.csv")
-load("MTBLS242_subset_profiling_data.RData")
+# imported_data=import_data(file.path(system.file(package = "rDolphin"),"extdata","Parameters_MTBLS242_15spectra_5groups.csv"))
+# load(file.path(system.file(package = "rDolphin"),"extdata","MTBLS242_subset_profiling_data.RData"))
 # chemical_shift_pred=signparpred(profiling_data$final_output$chemical_shift,profiling_data$final_output$fitting_error)
 # intensity_pred=signparpred(profiling_data$final_output$intensity,profiling_data$final_output$fitting_error,imported_data$ROI_data[,4])
 }

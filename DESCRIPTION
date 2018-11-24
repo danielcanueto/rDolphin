@@ -1,7 +1,7 @@
 Package: rDolphin
 Type: Package
 Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
-Version: 0.3.0
+Version: 0.2.0
 Author: c(person("Daniel", "Canueto", role = c("aut", "cre"), email =
     "daniel.canueto@urv.cat"))
 Maintainer: Daniel Canueto <daniel.canueto@urv.cat>
@@ -40,5 +40,5 @@ Remotes:
 	rstudio/DT@feature/editor,
 	Bioconductor-mirror/MassSpecWavelet,
 	Bioconductor-mirror/impute
-RoxygenNote: 6.1.0
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr, rmarkdown
