@@ -26,7 +26,6 @@ Depends:
 	missRanger,
 	ranger,
 	heatmaply,
-	Boruta,
 	ggplot2,
 	caret,
 	e1071,

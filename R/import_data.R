@@ -66,20 +66,13 @@ if (any(duplicated(signals_names))==T) {
   freq = as.numeric(as.character(import_profile[10, 2]))
   biofluid=import_profile[12, 2]
   jres_path=as.character(import_profile[13, 2])
+  program_parameters=fitting_variables()
 
+  if (as.character(import_profile[14, 2])!="") {
+    source(as.character(import_profile[14, 2]))
+    program_parameters=fitting_variables()
 
-  tryCatch({dummy=read.csv(as.character(import_profile[14, 2]),stringsAsFactors = F,row.names = 1)
-  },error=function(cond) {
-    dummy=read.csv(file.path(system.file(package = "rDolphin"),"extdata","fitting_variables.csv"),stringsAsFactors = F,row.names = 1)
-    })
-  program_parameters=as.list(t(dummy))
-  names(program_parameters)=rownames(dummy)
-dummy2=lapply(program_parameters,as.numeric)
-program_parameters[which(!is.na(dummy2))]=dummy2[which(!is.na(dummy2))]
-params$left_spectral_edge=program_parameters$left_spectral_edge
-  params$right_spectral_edge=program_parameters$right_spectral_edge
-
-
+}
 #Creation of repository adapted to biofluid
   repository=data.frame(data.table::fread(file.path(system.file(package = "rDolphin"),"extdata","HMDB_Repository.csv")))
   biofluid_column=which(gsub('.times','',colnames(repository))==biofluid)
@@ -99,8 +92,8 @@ params$left_spectral_edge=program_parameters$left_spectral_edge
 
   params$norm_AREA = 'N'
   params$norm_PEAK = 'N'
-  params$norm_left_ppm = params$left_spectral_edge
-  params$norm_right_ppm = params$right_spectral_edge
+  params$norm_left_ppm = program_parameters$spectrum_borders[1]
+  params$norm_right_ppm = program_parameters$spectrum_borders[2]
   if (normalization == 1) {
     #Eretic
     params$norm_AREA = 'Y'
@@ -226,9 +219,9 @@ params$left_spectral_edge=program_parameters$left_spectral_edge
     params$expno = expno
     params$processingno = processingno
     params$buck_step = as.numeric(as.character(import_profile[11,2]))
-    tryCatch({imported_data = Metadata2Buckets(Experiments, params)
+    tryCatch({imported_data = Metadata2Buckets(Experiments, params,program_parameters$spectrum_borders)
     },error=function(cond) {
-      message("The Bruker files could not be read. Try changing the spectrum left or right edges")
+      message("The Bruker files could not be read.")
       return(NA)})
 
     Metadata=Metadata[!Experiments %in% imported_data$not_loaded_experiments,]
@@ -324,14 +317,19 @@ print('Done!')
 }
 
 
-Metadata2Buckets <- function(Experiments, params) {
+Metadata2Buckets <- function(Experiments, params, spectrum_borders) {
 
   CURRENT = list()
   RAW = list()
   not_loaded_experiments = read_spectra =  norm_factor=c()
 
-  left_spectral_edge =  params$left_spectral_edge
-  right_spectral_edge = params$right_spectral_edge
+
+  left_spectral_border = ifelse(exists("left_spectral_border", where = params),
+                                params$left_spectral_border,
+    spectrum_borders[1])
+  right_spectral_border = ifelse(exists("right_spectral_border", where = params),
+                                 params$right_spectral_border,
+    spectrum_borders[2])
 
   RAW$norm_PEAK_left_ppm = ifelse(params$norm_PEAK == "Y", params$norm_left_ppm,
     0)
@@ -354,7 +352,7 @@ Metadata2Buckets <- function(Experiments, params) {
 
     filename = paste(params$dir, Experiments[k], params$expno, "pdata", params$processingno, sep = "/")
     partname = paste(params$dir, Experiments[k], params$expno, sep = "/")
-    storedpars = topspin_read_spectrum2(partname, filename,params$right_spectral_edge-0.1, params$left_spectral_edge+0.1)
+    storedpars = topspin_read_spectrum2(partname, filename,spectrum_borders[2]-0.1, spectrum_borders[1]+0.1)
     if (all(is.nan(storedpars$real)) == 0) {
       CURRENT$minppm = storedpars$OFFSET - storedpars$SW
       CURRENT$maxppm = storedpars$OFFSET
@@ -362,9 +360,9 @@ Metadata2Buckets <- function(Experiments, params) {
       CURRENT$ppm = seq(CURRENT$maxppm, CURRENT$minppm,-CURRENT$step)
 
      tmp = (storedpars$real * ((2 ^ storedpars$NC_proc) / storedpars$RG))
-	     if (left_spectral_edge>CURRENT$maxppm) left_spectral_edge=RAW$norm_AREA_left_ppm=floor(CURRENT$maxppm*10)/10
-     if (right_spectral_edge<CURRENT$minppm) right_spectral_edge=RAW$norm_AREA_right=ceiling(CURRENT$minppm*10)/10
-           CURRENT$left_spectral_edge = 1 + round(-(left_spectral_edge -
+	     if (left_spectral_border>CURRENT$maxppm) left_spectral_border=RAW$norm_AREA_left_ppm=floor(CURRENT$maxppm*10)/10
+     if (right_spectral_border<CURRENT$minppm) right_spectral_border=RAW$norm_AREA_right=ceiling(CURRENT$minppm*10)/10
+           CURRENT$left_spectral_border = 1 + round(-(left_spectral_border -
                                                    CURRENT$maxppm) / CURRENT$step)
       CURRENT$norm_PEAK_left = 1 + round(-(RAW$norm_PEAK_left_ppm -
                                              CURRENT$maxppm) / CURRENT$step)
@@ -390,8 +388,8 @@ Metadata2Buckets <- function(Experiments, params) {
       RAW$ppm = seq(RAW$maxppm, RAW$minppm,-RAW$step)
       RAW$buck_step = ifelse(params$buck_step < RAW$step, RAW$step,
                              params$buck_step)
-      RAW$ppm_bucks = seq(left_spectral_edge,
-                          right_spectral_edge,-RAW$buck_step)
+      RAW$ppm_bucks = seq(left_spectral_border,
+                          right_spectral_border,-RAW$buck_step)
       RAW$len_bucks = length(RAW$ppm_bucks)
       RAW$norm_PEAK_max = norm_PEAK_max
       RAW$total_AREA_mean = total_AREA_mean
@@ -432,7 +430,7 @@ Metadata2Buckets <- function(Experiments, params) {
 
 
       fill2end = 0
-      tmp_count = CURRENT$left_spectral_edge
+      tmp_count = CURRENT$left_spectral_border
       tmp_buck = rep(0, RAW$len_bucks)
       jumped_bucket = 0
       for (tmp_buck_count in 2:RAW$len_bucks) {

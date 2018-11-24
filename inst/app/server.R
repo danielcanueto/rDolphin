@@ -46,7 +46,7 @@ reac=reactiveValues(cho=NA)
 	reactiveprogramdata$validation_data=list(alarm_matrix=reactiveprogramdata$final_output)
 	reactiveprogramdata$validation_data=validation(reactiveprogramdata$final_output,1,reactiveprogramdata$validation_data$alarm_matrix)
 	dummy=tryCatch({profile_model_spectrum(reactiveprogramdata$imported_data,reactiveprogramdata$ROI_data)}, error = function(e) {
-	print('Automatic quantification of model spectrum not possible. Revise the parameters used')
+	print('Automatic quantification of model spectrum not possible.')
 	})
 	reactiveprogramdata$automatic_profiling_plot=dummy$p
 	reactiveprogramdata$total_signals_parameters=dummy$total_signals_parameters
@@ -278,11 +278,11 @@ observeEvent(input$folder, {
 
 	#Analysis of ROI edition. If edition is not correct (for example, there are characters in a numeric input), the edition is rejected and shown with red colour. If correct, the change is accepted with green colour.
 	#TODO: it seems sometiems the edition fails if the change was too quick. Revise possible ways to control it.
+ 
 
-
-
+    
   })
-
+  
   output$ROIdata <-   DT::renderDataTable(  reactiveprogramdata$ROIdata_subset, selection = 'none', rownames = FALSE,editable=T)
   observeEvent(input$ROIdata_cell_edit, {
     info2 = input$ROIdata_cell_edit
