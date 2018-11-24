@@ -1,4 +1,4 @@
-Package: rDolphinv2
+Package: rDolphin
 Type: Package
 Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
 Version: 0.3.0
