@@ -1,5 +1,2 @@
 ^.*\.Rproj$
-^data-raw$
 ^\.Rproj\.user$
-^packrat/
-^\.Rprofile$

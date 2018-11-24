@@ -1,33 +1,0 @@
-[0mMicrosoft Windows [Version 10.0.16299.192][0K[?25l
-(c) 2017 Microsoft Corporation. All rights reserved.[0K
-[0K
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25h^V[0K[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25h^V[0K[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25h^V[0K[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25h^V[0K[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR[0K[46G[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>R -[0K[?25he[0K;[0Kl[0Ki[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kr[0KD[0Ko[0Kl[0Kp[0Kh[0Ki[0Kn[0K)[0K[0K;[?25l
-[0K[?25hl[0Ki[0Kn[0K[?25lli[0K[?25hb[0Kr[0Ka[0Kr[0Ky[0K([0Kg[0Kg[0Kp[0Kl[0Ko[0Kt[0K2[0K)[0K;[0K[17G[16G[?25llibrary(ggplot);[0K[15G[?25h[?25llibrary(ggplo);[0K[14G[?25h[?25llibrary(ggpl);[0K[13G[?25h[?25llibrary(ggp);[0K[12G[?25h[?25llibrary(gg);[0K[11G[?25h[?25llibrary(g);[0K[10G[?25h[?25llibrary();[0K[9G[?25h[?25llibrary(r);[0K[10G[?25h[?25llibrary(ra);[0K[11G[?25h[?25llibrary(ran);[0K[12G[?25h[?25llibrary(rand);[0K[13G[?25h[?25llibrary(rando);[0K[14G[?25h[?25llibrary(random);[0K[15G[?25h[?25llibrary(randomF);[0K[16G[?25h[?25llibrary(randomFo);[0K[17G[?25h[?25llibrary(randomFor);[0K[18G[?25h[?25llibrary(randomFore);[0K[19G[?25h[?25llibrary(randomFores);[0K[20G[?25h[?25llibrary(randomForest);[0K[21G[?25h]0;  - R  -e;library(rDolphin);library(randomForest);[?25l
-[0K[?25hWARNING: unknown option '-e;library(rDolphin);library(randomFores[0Kt[?25l
-);'[0K
-[0K
-[0K[?25h]0;Rterm (64-bit)[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-P[0K[1A[62G[?25h[?25l
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'citation()'[0K[10G[?25h[?25l'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Type 'q()' to quit R.[0K
-[0K
-[0K[?25h>[0K[3G[?25l> R[0K[?25h[5G[?25l> R -[0K[?25he[0K;[0Kl[0Ki[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kr[0K[?25l> R -e;library([0K[?25h[?25l> R -e;library[0K[?25h[?25l> R -e;librar[0K[?25h[?25l> R -e;libra[0K[?25h[?25l> R -e;libr[0K[?25h[?25l> R -e;lib[0K[?25h[?25l> R -e;li[0K[?25h[?25l> R -e;l[0K[?25h[?25l> R -e;[0K[9G[?25h[8G[?25l> R -e[0K[?25h[?25l> R -[0K[?25he[0K[8G[?25l> R -e l[0K[?25hi[0Kb[0Ka[0K[?25l> R -e lib[0K[?25hr[0Ka[0Kr[0Ky[0K([0Kr[0KD[0KO[0Kl[0Kp[0Kh[0Ki[0Kn[0K)[0K[?25l> R -e library(rDOlphin[0K[?25h[?25l> R -e library(rDOlphi[0K[?25h[?25l> R -e library(rDOlph[0K[?25h[?25l> R -e library(rDOlp[0K[?25h[?25l> R -e library(rDOl[0K[?25h[?25l> R -e library(rDO[0K[?25h[?25l> R -e library(rD[0K[?25ho[0Kl[0Kp[0Kh[0Ki[0Kn[0K)[0K;[0Kl[0Ki[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kg[0Kg[0Kp[0Kl[0K[?25lo[0K[38G[?25h[39G[?25l> R -e library(rDolphin);library(ggplot[0K[?25h2[0K)[0K;[0K[?25l
-Error: unexpected symbol in "R -e library"[0K
->[0K[3G[?25h[?25l> R -e library(rDolphin);library(ggplot2);[0K[?25h[?25l> R -e library(rDolphin);library(ggplot2)[0K[?25h[?25l> R -e library(rDolphin);library(ggplot2[0K[?25h[?25l> R -e library(rDolphin);library(ggplot[0K[?25h[?25l> R -e library(rDolphin);library(ggplo[0K[?25h[?25l> R -e library(rDolphin);library(ggpl[0K[?25h[?25l> R -e library(rDolphin);library(ggp[0K[?25h[?25l> R -e library(rDolphin);library(gg[0K[?25h[?25l> R -e library(rDolphin);library(g[0K[?25h[?25l> R -e library(rDolphin);library([0K[?25h[?25l> R -e library(rDolphin);library[0K[?25h[?25l> R -e library(rDolphin);librar[0K[?25h[?25l> R -e library(rDolphin);libra[0K[?25h[?25l> R -e library(rDolphin);libr[0K[?25h[?25l> R -e library(rDolphin);lib[0K[?25h[?25l> R -e library(rDolphin);li[0K[?25h[?25l> R -e library(rDolphin);l[0K[?25h[?25l> R -e library(rDolphin);[0K[?25h[?25l> R -e library(rDolphin[0K[?25h)[0K[?25l
-Error: unexpected symbol in "R -e library"[0K
->[0K[3G[?25h[?25l> R -e library(rDolphin)[0K[?25h

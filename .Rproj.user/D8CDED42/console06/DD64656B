@@ -1,178 +1,0 @@
-[0m[0KMicrosoft Windows [Version 10.0.16299.192][0K[?25l
-(c) 2017 Microsoft Corporation. All rights reserved.[0K
-[0K
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR[0K[46G[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>R -[0K[?25he[0K[49G[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>R -e l[0K[?25hi[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kr[0KD[0Ko[0Kl[0Kp[0Kh[0Ki[0Kn[0K)[0K[0K;[?25l
-[0K[?25hl[0Ki[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kg[0Kg[0Kp[0Kl[0Ko[0Kt[0K2[0K)[0K;[0K]0;  - R  -e library(rDolphin);library(ggplot2);[?25l
-[0K[?25h[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'citation()' on how to cite R or R packages in[0K[44G[?25h[?25l'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Type 'q()' to quit R.[0K
-[0K
-[0K[?25h> library(rDolphin);library(ggplot2);[0K[?25l
-[0K[?25hWarning messages:[0K[?25l
-1: replacing previous import 'ggplot2::last_plot' by 'plotly::las[0Kt
-_plot' when loading 'rDolphin'[0K
-2: replacing previous import 'data.table::melt' by 'reshape2::mel[0Kt
-' when loading 'rDolphin'[0K
-3: replacing previous import 'data.table::dcast' by 'reshape2::dc[0Ka
-st' when loading 'rDolphin'[0K
-[0K[?25h>[0K[?25l
->[0K
-[0K[?25h]0; [?25l
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR -e library(rDolphin)[0K;[?25l
-library(ggplot2);[0K[?25h[17G[?25llibrary(ggplot2;[0K[16G[?25h[?25llibrary(ggplot;[0K[15G[?25h[?25llibrary(ggplo;[0K[14G[?25h[?25llibrary(ggpl;[0K[13G[?25h[?25llibrary(ggp;[0K[12G[?25h[?25llibrary(gg;[0K[11G[?25h[?25llibrary(g;[0K[10G[?25h[?25llibrary(;[0K[9G[?25h[?25llibrary(r;[0K[10G[?25h[?25llibrary(ra;[0K[11G[?25h[?25llibrary(ran;[0K[12G[?25h[?25llibrary(rano;[0K[13G[?25h[?25llibrary(ranod;[0K[14G[?25h[?25llibrary(rano;[0K[13G[?25h[?25llibrary(ran;[0K[12G[?25h[?25llibrary(ra;[0K[11G[?25h[?25llibrary(r;[0K[10G[?25h[?25llibrary(;[0K[9G[?25h[?25llibrary(c;[0K[10G[?25h[?25llibrary(ca;[0K[11G[?25h[?25llibrary(car;[0K[12G[?25h[?25llibrary(care;[0K[13G[?25h[?25llibrary(caret;[0K[14G[?25h[?25llibrary(caret);[0K[15G[?25h]0;  - R  -e library(rDolphin);library(caret);[?25l
-[0K[?25h[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K[?25h[?25l
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Type 'q()' to quit R.[0K
-[0K
-[0K[?25h> library(rDolphin);library(caret);[0K[?25l
-[0K[?25hWarning messages:[0K[?25l
-1: replacing previous import 'ggplot2::last_plot' by 'plotly::las[0Kt
-_plot' when loading 'rDolphin'[0K
-2: replacing previous import 'data.table::melt' by 'resha[0K[56G[?25h[?25l2: replacing previous import 'data.table::melt' by 'reshape2::mel[0Kt
-' when loading 'rDolphin'[0K
-3: replacing previous import 'data.table::dcast' by 'reshape2::dc[0Ka
-st' when loading 'rDolphin'[0K
-Loading required package: lattice[0K
-Loading required p[0K[18G[?25h[?25lLoading required package: ggplot2[0K
->[0K
->[0K[3G[?25h[?25l
-[0K[?25h]0; [?25l
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR -e library(rDolphin)[0K;[?25l
-library(caret);[0K[?25h[15G[?25llibrary(caret;[0K[14G[?25h[?25llibrary(care;[0K[13G[?25h[?25llibrary(car;[0K[12G[?25h[?25llibrary(ca;[0K[11G[?25h[?25llibrary(c;[0K[10G[?25h[?25llibrary(;[0K[9G[?25h[?25llibrary(m;[0K[10G[?25h[?25llibrary(mi;[0K[11G[?25h[?25llibrary(mis;[0K[12G[?25h[?25llibrary(miss;[0K[13G[?25h[?25llibrary(missF;[0K[14G[?25h[?25llibrary(missFo;[0K[15G[?25h[?25llibrary(missFor;[0K[16G[?25h[?25llibrary(missFore;[0K[17G[?25h[?25llibrary(missFores;[0K[18G[?25h[?25llibrary(missForest;[0K[19G[?25h[?25llibrary(missForest);[0K[20G[?25h]0;  - R  -e library(rDolphin);library(missForest);[?25l
-[0K[?25h[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'cita[0K[3G[?25h[?25l'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Type 'q()' to quit R.[0K
-[0K
-[0K[?25h> library(rDolphin);library(missForest);[0K[?25l
-[0K[?25hWarning messages:[0K[?25l
-1: replacing previous import 'ggplot2::last_plot' by 'plotly::las[0Kt
-_plot' when loading 'rDolphin'[0K
-2: replacing previous import 'data.table::melt' by 'reshape2::mel[0Kt
-' when loading[0K[13G[?25h[?25l' when loading 'rDolphin'[0K
-3: replacing previous import 'data.table::dcast' by 'reshape2::dc[0Ka
-st' when loading 'rDolphin'[0K
-Loading required package: randomForest[0K
-[0K[?25hrandomForest 4.6-12[0K[?25l
-Type rfNews() to see new features/changes/bug fixes.[0K
-[0K[?25hLoading required package: foreach[0K[?25l
-[0K[?25hLoading required package: itertools[0K[?25l
-Loading required package: iterators[0K
-[0K[?25h>[0K[?25l
->[0K
-[0K[?25h]0; [?25l
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR -e library(rDolphin)[0K;[?25l
-library(missForest);[0K[?25hd[0Ka[0Kt[0Ka[0K([0Ki[0Kr[0Ki[0Ks[0K)[0K;[0Ka[0Kb[0K=[0Km[0Ki[0Ks[0Ks[0KF[0Ko[0Kr[0Ke[0Ks[0Kt[0K([0Ka[0Kb[0K[?25llibrary(missForest);data(iris);ab=missForest(a[0K[?25h[?25llibrary(missForest);data(iris);ab=missForest([0K[?25hi[0Kr[0Ki[0Ks[0K)[0K$[0Kx[0Ki[0Km[0Kp[0K]0;  - R  -e library(rDolphin);library(missForest);data(iris);ab=missForest(iris)$ximp[?25l
-[0K[?25h[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with AB[0K[34G[?25h[?25lR is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Type 'q()' to quit R.[0K
-[0K
-[0K[?25h> library(rDolphin);library(missForest);data(iris);ab=missForest([0Ki[?25l
-ris)$ximp[0K
-[0K[?25hWarning messages:[0K[?25l
-1: replacing previous import 'ggplot2::last_plot' by 'plotly::las[0Kt
-_plot' when loading 'rDolphin'[0K
-2: replacing previous import 'data[0K[32G[?25h[?25l2: replacing previous import 'data.table::melt' by 'reshape2::mel[0Kt
-' when loading 'rDolphin'[0K
-3: replacing previous import 'data.table::dcast' by 'reshape2::dc[0Ka
-st' when loading 'rDolphin'[0K
-Loading required package: randomForest[0K
-[0K[?25hrandomForest 4.6-12[0K[?25l
-Type rfNews() to see new features/changes/bug fixes.[0K
-Loading required package: foreach[0K
-[0K[?25hLoading required package: itertools[0K[?25l
-Lo[0K[1G[?25hLoading required package: iterators[0K[?25l
-[0K[?25h  missForest iteration 1 in progress...done![0K[?25l
-  missForest iteration 2 in progress...done![0K
->[0K
->[0K
-[0K[?25h]0; [?25l
-C:\Users\Usuario\Documents\GitHub\rDolphin>[0K[?25hR -e library(rDolphin)[0K;[?25l
-library(missForest);data(iris);ab=missForest(iris)$ximp[0K[?25h[?25llibrary(missForest);[0K[?25hdata(iris);ab=missForest(iris)$ximp[0K[55G[54G[53G[52G[51G[50G[48G[47G[46G[45G[44G[43G[42G[40G[39G[38G[37G[36G[35G[34G[33G[32G[31G[30G[29G[28G[27G[26G[25G[24G[23G[22G[21G[20G[19G[17G[15G[14G[13G[12G[11G[10G[9G[8G[7G[6G[5G[4G[3G[2G[1G[?25l[1A[66G[?25h[65G[64G[63G[62G[61G[60G[59G[58G[57G[56G[55G[54G[52G[49G[45G[44G[45G[46G[47G[48G[?25lC:\Users\Usuario\Documents\GitHub\rDolphin>R -e; library(rDolphin[0K)
-;library(missForest);data(iris);ab=missForest(iris)$ximp[0K[1A[49G[?25h[?25l
-
-[0K[?25h]0;  - R  -e; library(rDolphin);library(missForest);data(iris);ab=missForest(iris)$ximp]0;Rterm (64-bit)WARNING: unknown option '-e;'[0K[?25l
-[0K
-[0K[?25h[?25l
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"[0K
-Copyright (C) 2017 The R Foundation for Statistical Computing[0K
-Platform: x86_64-w64-mingw32/x64 (64-bit)[0K
-[0K
-R is free software and comes with ABSOLUTELY NO WARRANTY.[0K
-You are welcome to redistribute it under certain conditions.[0K
-Type 'license([0K[12G[?25h[?25lType 'license()' or 'licence()' for distribution details.[0K
-[0K
-  Natural language support but running in an English locale[0K
-[0K
-R is a collaborative project with many contributors.[0K
-Type 'contributors()' for more information and[0K
-'citation()' on how to cite R or R packages in publications.[0K
-[0K
-Type 'demo()' for some demos, 'help()' for on-line help, or[0K
-'help.start()' for an HTML browser interface to help.[0K
-Typ[0K[2G[?25h[?25lType 'q()' to quit R.[0K
-[0K
-[0K[?25h>[0K[3G[?25l> r[0K[?25he[0Kr[0Ke[0Kf[0K[9G[8G[?25l> rere[0K[?25h[?25l> rer[0K[?25h[?25l> re[0K[?25h[?25l> r[0K[?25h[?25l>[0K[3G[?25h[?25l> R[0K[?25h[5G[?25l> R e[0K[?25h;[0K[8G[7G[?25l> R e[0K[?25h[7G[?25l> R e l[0K[?25hi[0Kb[0Kr[0Ka[0Kr[0Ky[0K([0Kr[0KD[0KO[0Kl[0Kp[0Kh[0Ki[0Kn[0K)[0K;[0K[24G[23G[22G[21G[20G[19G[18G[16G[17G[18G[?25l> R e library(rDlphin);[0K[17G[?25h[?25l> R e library(rDolphin);[0K[18G[?25h[19G[20G[21G[22G[23G[24G[25G[?25l> R e library(rDolphin);s[0K[?25he[0Kt[0Kw[0Kd[0K([0K[?25l> R e library(rDolphin);setwd[0K[?25h[?25l> R e library(rDolphin);setw[0K[?25h[?25l> R e library(rDolphin);set[0K[?25h[?25l> R e library(rDolphin);se[0K[?25h[?25l> R e library(rDolphin);s[0K[?25h[?25l> R e library(rDolphin);[0K[?25hi[0Km[0Ko[0Kr[0K[?25lt[0K[29G[?25h[30G[?25l> R e library(rDolphin);imor[0K[?25h[?25l> R e library(rDolphin);imo[0K[?25h[?25l> R e library(rDolphin);im[0K[?25h[?25l> R e library(rDolphin);i[0K[?25h[?25l> R e library(rDolphin);[0K[?25hi[0Km[0Kp[0Ko[0Kr[0Kt[0K_[0Kd[0Ka[0Kt[0Ka[0K([0K"[0KC[0K[38G[39G[?25l> R e library(rDolphin);import_data("C:[0K[39G[?25h[40G[?25l> R e library(rDolphin);import_data("C:\[0K[?25h\[0KU[0Ke[0Kr[0Ks[0K[?25l> R e library(rDolphin);import_data("C:\\Uer[0K[?25h[?25l> R e library(rDolphin);import_data("C:\\Ue[0K[?25h[?25l> R e library(rDolphin);import_data("C:\\U[0K[?25hs[0Ke[0Kr[0Ks[0K\[0K\[0KU[0Ks[0K[?25lu[0K[51G[?25h[52G[?25l> R e library(rDolphin);import_data("C:\\Users\\Usua[0K[?25hr[0Ki[0Ko[0K\[0K\[0KD[0Ko[0Kp[0Kb[0Ko[0Kx[0K\[0K\[0K[0KM[?25l
-[0K[?25hT[0KB[0KL[0KS[0K3[0K7[0K4[0K[7G[6G[5G[4G[3G[2G[1G[?25l\BLS374[0K[2G[?25h[1G[0K[50G[?25l
-[0K[?25h[?25l
-[0K
->[0K[3G[?25h
