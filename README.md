@@ -1,7 +1,5 @@
 # rDolphin
 
-10/09/2018: New version 0.2.0: Update to optimize performance and logical structure of the program.
-
 Thanks to Paul Driscoll, Naomi Rankin and Rico Rueedi for their valuable comments.
 
 ## Please run these commands in the R console to install the package:
