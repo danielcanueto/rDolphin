@@ -29,14 +29,20 @@ identification_tool= function(dataset,ppm,driver_peak_edges,method) {
     cor_values=as.vector(cor(rowSums(dataset[,ROI_buckets]),dataset,method=method))
   }
 
-
+  cor_values=matrix(cor_values,1,length(cor_values))
 Ydata = apply(dataset,2,median)
 p=plot_ly()%>%
   add_lines(x=~ppm,y = ~Ydata,name='Median spectrum')%>%
-  add_lines(x=~ppm,y = ~cor_values, name='Correlation',yaxis = "y2")%>%
-  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))),yaxis=list(title = "Intensity (arbitrary unit)"))
-p2 <- plot_ly(x=~ppm)%>%add_lines(y =cor_values, name='correlation value',line = list(color = 'rgba(255, 0, 0, 1)'))%>%
-  layout(xaxis=list(title='ppm',range=c(max(ppm),min(ppm))))
+  layout(scene=list(xaxis=list(title='ppm',
+                                range=c(max(imported_data$ppm),
+                                        min(imported_data$ppm))),
+                     yaxis=list(title = "Intensity (arbitrary unit)")))
+p2 <- plot_ly(x=~imported_data$ppm,z =cor_values, name='Correlation',colorscale = "Greys", type = "heatmap")%>%
+  layout(scene=list(xaxis=list(title='ppm'
+                          ,range=c(max(imported_data$ppm),
+                                   min(imported_data$ppm))),
+         zaxis=list(range=c(-1,1))))
+
 p <- subplot(p, p2,nrows=2,heights=c(0.75,0.25),margin=0,shareX = T)
 return(p)
 }

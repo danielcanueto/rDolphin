@@ -1,7 +1,7 @@
 Package: rDolphin
 Type: Package
 Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: person("Daniel", "Canueto", role = c("aut", "cre"), email = "daniel.canueto@urv.cat")
 Maintainer: Daniel Canueto <daniel.canueto@urv.cat>
 Description: rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of biofluids or cell extracts and outputs several indicators of quality of quantification and identification of signal. The package incorporates a Shiny GUI that eases the use of the program by researchers with non-expert programming skills. rDolphin performs a supervised approach, where the spectrum is subdivided in Regions of Interest (ROIs) with characteristic signals for each biofluid. The correct parameters for each ROI for each dataset can be changed if necessary before performing an automatic profiling. rDolphin comes with tools to load individual quantifications to be evaluated and optimized. rDolphin can also perform different kinds of analysis of the generated data. License: GPL (>= 2).
@@ -18,20 +18,16 @@ Imports:
 	plotly,
 	shiny,
 	DT,
-	fields,
 	baseline,
 	apcluster,
 	missRanger,
 	ranger,
-	heatmaply,
 	Boruta,
 	ggplot2,
 	caret,
 	e1071,
 	elasticnet,
 	gridExtra,
-	stringr,
-	speaq,
 	knitr,
 	rmarkdown
 RoxygenNote: 6.1.0

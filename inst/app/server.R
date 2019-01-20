@@ -85,7 +85,6 @@ reac=reactiveValues(cho=NA)
 	  if (reactiveprogramdata$beginning==T) selectInput("select",label=NULL,choices = reactiveprogramdata$select_options,selected = 1)
 	})
 	shinyjs::show('automatic_profiling')
-	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
 	#When the session is prepared, the tabs and some inputs become active
 	print('Done!')
@@ -144,7 +143,6 @@ if (is.null(reactiveprogramdata$validation_data)) reactiveprogramdata$validation
 	reactiveprogramdata$select_options=dummy$select_options
 	reactiveprogramdata$spectra=dummy$spectra
 	shinyjs::show('automatic_profiling')
-	shinyjs::show('alignment')
 	shinyjs::show('model_spectrum')
 
 	reactiveprogramdata$beginning =TRUE
@@ -201,16 +199,7 @@ observeEvent(input$folder, {
       return(profiling_data)
     })
   })
-  #Alignment of signals
-  tryCatch({observeEvent(input$alignment, {
-    reactiveprogramdata$imported_data$dataset= alignment(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$buck_step)
-      reactiveprogramdata$clusterplot=exemplars_plot(reactiveprogramdata$imported_data)
-      reactiveprogramdata$median_plot=median_plot(reactiveprogramdata$imported_data)
-      }	)}, error = function(e) {
-	print('Error during alignment. Please explain the issue in the Github page if necessary.')
-	return(NULL)
-
-  })
+ 
    #Automatic quantification of all ROIs in all spectra
   observeEvent(input$model_spectrum, {
     tryCatch({
@@ -221,17 +210,6 @@ observeEvent(input$folder, {
       print('Automatic quantification of model spectrum not possible.')
     })
   })
-
-  #Peak analysis. UNSTABLE!!!
-  # observeEvent(input$peak_analysis, {
-  #   if (is.null(reactiveprogramdata$alignment_check)) {
-  #     print('Before analysing peaks, I have to align them. Then I\'ll analyze them')
-  #     dummy=alignment(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$buck_step)
-  #     peak_analysis(dummy,reactiveprogramdata$imported_data$ppm,reactiveprogramdata$imported_data$freq,reactiveprogramdata$imported_data$export_path,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$repository,reactiveprogramdata$originaldataset)
-  #   } else {
-  #     peak_analysis(reactiveprogramdata$imported_data$dataset,reactiveprogramdata$imported_data$ppm,reactiveprogramdata$imported_data$freq,reactiveprogramdata$imported_data$export_path,reactiveprogramdata$imported_data$Metadata,reactiveprogramdata$imported_data$repository,reactiveprogramdata$originaldataset)
-  #   }
-  # })
 
   #Plot where quantification of model spectrum amnd p values for every bucket are stored
   output$automatic_profiling_plot <- renderPlotly({
@@ -508,17 +486,6 @@ observeEvent(input$folder, {
 
 
 
-  #2D plot
-  output$jres_plot <- renderUI({
-    if(is.na(reactiveprogramdata$jres_plot)) return()
-    plotlyOutput("jres_plot2",height='250px')
-  })
-  output$jres_plot2 <- renderPlotly({
-    print(reactiveprogramdata$jres_plot)
-  })
-
-
-
 
   ## THIRD TAB REACTIVE OUTPUTS
 
@@ -761,27 +728,6 @@ if (length(input$fit_selection_cell_clicked)<1) return()
   },error=function(e) {return(NULL) })
     })
 
-
-
-  #Dengrogran heatmaps for quantification and chemical $chemical_shift
-  tryCatch(output$dendheatmapareadata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-
-    tryCatch({suppressWarnings(suppressMessages(type_analysis_plot(reactiveprogramdata$final_output$quantification,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')))
-  }, error = function(e) {
-    print('Error. Please explain the issue in the Github page.')
-    return(NULL)
-  })
-  }))
-
-  tryCatch(output$dendheatmapshiftdata <- renderPlotly({
-    if(all(is.na(reactiveprogramdata$final_output$quantification))) return()
-
-    tryCatch({suppressWarnings(suppressMessages(type_analysis_plot(reactiveprogramdata$final_output$chemical_shift,reactiveprogramdata$final_output,reactiveprogramdata$imported_data,type='dendrogram_heatmap')))
-  }, error = function(e) {
-    print('Error. Please explain the issue in the Github page.')
-    return(NULL)
-  })
 }))
 
   roifunc <- function(ROI_data,Metadata,Experiments) {

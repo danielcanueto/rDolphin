@@ -14,7 +14,7 @@ type_analysis_plot(data, final_output, imported_data, type = c("boxplot",
 
 \item{imported_data}{List with typical elements necessary to perform quantification of ROIs.}
 
-\item{type}{Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')}
+\item{type}{Kind of plot wanted ('boxplot','pca')}
 }
 \value{
 Analysis plot

@@ -3,13 +3,12 @@
 #' @param final_output List with quantifications and indicators of quality of quantification.
 #' @param imported_data List with typical elements necessary to perform quantification of ROIs.
 #' @param data Data to be used to get the analysis plot
-#' @param type Kind of plot wanted ('boxplot','pca','dendrogram_heatmap')
+#' @param type Kind of plot wanted ('boxplot','pca')
 #'
 #' @return Analysis plot
 #' @export type_analysis_plot
 #' @import plotly
 #' @import missRanger
-#' @import heatmaply
 #' @import reshape2
 #'
 #' @examples
@@ -52,10 +51,5 @@ p <- layout(p,title="PCA scores and loadings",
   xaxis=list(title="PC1"),
   yaxis=list(title="PC2"),margin=m)
 print(p)
-}, dendrogram_heatmap = {
-  data=as.data.frame(scale(data))
-ind=apply(data,2,function(x)!all(is.na(x)))
-data=data[,ind]
-heatmaply::heatmaply(data) %>% layout(height=1000,width=1000)
 })
 }
