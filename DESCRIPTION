@@ -1,9 +1,26 @@
+Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ @danielcanueto Sign out
+1
+2 1 danielcanueto/rDolphin
+ Code  Issues 4  Pull requests 0  Projects 0  Wiki  Insights  Settings
+rDolphin/DESCRIPTION
+@danielcanueto danielcanueto Update DESCRIPTION
+fa2e382  2 days ago
+@danielcanueto @user05011988
+39 lines (38 sloc)  1.62 KB
+    
 Package: rDolphin
 Type: Package
 Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
-Version: 0.2.0
-Author: c(person("Daniel", "Canueto", role = c("aut", "cre"), email =
-    "daniel.canueto@urv.cat"))
+Version: 0.3.0
+Authors@R: person("Daniel", "Canueto", role = c("aut", "cre"), email = "daniel.canueto@urv.cat")
 Maintainer: Daniel Canueto <daniel.canueto@urv.cat>
 Description: rDolphin is an R package that performs the automatic profiling of 1D 1H NMR spectra of biofluids or cell extracts and outputs several indicators of quality of quantification and identification of signal. The package incorporates a Shiny GUI that eases the use of the program by researchers with non-expert programming skills. rDolphin performs a supervised approach, where the spectrum is subdivided in Regions of Interest (ROIs) with characteristic signals for each biofluid. The correct parameters for each ROI for each dataset can be changed if necessary before performing an automatic profiling. rDolphin comes with tools to load individual quantifications to be evaluated and optimized. rDolphin can also perform different kinds of analysis of the generated data. License: GPL (>= 2).
 LazyData: TRUE
@@ -11,32 +28,29 @@ License: GPL-2 | file LICENSE
 ByteCompile: TRUE
 URL: http://github.com/danielcanueto/rDolphin
 BugReports: http://github.com/danielcanueto/rDolphin/issues
-Depends:
-	R (>= 3.3.0),
-	minpack.lm,
-	shinyjs,
-	reshape2,
-	data.table,
-	plotly,
-	shiny,
-	DT,
-	fields,
-	baseline,
-	apcluster,
-	missRanger,
-	ranger,
-	heatmaply,
-	ggplot2,
-	caret,
-	e1071,
-	elasticnet,
-	gridExtra,
-	stringr,
-	speaq,
-	knitr,
-	rmarkdown
-Remotes: 
-	Bioconductor-mirror/MassSpecWavelet,
-	Bioconductor-mirror/impute
-RoxygenNote: 6.0.1
+Imports: 
+    minpack.lm,
+    shinyjs,
+    reshape2,
+    data.table,
+    plotly,
+    shiny,
+    DT,
+    fields,
+    baseline,
+    apcluster,
+    missRanger,
+    ranger,
+    heatmaply,
+    Boruta,
+    ggplot2,
+    caret,
+    e1071,
+    elasticnet,
+    gridExtra,
+    stringr,
+    speaq,
+    knitr,
+    rmarkdown
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr, rmarkdown
