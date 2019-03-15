@@ -1,21 +1,3 @@
-Skip to content
- 
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- @danielcanueto Sign out
-1
-2 1 danielcanueto/rDolphin
- Code  Issues 4  Pull requests 0  Projects 0  Wiki  Insights  Settings
-rDolphin/DESCRIPTION
-@danielcanueto danielcanueto Update DESCRIPTION
-fa2e382  2 days ago
-@danielcanueto @user05011988
-39 lines (38 sloc)  1.62 KB
-    
 Package: rDolphin
 Type: Package
 Title: Reliable automatic profiling of 1D 1H NMR Spectra, with additional tools for analysis
