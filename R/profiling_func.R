@@ -3,7 +3,13 @@
                           fitting_type,
                           program_parameters,Xdata,Ydata,final_output,
                           reproducibility_data,
-                          ROI_profile,baselinedataset,signals_to_quantify,pb=NULL) {
+                          ROI_profile,baselinedataset,signals_to_quantify,pb=NULL,reimplementation=F,
+                         max_shift=NULL,min_shift=NULL,
+                         max_intensity=NULL,
+                         min_intensity=NULL,
+                         max_width=NULL,
+                         min_width=NULL,
+                         signal_index=NULL) {
   #Preparation of necessary variables to store figures and information of the fitting
   Ydata = as.numeric(imported_data$dataset[spectrum_index, ROI_buckets])
 
@@ -28,10 +34,16 @@
 
 
     #Adaptation of the info of the parameters into a single matrix and preparation (if necessary) of the background signals that will conform the baseline
-    FeaturesMatrix = fitting_prep(Xdata,
+    if (reimplementation==F) FeaturesMatrix = fitting_prep(Xdata,
                                   Ydata,
                                   ROI_profile[, 5:11,drop=F],
                                   program_parameters,baselinedataset[spectrum_index,ROI_buckets])
+								  
+	if (reimplementation==T)  FeaturesMatrix = fitting_prep_2(Xdata,
+          Ydata,
+          ROI_profile[, 5:11,drop=F],
+          program_parameters,baselinedataset[spectrum_index,ROI_buckets],max_shift,min_shift,max_intensity,
+          min_intensity,max_width,min_width,spectrum_index,signal_index)
 
     #Calculation of the parameters that will achieve the best fitting
     dummy = fittingloop(FeaturesMatrix,
